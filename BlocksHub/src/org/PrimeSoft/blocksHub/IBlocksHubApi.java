@@ -1,0 +1,72 @@
+/*
+ * The MIT License
+ *
+ * Copyright 2013 SBPrime.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package org.PrimeSoft.blocksHub;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+
+/**
+ *
+ * @author SBPrime
+ */
+public interface IBlocksHubApi {
+    /**
+     * Get the current version of BlocksHub API
+     *
+     * @return
+     */
+    double getVersion();
+    
+    
+    /**
+     * Is the api initialized
+     * @return 
+     */
+    boolean isInitialized();
+    
+
+    /**
+     * Log block using all the enabled block loggers
+     * @param location
+     * @param player
+     * @param world
+     * @param oldBlockType
+     * @param oldBlockData
+     * @param newBlockType
+     * @param newBlockData
+     */
+    void logBlock(String player, World world, Location location, 
+                  int oldBlockType, byte oldBlockData,
+                  int newBlockType, byte newBlockData);
+    
+    
+    /**
+     * Check if a player can place a block
+     * @param player
+     * @param world
+     * @param location
+     * @return 
+     */
+    boolean canPlace(String player, World world, Location location);
+}
