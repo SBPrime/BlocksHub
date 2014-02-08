@@ -10,5 +10,6 @@ BlocksHub:
       - world
       - world_nether
       - world_the_end
-  acccess:
+      - world.*
+  access:
     - worldGuard

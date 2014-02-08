@@ -26,6 +26,7 @@ package org.PrimeSoft.blocksHub.configuration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.PrimeSoft.blocksHub.BlocksHub;
 import org.PrimeSoft.blocksHub.accessControl.AccessControllers;
 import org.PrimeSoft.blocksHub.blocklogger.Loggers;
@@ -66,8 +67,19 @@ public class ConfigProvider {
     public static boolean isLogging(String world) {
         if (world == null) {
             return false;
+        }                
+        
+        if (m_enabledWorlds.contains(world.toLowerCase())) {
+            return true;
         }
-        return m_enabledWorlds.contains(world.toLowerCase());
+        
+        for (String pattern : m_enabledWorlds) {
+            if (Pattern.matches(pattern, world)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**
@@ -101,7 +113,7 @@ public class ConfigProvider {
         m_isConfigUpdate = m_configVersion == CONFIG_VERSION;
 
         parseLoggers(mainSection.getConfigurationSection("loggers"));
-        parseAccessControlers(mainSection.getStringList("acccess"));
+        parseAccessControlers(mainSection.getStringList("access"));
 
         if (m_accessControlers == null) {
             m_accessControlers = new String[0];
