@@ -4,3 +4,8 @@
 *.jar
 *.war
 *.ear
+/BlocksHub/nbproject/private/
+/BlocksHub/build/
+/BlocksHub/dist/
+/BlocksHub/test/
+/BlocksHub/lib/
