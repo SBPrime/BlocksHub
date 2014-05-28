@@ -101,7 +101,7 @@ public class Logic implements IBlocksHubApi {
                 BlocksHub.say(player, " * " + blName + "...not found");
             }
         }
-
+        
         m_isInitialized = true;
         return true;
     }
