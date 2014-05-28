@@ -102,7 +102,7 @@ public class PrismLogger implements IBlockLogger {
          *
          * Prism.actionsRecorder.addToQueue(action);
          */
-        RecordingQueue.addToQueue(ActionFactory.create("world-edit", l, oldBlockType, oldBlockData, newBlockType, newBlockData, player));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("world-edit", l, oldBlockType, oldBlockData, newBlockType, newBlockData, player));
     }
 
     @Override
