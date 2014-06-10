@@ -13,3 +13,4 @@ BlocksHub:
       - world.*
   access:
     - worldGuard
+    - residence

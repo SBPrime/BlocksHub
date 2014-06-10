@@ -171,11 +171,12 @@ public class ConfigProvider {
         if (list == null) {
             return;
         }
-
+        
         HashSet<String> filtered = new HashSet<String>();
         for (String name : list) {
             name = name.toLowerCase();
-            if (!name.equalsIgnoreCase(AccessControllers.WORLD_GUARD)) {
+            if (!name.equalsIgnoreCase(AccessControllers.WORLD_GUARD) &&
+                !name.equalsIgnoreCase(AccessControllers.RESIDENCE)) {
                 BlocksHub.log("Unknown access controller: " + name);
             } else if (filtered.contains(name)) {
                 BlocksHub.log("Duplicate access controller: " + name);

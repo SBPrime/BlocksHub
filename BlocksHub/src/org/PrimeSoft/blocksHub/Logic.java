@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.PrimeSoft.blocksHub.accessControl.AccessControllers;
 import org.PrimeSoft.blocksHub.accessControl.IAccessController;
+import org.PrimeSoft.blocksHub.accessControl.ResidenceAc;
 import org.PrimeSoft.blocksHub.accessControl.WorldGuardAc;
 import org.PrimeSoft.blocksHub.blocklogger.*;
 import org.PrimeSoft.blocksHub.configuration.ConfigProvider;
@@ -144,6 +145,8 @@ public class Logic implements IBlocksHubApi {
         if (name != null) {
             if (name.equalsIgnoreCase(AccessControllers.WORLD_GUARD)) {
                 return new WorldGuardAc(m_parent);
+            } else if (name.equalsIgnoreCase(AccessControllers.RESIDENCE)) {
+                return new ResidenceAc(m_parent);
             }
         }
         return null;

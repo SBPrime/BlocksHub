@@ -29,4 +29,5 @@ package org.PrimeSoft.blocksHub.accessControl;
  */
 public final class AccessControllers {
     public final static String WORLD_GUARD = "worldguard";
+    public final static String RESIDENCE = "residence";
 }
