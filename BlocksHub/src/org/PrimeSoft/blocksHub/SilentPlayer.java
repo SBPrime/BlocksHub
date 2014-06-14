@@ -41,12 +41,11 @@ import org.bukkit.Note;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.Statistic;
+import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_4_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
@@ -63,23 +62,24 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 /**
  *
  * @author SBPrime
  */
-public class SilentPlayer implements Player {
+public class SilentPlayer /*extends CraftPlayer*/ implements Player {
     private final Player m_parent;
     
     public SilentPlayer(Player parent){
+        //super(null, null);
         m_parent = parent;
     }    
 
@@ -165,13 +165,13 @@ public class SilentPlayer implements Player {
     }
 
     @Override
-    public void damage(int amount) {
-        m_parent.damage(amount);
+    public void damage(double d) {
+        m_parent.damage(d);
     }
 
     @Override
-    public void damage(int amount, Entity source) {
-        m_parent.damage(amount, source);
+    public void damage(double d, Entity entity) {
+        m_parent.damage(d, entity);
     }
 
     @Override
@@ -300,7 +300,7 @@ public class SilentPlayer implements Player {
     }
 
     @Override
-    public int getHealth() {
+    public double getHealth() {
         return m_parent.getHealth();
     }
 
@@ -325,7 +325,7 @@ public class SilentPlayer implements Player {
     }
 
     @Override
-    public int getLastDamage() {
+    public double getLastDamage() {
         return m_parent.getLastDamage();
     }
 
@@ -382,7 +382,7 @@ public class SilentPlayer implements Player {
     }
 
     @Override
-    public int getMaxHealth() {
+    public double getMaxHealth() {
         return m_parent.getMaxHealth();
     }
 
@@ -922,10 +922,9 @@ public class SilentPlayer implements Player {
         m_parent.setGameMode(mode);
     }
 
-
     @Override
-    public void setHealth(int health) {
-        m_parent.setHealth(health);
+    public void setHealth(double d) {
+        m_parent.setHealth(d);
     }
 
     @Override
@@ -939,8 +938,8 @@ public class SilentPlayer implements Player {
     }
 
     @Override
-    public void setLastDamage(int damage) {
-        m_parent.setLastDamage(damage);
+    public void setLastDamage(double d) {
+        m_parent.setLastDamage(d);
     }
 
     @Override
@@ -954,8 +953,8 @@ public class SilentPlayer implements Player {
     }
 
     @Override
-    public void setMaxHealth(int amount) {
-        m_parent.setMaxHealth(amount);
+    public void setMaxHealth(double d) {
+        m_parent.setMaxHealth(d);
     }
 
     @Override
@@ -1113,5 +1112,332 @@ public class SilentPlayer implements Player {
     @Override
     public void updateInventory() {
         m_parent.updateInventory();
+    }
+
+    /*@Override
+    public void addChannel(String channel) {
+        m_parent.addChannel(channel);
+    }*/
+
+    @Override
+    public void decrementStatistic(Statistic statistic) {
+        m_parent.decrementStatistic(statistic);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, EntityType entityType) {
+        m_parent.decrementStatistic(statistic, entityType);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, Material material) {
+        m_parent.decrementStatistic(statistic, material);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, int amount) {
+        m_parent.decrementStatistic(statistic, amount);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
+        m_parent.decrementStatistic(statistic, entityType, amount);
+    }
+
+    @Override
+    public void decrementStatistic(Statistic statistic, Material material, int amount) {
+        m_parent.decrementStatistic(statistic, material, amount);
+    }
+
+    /*@Override
+    public void disconnect(String reason) {
+        m_parent.disconnect(reason);
+    }*/
+    
+
+    @Override
+    public String getCustomName() {
+        return m_parent.getCustomName();
+    }
+
+    /*@Override
+    public EntityPlayer getHandle() {
+        return m_parent.getHandle();
+    }*/
+
+    @Override
+    public double getHealthScale() {
+        return m_parent.getHealthScale();
+    }
+
+    @Override
+    public Entity getLeashHolder() throws IllegalStateException {
+        return m_parent.getLeashHolder();
+    }
+
+    /*@Override
+    public Vector getMomentum() {
+        return m_parent.getMomentum();
+    }*/
+
+    @Override
+    public WeatherType getPlayerWeather() {
+        return m_parent.getPlayerWeather();
+    }
+
+    /*@Override
+    public GameProfile getProfile() {
+        return m_parent.getProfile();
+    }
+
+    @Override
+    public float getScaledHealth() {
+        return m_parent.getScaledHealth();
+    }*/
+
+    @Override
+    public Scoreboard getScoreboard() {
+        return m_parent.getScoreboard();
+    }
+
+    @Override
+    public int getStatistic(Statistic statistic) {
+        return m_parent.getStatistic(statistic);
+    }
+
+    @Override
+    public int getStatistic(Statistic statistic, EntityType entityType) {
+        return m_parent.getStatistic(statistic, entityType);
+    }
+
+    @Override
+    public int getStatistic(Statistic statistic, Material material) {
+        return m_parent.getStatistic(statistic, material);
+    }
+
+    @Override
+    public boolean hasAchievement(Achievement achievement) {
+        return m_parent.hasAchievement(achievement);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic, EntityType entityType) {
+        m_parent.incrementStatistic(statistic, entityType);
+    }
+
+    @Override
+    public void incrementStatistic(Statistic statistic, EntityType entityType, int amount) {
+        m_parent.incrementStatistic(statistic, entityType, amount);
+    }
+
+    /*@Override
+    public void injectScaledMaxHealth(Collection collection, boolean force) {
+        m_parent.injectScaledMaxHealth(collection, force);
+    }*/
+
+    @Override
+    public boolean isCustomNameVisible() {
+        return m_parent.isCustomNameVisible();
+    }
+
+    @Override
+    public boolean isHealthScaled() {
+        return m_parent.isHealthScaled();
+    }
+
+    @Override
+    public boolean isLeashed() {
+        return m_parent.isLeashed();
+    }
+
+    @Override
+    public boolean isOnGround() {
+        return m_parent.isOnGround();
+    }
+
+    @Override
+    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
+        return m_parent.launchProjectile(projectile, velocity);
+    }
+
+    @Override
+    public void playSound(Location loc, String sound, float volume, float pitch) {
+        m_parent.playSound(loc, sound, volume, pitch);
+    }
+
+    /*@Override
+    public void readExtraData(NBTTagCompound nbttagcompound) {
+        m_parent.readExtraData(nbttagcompound);
+    }*/
+
+    @Override
+    public void removeAchievement(Achievement achievement) {
+        m_parent.removeAchievement(achievement);
+    }
+
+    /*@Override
+    public void removeChannel(String channel) {
+        m_parent.removeChannel(channel);
+    }
+
+    @Override
+    public void removeDisconnectingPlayer(Player player) {
+        m_parent.removeDisconnectingPlayer(player);
+    }*/
+
+    @Override
+    public void resetPlayerWeather() {
+        m_parent.resetPlayerWeather();
+    }
+
+    @Override
+    public void sendSignChange(Location loc, String[] lines) {
+        m_parent.sendSignChange(loc, lines);
+    }
+
+    /*@Override
+    public void sendSupportedChannels() {
+        m_parent.sendSupportedChannels();
+    }*/
+
+    @Override
+    public void setCustomName(String name) {
+        m_parent.setCustomName(name);
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean flag) {
+        m_parent.setCustomNameVisible(flag);
+    }
+
+    /*@Override
+    public void setExtraData(NBTTagCompound nbttagcompound) {
+        m_parent.setExtraData(nbttagcompound);
+    }
+
+    @Override
+    public void setFirstPlayed(long firstPlayed) {
+        m_parent.setFirstPlayed(firstPlayed);
+    }
+
+    @Override
+    public void setHandle(net.minecraft.server.v1_7_R3.Entity entity) {
+        m_parent.setHandle(entity);
+    }
+
+    @Override
+    public void setHandle(EntityHuman entity) {
+        m_parent.setHandle(entity);
+    }
+
+    @Override
+    public void setHandle(EntityLiving entity) {
+        m_parent.setHandle(entity);
+    }
+
+    @Override
+    public void setHandle(EntityPlayer entity) {
+        m_parent.setHandle(entity);
+    }*/
+
+    @Override
+    public void setHealthScale(double value) {
+        m_parent.setHealthScale(value);
+    }
+
+    @Override
+    public void setHealthScaled(boolean scale) {
+        m_parent.setHealthScaled(scale);
+    }
+
+    @Override
+    public boolean setLeashHolder(Entity holder) {
+        return m_parent.setLeashHolder(holder);
+    }
+
+    /*@Override
+    public void setMomentum(Vector value) {
+        m_parent.setMomentum(value);
+    }*/
+
+    @Override
+    public void setPlayerWeather(WeatherType type) {
+        m_parent.setPlayerWeather(type);
+    }
+
+    /*@Override
+    public void setRealHealth(double health) {
+        m_parent.setRealHealth(health);
+    }*/
+
+    @Override
+    public void setResourcePack(String url) {
+        m_parent.setResourcePack(url);
+    }
+
+    @Override
+    public void setScoreboard(Scoreboard scoreboard) {
+        m_parent.setScoreboard(scoreboard);
+    }
+
+    @Override
+    public void setStatistic(Statistic statistic, int newValue) {
+        m_parent.setStatistic(statistic, newValue);
+    }
+
+    @Override
+    public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
+        m_parent.setStatistic(statistic, entityType, newValue);
+    }
+
+    @Override
+    public void setStatistic(Statistic statistic, Material material, int newValue) {
+        m_parent.setStatistic(statistic, material, newValue);
+    }
+
+    /*@Override
+    public void updateScaledHealth() {
+        m_parent.updateScaledHealth();
+    } */       
+
+
+    @Override
+    public int _INVALID_getLastDamage() {
+        return (int)m_parent.getLastDamage();
+    }
+
+    @Override
+    public void _INVALID_setLastDamage(int i) {
+        m_parent.setLastDamage(i);
+    }
+
+    @Override
+    public void _INVALID_damage(int i) {
+        m_parent.damage(i);
+    }
+
+    @Override
+    public void _INVALID_damage(int i, Entity entity) {
+        m_parent.damage(i, entity);
+    }
+
+    @Override
+    public int _INVALID_getHealth() {
+        return (int)m_parent.getHealth();
+    }
+
+    @Override
+    public void _INVALID_setHealth(int i) {
+        m_parent.setHealth(i);
+    }
+
+    @Override
+    public int _INVALID_getMaxHealth() {
+        return (int)m_parent.getMaxHealth();
+    }
+
+    @Override
+    public void _INVALID_setMaxHealth(int i) {
+        m_parent.setMaxHealth(i);
     }
 }
