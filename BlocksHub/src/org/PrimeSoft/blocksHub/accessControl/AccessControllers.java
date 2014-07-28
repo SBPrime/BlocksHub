@@ -27,7 +27,28 @@ package org.PrimeSoft.blocksHub.accessControl;
  *
  * @author SBPrime
  */
-public final class AccessControllers {
-    public final static String WORLD_GUARD = "worldguard";
-    public final static String RESIDENCE = "residence";
+public enum AccessControllers {
+    WORLD_GUARD("WorldGuard"),
+    RESIDENCE("Residence"),
+    GRIEF_PREVENTION("GriefPrevention");   
+
+    public static AccessControllers tryParse(String s) {        
+        for  (AccessControllers value : AccessControllers.values()){
+            if (value.getName().equalsIgnoreCase(s)) {
+                return value;
+            }
+        }
+        
+        return null;
+    }
+    
+    private final String m_name;
+     
+    public String getName() {
+        return m_name;
+    }
+
+    private AccessControllers(String name) {
+        m_name = name;
+    }
 }

@@ -43,15 +43,15 @@ public class ConfigProvider {
     private static final int CONFIG_VERSION = 1;
     private static boolean m_isConfigUpdate = false;
     private static int m_configVersion;
-    private static String[] m_loggers;
-    private static String[] m_accessControlers;
+    private static Loggers[] m_loggers;
+    private static AccessControllers[] m_accessControlers;
     private final static HashSet<String> m_enabledWorlds = new HashSet<String>();
 
-    public static String[] getLoggers() {
+    public static Loggers[] getLoggers() {
         return m_loggers;
     }
 
-    public static String[] getAccessControlers() {
+    public static AccessControllers[] getAccessControlers() {
         return m_accessControlers;
     }
 
@@ -62,6 +62,7 @@ public class ConfigProvider {
     /**
      * Is the world being logged
      *
+     * @param world
      * @return
      */
     public static boolean isLogging(String world) {
@@ -116,11 +117,11 @@ public class ConfigProvider {
         parseAccessControlers(mainSection.getStringList("access"));
 
         if (m_accessControlers == null) {
-            m_accessControlers = new String[0];
+            m_accessControlers = new AccessControllers[0];
         }
 
         if (m_loggers == null) {
-            m_loggers = new String[0];
+            m_loggers = new Loggers[0];
         }
 
         return true;
@@ -149,22 +150,19 @@ public class ConfigProvider {
             }
         }
 
-        HashSet<String> filtered = new HashSet<String>();
+        HashSet<Loggers> filtered = new HashSet<Loggers>();
         for (String name : loggers) {
-            name = name.toLowerCase();
-            if (!name.equalsIgnoreCase(Loggers.CORE_PROTECT)
-                    && !name.equalsIgnoreCase(Loggers.HAWK_EYE)
-                    && !name.equalsIgnoreCase(Loggers.LOG_BLOCK)
-                    && !name.equalsIgnoreCase(Loggers.PRISM)) {
+            Loggers loger = Loggers.tryParse(name.toLowerCase());
+            if (loger == null) {
                 BlocksHub.log("Unknown blocks logger: " + name);
-            } else if (filtered.contains(name)) {
+            } else if (filtered.contains(loger)) {
                 BlocksHub.log("Duplicate logger entry: " + name);
             } else {
-                filtered.add(name);
+                filtered.add(loger);
             }
         }
 
-        m_loggers = filtered.toArray(new String[0]);
+        m_loggers = filtered.toArray(new Loggers[0]);
     }
 
     private static void parseAccessControlers(List<String> list) {
@@ -172,19 +170,18 @@ public class ConfigProvider {
             return;
         }
         
-        HashSet<String> filtered = new HashSet<String>();
+        HashSet<AccessControllers> filtered = new HashSet<AccessControllers>();
         for (String name : list) {
-            name = name.toLowerCase();
-            if (!name.equalsIgnoreCase(AccessControllers.WORLD_GUARD) &&
-                !name.equalsIgnoreCase(AccessControllers.RESIDENCE)) {
+            AccessControllers ac = AccessControllers.tryParse(name.toLowerCase());
+            if (ac == null) {
                 BlocksHub.log("Unknown access controller: " + name);
-            } else if (filtered.contains(name)) {
+            } else if (filtered.contains(ac)) {
                 BlocksHub.log("Duplicate access controller: " + name);
             } else {
-                filtered.add(name);
+                filtered.add(ac);
             }
 
         }
-        m_accessControlers = filtered.toArray(new String[0]);
+        m_accessControlers = filtered.toArray(new AccessControllers[0]);
     }
 }

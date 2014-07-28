@@ -25,57 +25,17 @@ package org.PrimeSoft.blocksHub.accessControl;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author SBPrime
  */
-public class WorldGuardAc implements IAccessController {
-    /**
-     * AC name
-     */
-    private final String m_name;
-    
-    
-    /**
-     * The world guard
-     */
-    private WorldGuardPlugin m_worldGuard;
-
-    /**
-     * Craftbukkit server
-     */
-    private Server m_server;
-
-    /**
-     * Is world guard integration enabed
-     */
-    private boolean m_isEnabled;
-
+public class WorldGuardAc extends BaseAccessController<WorldGuardPlugin> {
     public WorldGuardAc(JavaPlugin plugin) {
-        m_isEnabled = false;
-        PluginDescriptionFile pd = null;
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-
-            if ((cPlugin != null) && (cPlugin instanceof WorldGuardPlugin)) {
-                m_isEnabled = true;
-                m_worldGuard = (WorldGuardPlugin) cPlugin;
-                m_server = plugin.getServer();
-                
-                pd = m_worldGuard.getDescription();                
-            }
-        }
-        catch (NoClassDefFoundError ex) {
-        }
-        
-        m_name = pd != null ? pd.getFullName() : "Disabled - WorldGuard";
+        super(plugin, "WorldGuard");
     }
 
     /**
@@ -94,20 +54,6 @@ public class WorldGuardAc implements IAccessController {
         }
 
         Player p = m_server.getPlayer(player);
-        return m_worldGuard.canBuild(p, location);
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return m_isEnabled;
-    }
-        
-    /**
-     * Get access controller name
-     * @return 
-     */
-    @Override
-    public String getName() {
-        return m_name;
+        return m_hook.canBuild(p, location);
     }
 }

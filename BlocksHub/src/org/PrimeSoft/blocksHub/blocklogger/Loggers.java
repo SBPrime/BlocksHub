@@ -21,15 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package org.PrimeSoft.blocksHub.blocklogger;
 
 /**
  *
  * @author SBPrime
  */
-public final class Loggers {
-    public final static String CORE_PROTECT = "coreprotect";
-    public final static String LOG_BLOCK = "logblock";
-    public final static String PRISM = "prism";
-    public final static String HAWK_EYE = "hawkeye";
+public enum Loggers {
+    CORE_PROTECT("CoreProtect"),
+    LOG_BLOCK("LogBlock"),
+    PRISM("Prism"),
+    HAWK_EYE("HawkEye");
+
+    public static Loggers tryParse(String s) {
+        for (Loggers value : Loggers.values()) {
+            if (value.getName().equalsIgnoreCase(s)) {
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    private final String m_name;
+
+    public String getName() {
+        return m_name;
+    }
+
+    private Loggers(String name) {
+        m_name = name;
+    }
 }

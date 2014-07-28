@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package org.PrimeSoft.blocksHub.accessControl;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
+import me.ryanhamshire.GriefPrevention.BlockEventHandler;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.PrimeSoft.blocksHub.SilentPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -36,22 +39,19 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
 /**
  *
  * @author SBPrime
  */
-public class ResidenceAc extends BaseAccessController<Residence> {
+public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
+    private BlockEventHandler m_listener;
 
-    /**
-     * The residence block listener
-     */
-    private ResidenceBlockListener m_listener;
-
-    public ResidenceAc(JavaPlugin plugin) {
-        super(plugin, "Residence");
+    public GriefPreventionAc(JavaPlugin plugin) {
+        super(plugin, "GriefPrevention");
 
         try {
-            m_listener = m_hook != null ? new ResidenceBlockListener() : null;
+            m_listener = m_hook != null ? new BlockEventHandler() : null;
         } catch (NoClassDefFoundError ex) {
         }
     }

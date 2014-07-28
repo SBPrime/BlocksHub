@@ -25,7 +25,6 @@ package org.PrimeSoft.blocksHub.blocklogger;
 
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
-import org.PrimeSoft.blocksHub.BlocksHub;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -45,11 +44,11 @@ public class LogBlockLogger implements IBlockLogger {
     /**
      * Log block
      */
-    private LogBlock m_logBlock;
+    private final LogBlock m_logBlock;
     /**
      * Is the logger enabled
      */
-    private boolean m_isEnabled;
+    private final boolean m_isEnabled;
 
     /**
      * Get instance of the log block plugin

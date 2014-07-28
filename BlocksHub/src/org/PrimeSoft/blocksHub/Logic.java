@@ -26,6 +26,7 @@ package org.PrimeSoft.blocksHub;
 import java.util.ArrayList;
 import java.util.List;
 import org.PrimeSoft.blocksHub.accessControl.AccessControllers;
+import org.PrimeSoft.blocksHub.accessControl.GriefPreventionAc;
 import org.PrimeSoft.blocksHub.accessControl.IAccessController;
 import org.PrimeSoft.blocksHub.accessControl.ResidenceAc;
 import org.PrimeSoft.blocksHub.accessControl.WorldGuardAc;
@@ -78,8 +79,9 @@ public class Logic implements IBlocksHubApi {
         m_loggers.clear();
 
         BlocksHub.say(player, "Initializing access controllers");
-        for (String acName : ConfigProvider.getAccessControlers()) {
-            IAccessController ac = getAccessController(acName);
+        for (AccessControllers acType : ConfigProvider.getAccessControlers()) {
+            String acName = acType.getName();
+            IAccessController ac = getAccessController(acType);
             if (ac == null) {
                 BlocksHub.say(player, " * " + acName + "...error");
             } else if (ac.isEnabled()) {
@@ -91,8 +93,9 @@ public class Logic implements IBlocksHubApi {
         }
 
         BlocksHub.say(player, "Initializing block loggers");
-        for (String blName : ConfigProvider.getLoggers()) {
-            IBlockLogger bc = getLogger(blName);
+        for (Loggers blType : ConfigProvider.getLoggers()) {
+            String blName = blType.getName();
+            IBlockLogger bc = getLogger(blType);
             if (bc == null) {
                 BlocksHub.say(player, " * " + blName + "...error");
             } else if (bc.isEnabled()) {
@@ -102,7 +105,7 @@ public class Logic implements IBlocksHubApi {
                 BlocksHub.say(player, " * " + blName + "...not found");
             }
         }
-        
+
         m_isInitialized = true;
         return true;
     }
@@ -113,23 +116,20 @@ public class Logic implements IBlocksHubApi {
      * @param logger
      * @return
      */
-    private IBlockLogger getLogger(String logger) {
+    private IBlockLogger getLogger(Loggers logger) {
         try {
-            if (logger != null) {
-                if (logger.equalsIgnoreCase(Loggers.LOG_BLOCK)) {
+            switch (logger) {
+                case LOG_BLOCK:
                     return new LogBlockLogger(m_parent);
-                }
-                if (logger.equalsIgnoreCase(Loggers.CORE_PROTECT)) {
+                case CORE_PROTECT:
                     return new CoreProtectLogger(m_parent);
-                }
-                if (logger.equalsIgnoreCase(Loggers.PRISM)) {
+                case PRISM:
                     return new PrismLogger(m_parent);
-                }
-                if (logger.equalsIgnoreCase(Loggers.HAWK_EYE)) {
+                case HAWK_EYE:
                     return new HawkEyeLogger(m_parent);
-                }
+                default:
+                    return null;
             }
-            return null;
         } catch (NoClassDefFoundError ex) {
             return null;
         }
@@ -141,12 +141,17 @@ public class Logic implements IBlocksHubApi {
      * @param name
      * @return
      */
-    private IAccessController getAccessController(String name) {
+    private IAccessController getAccessController(AccessControllers name) {
         if (name != null) {
-            if (name.equalsIgnoreCase(AccessControllers.WORLD_GUARD)) {
-                return new WorldGuardAc(m_parent);
-            } else if (name.equalsIgnoreCase(AccessControllers.RESIDENCE)) {
-                return new ResidenceAc(m_parent);
+            switch (name) {
+                case WORLD_GUARD:
+                    return new WorldGuardAc(m_parent);
+                case RESIDENCE:
+                    return new ResidenceAc(m_parent);
+                case GRIEF_PREVENTION:
+                    return new GriefPreventionAc(m_parent);
+                default:
+                    return null;
             }
         }
         return null;
@@ -186,11 +191,10 @@ public class Logic implements IBlocksHubApi {
 
     @Override
     public boolean canPlace(String player, World world, Location location) {
-        if (player == null)
-        {
+        if (player == null) {
             return true;
         }
-        
+
         if (!m_isInitialized || world == null || location == null) {
             return false;
         }
