@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package org.PrimeSoft.blocksHub.accessControl;
 
 import com.bekvon.bukkit.residence.Residence;
@@ -39,12 +38,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 /**
  *
  * @author SBPrime
  */
 public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
+
     private BlockEventHandler m_listener;
 
     public GriefPreventionAc(JavaPlugin plugin) {
@@ -88,5 +87,10 @@ public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
 
         //We do not support white/black lists
         return true;
+    }
+
+    @Override
+    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
+        return GriefPrevention.class.isAssignableFrom(aClass);
     }
 }

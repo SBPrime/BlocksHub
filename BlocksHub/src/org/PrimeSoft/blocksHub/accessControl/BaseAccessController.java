@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package org.PrimeSoft.blocksHub.accessControl;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -36,26 +35,27 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @param <T>
  */
 public abstract class BaseAccessController<T extends Plugin> implements IAccessController {
+
     /**
      * AC name
      */
     private final String m_name;
-    
+
     /**
      * Craftbukkit server
      */
     protected Server m_server;
-    
+
     /**
      * Is world guard integration enabled
      */
     protected boolean m_isEnabled;
-    
+
     /**
      * The hook class
      */
     protected final T m_hook;
-    
+
     @Override
     public boolean isEnabled() {
         return m_isEnabled;
@@ -63,14 +63,14 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
 
     /**
      * Get access controller name
+     *
      * @return
      */
     @Override
     public String getName() {
         return m_name;
     }
-    
-    
+
     protected BaseAccessController(JavaPlugin plugin, final String pluginName) {
         m_isEnabled = false;
         PluginDescriptionFile pd = null;
@@ -78,19 +78,20 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
         try {
             Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin(pluginName);
 
-            if ((cPlugin != null) && (cPlugin instanceof WorldGuardPlugin)) {
+            if ((cPlugin != null) && instanceOfT(cPlugin.getClass())) {
                 m_isEnabled = true;
                 hook = (T) cPlugin;
                 m_server = plugin.getServer();
-                
-                pd = hook.getDescription();                
+
+                pd = hook.getDescription();
             }
-        }
-        catch (NoClassDefFoundError ex) {
+        } catch (NoClassDefFoundError ex) {
             hook = null;
         }
         m_hook = hook;
-        
+
         m_name = pd != null ? pd.getFullName() : "Disabled - " + pluginName;
     }
+
+    protected abstract boolean instanceOfT(Class<? extends Plugin> aClass);
 }

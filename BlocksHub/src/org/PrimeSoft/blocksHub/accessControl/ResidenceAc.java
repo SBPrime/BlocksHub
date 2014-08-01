@@ -33,7 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -88,5 +87,10 @@ public class ResidenceAc extends BaseAccessController<Residence> {
 
         //We do not support white/black lists
         return true;
+    }
+    
+    @Override
+    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
+        return Residence.class.isAssignableFrom(aClass);
     }
 }
