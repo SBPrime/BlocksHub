@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.PrimeSoft.blocksHub.accessControl;
+package org.PrimeSoft.blocksHub.accessControl.GriefPrevention;
 
-import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
+import me.ryanhamshire.GriefPrevention.BlockEventHandler;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.PrimeSoft.blocksHub.SilentPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -32,50 +32,38 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author SBPrime
  */
-public class ResidenceAc extends BaseAccessController<Residence> {
-
+public abstract class GriefPreventionBase {
+    protected BlockEventHandler m_listener;   
+    
     /**
-     * The residence block listener
+     * Initialize the GP hook
+     * @param hook
+     * @return 
      */
-    private ResidenceBlockListener m_listener;
-
-    public ResidenceAc(JavaPlugin plugin) {
-        super(plugin, "Residence");
-    }
-
-    @Override
-    protected boolean postInit(PluginDescriptionFile pd) {
-        try {
-            m_listener = m_hook != null ? new ResidenceBlockListener() : null;
-            return true;
-        } catch (NoClassDefFoundError ex) {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null || world == null || location == null) {
+    public abstract boolean Initialize(GriefPrevention hook);
+    
+    
+    /**
+     * Test if the block can by placed
+     * @param player
+     * @param world
+     * @param location
+     * @return 
+     */
+    public boolean canPlace(Player player, World world, Location location) {        
+        if (player == null) {
             return true;
         }
-
-        Player bPlayer = m_server.getPlayer(player);
-        if (bPlayer == null) {
-            return true;
-        }
-        bPlayer = new SilentPlayer(bPlayer);
+        player = new SilentPlayer(player);
         Block block = location.getBlock();
 
         if (!block.isEmpty()) {
-            BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
+            BlockBreakEvent event = new BlockBreakEvent(block, player);
             m_listener.onBlockBreak(event);
 
             if (event.isCancelled()) {
@@ -83,7 +71,7 @@ public class ResidenceAc extends BaseAccessController<Residence> {
             }
         } else {
             BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
-                    bPlayer.getItemInHand(), bPlayer, true);
+                    player.getItemInHand(), player, true);
             m_listener.onBlockPlace(event);
 
             if (event.isCancelled()) {
@@ -93,10 +81,5 @@ public class ResidenceAc extends BaseAccessController<Residence> {
 
         //We do not support white/black lists
         return true;
-    }
-
-    @Override
-    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
-        return Residence.class.isAssignableFrom(aClass);
     }
 }

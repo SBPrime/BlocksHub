@@ -23,7 +23,6 @@
  */
 package org.PrimeSoft.blocksHub.accessControl;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -71,6 +70,10 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
         return m_name;
     }
 
+    protected void disable() {
+
+    }
+
     protected BaseAccessController(JavaPlugin plugin, final String pluginName) {
         m_isEnabled = false;
         PluginDescriptionFile pd = null;
@@ -87,10 +90,18 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
             }
         } catch (NoClassDefFoundError ex) {
             hook = null;
+            m_isEnabled = false;
         }
-        m_hook = hook;
 
-        m_name = pd != null ? pd.getFullName() : "Disabled - " + pluginName;
+        m_hook = hook;
+        if (m_isEnabled) {
+            m_isEnabled = postInit(pd);
+        }        
+        m_name = pd != null && m_isEnabled ? pd.getFullName() : "Disabled - " + pluginName;
+    }
+
+    protected boolean postInit(PluginDescriptionFile pd) {
+        return true;
     }
 
     protected abstract boolean instanceOfT(Class<? extends Plugin> aClass);

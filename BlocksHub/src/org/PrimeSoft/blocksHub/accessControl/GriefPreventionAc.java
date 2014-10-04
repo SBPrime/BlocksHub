@@ -23,17 +23,13 @@
  */
 package org.PrimeSoft.blocksHub.accessControl;
 
-import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
-import me.ryanhamshire.GriefPrevention.BlockEventHandler;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import org.PrimeSoft.blocksHub.SilentPlayer;
+import org.PrimeSoft.blocksHub.accessControl.GriefPrevention.GriefPrevention7x;
+import org.PrimeSoft.blocksHub.accessControl.GriefPrevention.GriefPrevention8x;
+import org.PrimeSoft.blocksHub.accessControl.GriefPrevention.GriefPreventionBase;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,15 +40,39 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
 
-    private BlockEventHandler m_listener;
+    private GriefPreventionBase m_interface;
 
     public GriefPreventionAc(JavaPlugin plugin) {
         super(plugin, "GriefPrevention");
+    }
 
+    @Override
+    protected boolean postInit(PluginDescriptionFile pd) {
         try {
-            m_listener = m_hook != null ? new BlockEventHandler() : null;
-        } catch (NoClassDefFoundError ex) {
+            m_interface = new GriefPrevention7x();
+            if (m_interface.Initialize(m_hook))
+            {
+                return true;
+            }
         }
+        catch (Exception ex)
+        {
+            //v7.x not supported try v8.x
+        }
+        
+        
+        try {
+            m_interface = new GriefPrevention8x();
+            if (m_interface.Initialize(m_hook))
+            {
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            //v8.x not supported
+        }
+        return false;
     }
 
     @Override
@@ -60,33 +80,14 @@ public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
         if (!m_isEnabled || player == null || world == null || location == null) {
             return true;
         }
-
         Player bPlayer = m_server.getPlayer(player);
-        if (bPlayer == null) {
+        
+        if (m_interface == null || bPlayer == null)
+        {
             return true;
         }
-        bPlayer = new SilentPlayer(bPlayer);
-        Block block = location.getBlock();
-
-        if (!block.isEmpty()) {
-            BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
-            m_listener.onBlockBreak(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-        } else {
-            BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
-                    bPlayer.getItemInHand(), bPlayer, true);
-            m_listener.onBlockPlace(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-        }
-
-        //We do not support white/black lists
-        return true;
+    
+        return m_interface.canPlace(bPlayer, world, location);
     }
 
     @Override
