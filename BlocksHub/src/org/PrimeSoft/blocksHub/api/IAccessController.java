@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.blocklogger;
+package org.PrimeSoft.blocksHub.api;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -49,22 +49,14 @@ import org.bukkit.World;
  *
  * @author SBPrime
  */
-public interface IBlockLogger {
+public interface IAccessController extends IBaseEntity {
     /**
-     * Is the access controller enabled
-     * @return 
+     * Check if a player can place a block
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @return
      */
-    public boolean isEnabled();
-  
-    /**
-     * Get logger name
-     * @return 
-     */
-    String getName();
-    
-    
-    public void logBlock(Location location, String player, World world, 
-                         int oldBlockType, byte oldBlockData,
-                         int newBlockType, byte newBlockData);
-    
+    boolean canPlace(String player, World world, Location location);
 }

@@ -40,35 +40,94 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.blocklogger;
+package org.PrimeSoft.blocksHub.api;
+
+import org.bukkit.Location;
+import org.bukkit.World;
 
 /**
  *
  * @author SBPrime
  */
-public enum Loggers {
-    CORE_PROTECT("CoreProtect"),
-    LOG_BLOCK("LogBlock"),
-    PRISM("Prism"),
-    HAWK_EYE("HawkEye");
+public interface IBlocksHubApi {
+    /**
+     * Get the current version of BlocksHub API
+     *
+     * @return
+     */
+    double getVersion();
+    
+    
+    /**
+     * Is the api initialized
+     * @return 
+     */
+    boolean isInitialized();
+        
+    /**
+     * Register blocks logger class
+     * @param blocksLogger
+     * @return 
+     */
+    boolean registerBlocksLogger(IBlockLogger blocksLogger);
+    
+    
+    /**
+     * Register blocks access controller
+     * @param accessController
+     * @return 
+     */
+    boolean registerAccessController(IAccessController accessController);
+    
+    /**
+     * Remove blocks logger class
+     * @param blocksLogger
+     * @return 
+     */
+    boolean removeBlocksLogger(IBlockLogger blocksLogger);
+    
+    
+    /**
+     * Remove blocks access controller
+     * @param accessController
+     * @return 
+     */
+    boolean removeAccessController(IAccessController accessController);
+    
+    
+    /**
+     * List all registered loggers
+     * @return 
+     */
+    IBlockLogger[] getRegisteredLoggers();
+    
+    /**
+     * List all registered access controllers
+     * @return 
+     */
+    IAccessController[] getRegisteredAccessControllers();
 
-    public static Loggers tryParse(String s) {
-        for (Loggers value : Loggers.values()) {
-            if (value.getName().equalsIgnoreCase(s)) {
-                return value;
-            }
-        }
-
-        return null;
-    }
-
-    private final String m_name;
-
-    public String getName() {
-        return m_name;
-    }
-
-    private Loggers(String name) {
-        m_name = name;
-    }
+    /**
+     * Log block using all the enabled block loggers
+     * @param location
+     * @param player
+     * @param world
+     * @param oldBlockType
+     * @param oldBlockData
+     * @param newBlockType
+     * @param newBlockData
+     */
+    void logBlock(String player, World world, Location location, 
+                  int oldBlockType, byte oldBlockData,
+                  int newBlockType, byte newBlockData);
+    
+    
+    /**
+     * Check if a player can place a block
+     * @param player
+     * @param world
+     * @param location
+     * @return 
+     */
+    boolean canPlace(String player, World world, Location location);
 }

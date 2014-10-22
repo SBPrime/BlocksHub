@@ -1,7 +1,7 @@
 name: BlocksHub
 main: org.PrimeSoft.blocksHub.BlocksHub
-version: 0.5b
-website: http://dev.bukkit.org/bukkit-plugins/blockshub/
+version: 1.0
+website: https://github.com/SBPrime/BlocksHub/
 description: Logger & Block access API.
 authors: [SBPrime]
 depend: []

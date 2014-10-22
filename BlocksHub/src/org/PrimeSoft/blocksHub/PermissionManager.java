@@ -65,7 +65,7 @@ public class PermissionManager {
      * Check if player has a specific permission
      * @param player player
      * @param perms permission to check
-     * @return True if permission pressent
+     * @return True if permission present
      */
     public static boolean isAllowed(Player player, Perms perms) {
         if (player == null) {

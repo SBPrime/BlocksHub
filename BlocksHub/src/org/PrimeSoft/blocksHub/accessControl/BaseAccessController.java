@@ -42,6 +42,7 @@
 
 package org.PrimeSoft.blocksHub.accessControl;
 
+import org.PrimeSoft.blocksHub.api.IAccessController;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;

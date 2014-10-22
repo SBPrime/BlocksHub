@@ -42,6 +42,7 @@
 
 package org.PrimeSoft.blocksHub.blocklogger;
 
+import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 import org.bukkit.Location;

@@ -47,8 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.PrimeSoft.blocksHub.BlocksHub;
-import org.PrimeSoft.blocksHub.accessControl.AccessControllers;
-import org.PrimeSoft.blocksHub.blocklogger.Loggers;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -59,20 +57,10 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class ConfigProvider {
 
-    private static final int CONFIG_VERSION = 1;
+    private static final int CONFIG_VERSION = 2;
     private static boolean m_isConfigUpdate = false;
     private static int m_configVersion;
-    private static Loggers[] m_loggers;
-    private static AccessControllers[] m_accessControlers;
     private final static HashSet<String> m_enabledWorlds = new HashSet<String>();
-
-    public static Loggers[] getLoggers() {
-        return m_loggers;
-    }
-
-    public static AccessControllers[] getAccessControlers() {
-        return m_accessControlers;
-    }
 
     public static int getConfigVersion() {
         return m_configVersion;
@@ -132,35 +120,10 @@ public class ConfigProvider {
         m_configVersion = mainSection.getInt("version", 1);
         m_isConfigUpdate = m_configVersion == CONFIG_VERSION;
 
-        parseLoggers(mainSection.getConfigurationSection("loggers"));
-        parseAccessControlers(mainSection.getStringList("access"));
-
-        if (m_accessControlers == null) {
-            m_accessControlers = new AccessControllers[0];
-        }
-
-        if (m_loggers == null) {
-            m_loggers = new Loggers[0];
-        }
-
-        return true;
-    }
-
-    private static void parseLoggers(ConfigurationSection subSection) {
-        if (subSection == null) {
-            return;
-        }
-
-        List<String> loggers = subSection.getStringList("enabled");
-        List<String> worlds = subSection.getStringList("worlds");
-
-        if (loggers == null) {
-            loggers = new ArrayList<String>();
-        }
+        List<String> worlds = mainSection.getStringList("worlds");
         if (worlds == null) {
             worlds = new ArrayList<String>();
         }
-
         m_enabledWorlds.clear();
         for (String world : worlds) {
             world = world.toLowerCase();
@@ -168,39 +131,7 @@ public class ConfigProvider {
                 m_enabledWorlds.add(world);
             }
         }
-
-        HashSet<Loggers> filtered = new HashSet<Loggers>();
-        for (String name : loggers) {
-            Loggers loger = Loggers.tryParse(name.toLowerCase());
-            if (loger == null) {
-                BlocksHub.log("Unknown blocks logger: " + name);
-            } else if (filtered.contains(loger)) {
-                BlocksHub.log("Duplicate logger entry: " + name);
-            } else {
-                filtered.add(loger);
-            }
-        }
-
-        m_loggers = filtered.toArray(new Loggers[0]);
-    }
-
-    private static void parseAccessControlers(List<String> list) {
-        if (list == null) {
-            return;
-        }
-        
-        HashSet<AccessControllers> filtered = new HashSet<AccessControllers>();
-        for (String name : list) {
-            AccessControllers ac = AccessControllers.tryParse(name.toLowerCase());
-            if (ac == null) {
-                BlocksHub.log("Unknown access controller: " + name);
-            } else if (filtered.contains(ac)) {
-                BlocksHub.log("Duplicate access controller: " + name);
-            } else {
-                filtered.add(ac);
-            }
-
-        }
-        m_accessControlers = filtered.toArray(new AccessControllers[0]);
+           
+        return true;
     }
 }

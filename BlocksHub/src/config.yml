@@ -1,17 +1,7 @@
 BlocksHub:
-  version: 1
-  loggers:
-    enabled:
-      - logBlock
-      - coreProtect
-      - prism
-      - hawkEye
-    worlds:
-      - world
-      - world_nether
-      - world_the_end
-      - world.*
-  access:
-    - worldGuard
-    - residence
-    - griefprevention
+  version: 2
+  worlds:
+    - world
+    - world_nether
+    - world_the_end
+    - world.*

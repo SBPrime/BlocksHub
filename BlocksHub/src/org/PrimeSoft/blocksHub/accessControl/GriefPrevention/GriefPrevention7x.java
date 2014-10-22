@@ -48,7 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.ryanhamshire.GriefPrevention.BlockEventHandler;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import org.PrimeSoft.blocksHub.SilentPlayer;
+import org.PrimeSoft.blocksHub.api.SilentPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;

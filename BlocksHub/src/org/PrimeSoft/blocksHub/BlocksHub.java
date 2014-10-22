@@ -42,6 +42,7 @@
 
 package org.PrimeSoft.blocksHub;
 
+import org.PrimeSoft.blocksHub.api.IBlocksHubApi;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +98,7 @@ public class BlocksHub extends JavaPlugin {
         PluginDescriptionFile desc = getDescription();
         s_prefix = String.format("[%s]", desc.getName());
 
-        m_logic = new Logic(this);
+        m_logic = new Logic();
 
         try {
             m_metrics = new MetricsLite(this);
@@ -195,6 +196,7 @@ public class BlocksHub extends JavaPlugin {
 
     /**
      * Get the API
+     * @return 
      */
     public IBlocksHubApi getApi() {
         return m_logic;

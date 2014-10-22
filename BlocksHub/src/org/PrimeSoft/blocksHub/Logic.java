@@ -39,23 +39,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.PrimeSoft.blocksHub;
 
+import org.PrimeSoft.blocksHub.api.IBlocksHubApi;
+import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;
-import org.PrimeSoft.blocksHub.accessControl.AccessControllers;
-import org.PrimeSoft.blocksHub.accessControl.GriefPreventionAc;
-import org.PrimeSoft.blocksHub.accessControl.IAccessController;
-import org.PrimeSoft.blocksHub.accessControl.ResidenceAc;
-import org.PrimeSoft.blocksHub.accessControl.WorldGuardAc;
-import org.PrimeSoft.blocksHub.blocklogger.*;
+import org.PrimeSoft.blocksHub.api.IAccessController;
 import org.PrimeSoft.blocksHub.configuration.ConfigProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
@@ -63,14 +58,10 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class Logic implements IBlocksHubApi {
 
+    private final Object m_mtaMutex = new Object();
     private final List<IBlockLogger> m_loggers = new ArrayList<IBlockLogger>();
     private final List<IAccessController> m_ac = new ArrayList<IAccessController>();
-    private final JavaPlugin m_parent;
     private boolean m_isInitialized;
-
-    public Logic(JavaPlugin parent) {
-        m_parent = parent;
-    }
 
     @Override
     public double getVersion() {
@@ -88,6 +79,102 @@ public class Logic implements IBlocksHubApi {
     }
 
     /**
+     * Register blocks logger class
+     *
+     * @param blocksLogger
+     * @return
+     */
+    @Override
+    public boolean registerBlocksLogger(IBlockLogger blocksLogger) {
+        synchronized (m_mtaMutex) {
+            if (blocksLogger == null || m_loggers.contains(blocksLogger)) {
+                return false;
+            }
+
+            m_loggers.add(blocksLogger);
+            return true;
+        }
+    }
+
+    /**
+     * Register blocks access controller
+     *
+     * @param accessController
+     * @return
+     */
+    @Override
+    public boolean registerAccessController(IAccessController accessController) {
+        synchronized (m_mtaMutex) {
+            if (accessController == null || m_ac.contains(accessController)) {
+                return false;
+            }
+
+            m_ac.add(accessController);
+            return true;
+        }
+    }
+
+    /**
+     * Remove blocks logger class
+     *
+     * @param blocksLogger
+     * @return
+     */
+    @Override
+    public boolean removeBlocksLogger(IBlockLogger blocksLogger) {
+        synchronized (m_mtaMutex) {
+            if (blocksLogger == null || !m_loggers.contains(blocksLogger)) {
+                return false;
+            }
+
+            m_loggers.remove(blocksLogger);
+            return true;
+        }
+    }
+
+    /**
+     * Remove blocks access controller
+     *
+     * @param accessController
+     * @return
+     */
+    @Override
+    public boolean removeAccessController(IAccessController accessController) {
+        synchronized (m_mtaMutex) {
+            if (accessController == null || !m_ac.contains(accessController)) {
+                return false;
+            }
+
+            m_ac.remove(accessController);
+            return true;
+        }
+    }
+
+    /**
+     * List all registered loggers
+     *
+     * @return
+     */
+    @Override
+    public IBlockLogger[] getRegisteredLoggers() {
+        synchronized (m_mtaMutex) {
+            return m_loggers.toArray(new IBlockLogger[0]);
+        }
+    }
+
+    /**
+     * List all registered access controllers
+     *
+     * @return
+     */
+    @Override
+    public IAccessController[] getRegisteredAccessControllers() {
+        synchronized (m_mtaMutex) {
+            return m_ac.toArray(new IAccessController[0]);
+        }
+    }
+
+    /**
      * Initialize all elements of the plugin based on the configuration
      *
      * @return
@@ -97,83 +184,31 @@ public class Logic implements IBlocksHubApi {
         m_ac.clear();
         m_loggers.clear();
 
-        BlocksHub.say(player, "Initializing access controllers");
-        for (AccessControllers acType : ConfigProvider.getAccessControlers()) {
-            String acName = acType.getName();
-            IAccessController ac = getAccessController(acType);
-            if (ac == null) {
-                BlocksHub.say(player, " * " + acName + "...error");
-            } else if (ac.isEnabled()) {
-                m_ac.add(ac);
-                BlocksHub.say(player, " * " + acName + "...initialized");
-            } else {
-                BlocksHub.say(player, " * " + acName + "...not found");
+        synchronized (m_mtaMutex) {
+            BlocksHub.say(player, "Initializing access controllers");
+            for (IAccessController ac : m_ac) {
+                String acName = ac.getName();
+                ac.reloadConfiguration();
+                if (ac.isEnabled()) {
+                    BlocksHub.say(player, " * " + acName + "...enabled");
+                } else {
+                    BlocksHub.say(player, " * " + acName + "...disabled");
+                }
+            }
+
+            BlocksHub.say(player, "Initializing block loggers");
+            for (IBlockLogger bl : m_loggers) {
+                String blName = bl.getName();
+                bl.reloadConfiguration();
+                if (bl.isEnabled()) {
+                    BlocksHub.say(player, " * " + blName + "...enabled");
+                } else {
+                    BlocksHub.say(player, " * " + blName + "...disabled");
+                }
             }
         }
-
-        BlocksHub.say(player, "Initializing block loggers");
-        for (Loggers blType : ConfigProvider.getLoggers()) {
-            String blName = blType.getName();
-            IBlockLogger bc = getLogger(blType);
-            if (bc == null) {
-                BlocksHub.say(player, " * " + blName + "...error");
-            } else if (bc.isEnabled()) {
-                m_loggers.add(bc);
-                BlocksHub.say(player, " * " + blName + "...initialized");
-            } else {
-                BlocksHub.say(player, " * " + blName + "...not found");
-            }
-        }
-
         m_isInitialized = true;
         return true;
-    }
-
-    /**
-     * Create the block logger
-     *
-     * @param logger
-     * @return
-     */
-    private IBlockLogger getLogger(Loggers logger) {
-        try {
-            switch (logger) {
-                case LOG_BLOCK:
-                    return new LogBlockLogger(m_parent);
-                case CORE_PROTECT:
-                    return new CoreProtectLogger(m_parent);
-                case PRISM:
-                    return new PrismLogger(m_parent);
-                case HAWK_EYE:
-                    return new HawkEyeLogger(m_parent);
-                default:
-                    return null;
-            }
-        } catch (NoClassDefFoundError ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Create the access controller
-     *
-     * @param name
-     * @return
-     */
-    private IAccessController getAccessController(AccessControllers name) {
-        if (name != null) {
-            switch (name) {
-                case WORLD_GUARD:
-                    return new WorldGuardAc(m_parent);
-                case RESIDENCE:
-                    return new ResidenceAc(m_parent);
-                case GRIEF_PREVENTION:
-                    return new GriefPreventionAc(m_parent);
-                default:
-                    return null;
-            }
-        }
-        return null;
     }
 
     void doShowStatus(Player player) {
@@ -181,14 +216,14 @@ public class Logic implements IBlocksHubApi {
             BlocksHub.say(player, ChatColor.RED + "Plugin not initialized.");
             return;
         }
-        BlocksHub.say(player, ChatColor.YELLOW + "Enabled block loggers: ");
+        BlocksHub.say(player, ChatColor.YELLOW + "Registered block loggers: ");
         for (IBlockLogger bl : m_loggers) {
-            BlocksHub.say(player, ChatColor.YELLOW + " * " + bl.getName());
+            BlocksHub.say(player, ChatColor.YELLOW + " * " + bl.getName() + "..." + (bl.isEnabled() ? "enabled" : "disabled"));
         }
 
-        BlocksHub.say(player, ChatColor.YELLOW + "Enabled access controllers: ");
+        BlocksHub.say(player, ChatColor.YELLOW + "Registered access controllers: ");
         for (IAccessController ac : m_ac) {
-            BlocksHub.say(player, ChatColor.YELLOW + " * " + ac.getName());
+            BlocksHub.say(player, ChatColor.YELLOW + " * " + ac.getName() + "..." + (ac.isEnabled() ? "enabled" : "disabled"));
         }
     }
 

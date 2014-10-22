@@ -42,6 +42,7 @@
 
 package org.PrimeSoft.blocksHub.blocklogger;
 
+import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.PrimeSoft.blocksHub.BlocksHub;

@@ -44,7 +44,7 @@ package org.PrimeSoft.blocksHub.accessControl;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
-import org.PrimeSoft.blocksHub.SilentPlayer;
+import org.PrimeSoft.blocksHub.api.SilentPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;

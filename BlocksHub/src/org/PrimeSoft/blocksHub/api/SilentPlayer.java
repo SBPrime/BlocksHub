@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.PrimeSoft.blocksHub.api;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -91,7 +91,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 /**
- *
+ * Player wrapper that disables player 
+ * directed messages
  * @author SBPrime
  */
 public class SilentPlayer /*extends CraftPlayer*/ implements Player {
