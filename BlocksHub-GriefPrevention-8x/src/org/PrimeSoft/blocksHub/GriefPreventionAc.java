@@ -39,16 +39,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.PrimeSoft.blocksHub;
 
+import me.ryanhamshire.GriefPrevention.BlockEventHandler;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import org.PrimeSoft.blocksHub.GriefPrevention.GriefPrevention8x;
-import org.PrimeSoft.blocksHub.GriefPrevention.GriefPreventionBase;
 import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
+import org.PrimeSoft.blocksHub.api.SilentPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,7 +61,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
 
-    private GriefPreventionBase m_interface;
+    private BlockEventHandler m_listener;
 
     public GriefPreventionAc(JavaPlugin plugin) {
         super(plugin, "GriefPrevention");
@@ -67,18 +69,12 @@ public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
 
     @Override
     protected boolean postInit(PluginDescriptionFile pd) {
-        try {
-            m_interface = new GriefPrevention8x();
-            if (m_interface.Initialize(m_hook))
-            {
-                return true;
-            }
+        if (m_hook == null) {
+            return false;
         }
-        catch (Exception ex)
-        {
-            //v8.x not supported
-        }
-        return false;
+
+        m_listener = new BlockEventHandler(m_hook.dataStore);
+        return m_listener != null;
     }
 
     @Override
@@ -87,13 +83,32 @@ public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
             return true;
         }
         Player bPlayer = m_server.getPlayer(player);
-        
-        if (m_interface == null || bPlayer == null)
-        {
+        if (bPlayer == null) {
             return true;
         }
-    
-        return m_interface.canPlace(bPlayer, world, location);
+
+        bPlayer = new SilentPlayer(bPlayer);
+        Block block = location.getBlock();
+
+        if (!block.isEmpty()) {
+            BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
+            m_listener.onBlockBreak(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+        } else {
+            BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
+                    bPlayer.getItemInHand(), bPlayer, true);
+            m_listener.onBlockPlace(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+        }
+
+        //We do not support white/black lists
+        return true;
     }
 
     @Override
