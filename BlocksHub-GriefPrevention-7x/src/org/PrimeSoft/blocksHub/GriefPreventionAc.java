@@ -42,15 +42,17 @@
 
 package org.PrimeSoft.blocksHub;
 
+import me.ryanhamshire.GriefPrevention.BlockEventHandler;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import org.PrimeSoft.blocksHub.GriefPrevention.GriefPrevention7x;
-import org.PrimeSoft.blocksHub.GriefPrevention.GriefPreventionBase;
 import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
+import org.PrimeSoft.blocksHub.api.SilentPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -58,43 +60,45 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author SBPrime
  */
 public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
-
-    private GriefPreventionBase m_interface;
+    private final BlockEventHandler m_listener = new BlockEventHandler();
    
     public GriefPreventionAc(JavaPlugin plugin) {
         super(plugin, "GriefPrevention");
     }
 
     @Override
-    protected boolean postInit(PluginDescriptionFile pd) {
-        try {
-            m_interface = new GriefPrevention7x();
-            if (m_interface.Initialize(m_hook))
-            {
-                return true;
+    public boolean canPlace(String player, World world, Location location) {               
+        if (player == null) {
+            return true;
+        }
+        
+        Player bPlayer = m_server.getPlayer(player);
+        if (bPlayer == null) {
+            return true;
+        }
+        
+        bPlayer = new SilentPlayer(bPlayer);
+        Block block = location.getBlock();
+
+        if (!block.isEmpty()) {
+            BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
+            m_listener.onBlockBreak(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+        } else {
+            BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
+                    bPlayer.getItemInHand(), bPlayer, true);
+            m_listener.onBlockPlace(event);
+
+            if (event.isCancelled()) {
+                return false;
             }
         }
-        catch (Exception ex)
-        {
-            //v7.x not supported try v8.x
-        }
-        
-        return false;
-    }
 
-    @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null || world == null || location == null) {
-            return true;
-        }
-        Player bPlayer = m_server.getPlayer(player);
-        
-        if (m_interface == null || bPlayer == null)
-        {
-            return true;
-        }
-    
-        return m_interface.canPlace(bPlayer, world, location);
+        //We do not support white/black lists
+        return true;
     }
 
     @Override
