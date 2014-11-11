@@ -1,0 +1,10 @@
+name: BlocksHub-HawkEye
+main: org.PrimeSoft.blocksHub.BlocksHubPlugin
+version: 1.0
+website: https://github.com/SBPrime/BlocksHub/
+description: HawkEye blocks hub implementation.
+authors: [SBPrime]
+depend: [BlocksHub, HawkEye]
+softdepend: []
+commands:
+permissions:
