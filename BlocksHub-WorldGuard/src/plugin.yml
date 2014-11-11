@@ -1,0 +1,10 @@
+name: BlocksHub-WorldGuard
+main: org.PrimeSoft.blocksHub.BlocksHubPlugin
+version: 1.0
+website: https://github.com/SBPrime/BlocksHub/
+description: WorldGuard blocks hub implementation.
+authors: [SBPrime]
+depend: [BlocksHub, WorldGuard]
+softdepend: []
+commands:
+permissions:
