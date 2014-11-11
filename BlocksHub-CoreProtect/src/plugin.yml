@@ -1,0 +1,10 @@
+name: BlocksHub-CoreProtect
+main: org.PrimeSoft.blocksHub.BlocksHubPlugin
+version: 1.0
+website: https://github.com/SBPrime/BlocksHub/
+description: CoreProtect blocks hub implementation.
+authors: [SBPrime]
+depend: [BlocksHub, CoreProtect]
+softdepend: []
+commands:
+permissions:
