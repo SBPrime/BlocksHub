@@ -1,5 +1,5 @@
 name: BlocksHub-Prism
-main: org.PrimeSoft.blocksHub.BlocksHubPlugin
+main: org.PrimeSoft.blocksHub.prism.BlocksHubPlugin
 version: 1.0
 website: https://github.com/SBPrime/BlocksHub/
 description: Prism blocks hub implementation.

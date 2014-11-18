@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.PrimeSoft.blocksHub.prism;
 
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import java.lang.reflect.InvocationTargetException;
@@ -51,6 +51,7 @@ import me.botsko.prism.Prism;
 import me.botsko.prism.actionlibs.ActionFactory;
 import me.botsko.prism.actions.Handler;
 import me.botsko.prism.actionlibs.RecordingQueue;
+import org.PrimeSoft.blocksHub.BlocksHub;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;

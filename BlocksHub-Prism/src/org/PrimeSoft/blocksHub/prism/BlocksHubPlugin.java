@@ -40,11 +40,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.PrimeSoft.blocksHub.prism;
 
 import org.PrimeSoft.blocksHub.api.IBlocksHubApi;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.PrimeSoft.blocksHub.BlocksHub;
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -87,7 +88,7 @@ public class BlocksHubPlugin extends JavaPlugin {
             }
 
             return (BlocksHub) cPlugin;
-        } catch (NoClassDefFoundError ex) {
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -103,7 +104,7 @@ public class BlocksHubPlugin extends JavaPlugin {
     public IBlockLogger CreateLogger() {
         try {
             return new PrismLogger(this);
-        } catch (NoClassDefFoundError ex) {            
+        } catch (Exception ex) {            
             return null;
         }
     }

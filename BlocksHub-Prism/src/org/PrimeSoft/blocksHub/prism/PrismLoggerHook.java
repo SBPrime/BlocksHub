@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.PrimeSoft.blocksHub.prism;
 
 import java.lang.reflect.Method;
 
