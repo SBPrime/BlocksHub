@@ -1,5 +1,5 @@
 name: BlocksHub-LogBlock
-main: org.PrimeSoft.blocksHub.BlocksHubPlugin
+main: org.PrimeSoft.blocksHub.logBlock.BlocksHubPlugin
 version: 1.0
 website: https://github.com/SBPrime/BlocksHub/
 description: HawkEye blocks hub implementation.

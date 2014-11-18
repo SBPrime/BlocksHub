@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.PrimeSoft.blocksHub.logBlock;
 
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import de.diddiz.LogBlock.Consumer;
