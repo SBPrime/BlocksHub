@@ -111,6 +111,9 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
         } catch (NoClassDefFoundError ex) {
             hook = null;
             m_isEnabled = false;
+        } catch (NoSuchMethodError ex) {
+            hook = null;
+            m_isEnabled = false;
         }
 
         m_hook = hook;
