@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.blocklogger;
+package org.PrimeSoft.blocksHub;
 
 import java.lang.reflect.Method;
 
