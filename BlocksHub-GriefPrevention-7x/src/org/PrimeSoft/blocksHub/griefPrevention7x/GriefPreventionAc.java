@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.PrimeSoft.blocksHub.griefPrevention7x;
 
 import me.ryanhamshire.GriefPrevention.BlockEventHandler;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
