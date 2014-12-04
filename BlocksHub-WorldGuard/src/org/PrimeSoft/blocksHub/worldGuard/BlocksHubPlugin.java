@@ -42,7 +42,7 @@
 
 package org.PrimeSoft.blocksHub.worldGuard;
 
-import org.PrimeSoft.blocksHub.api.IBlocksHubApi;
+import org.PrimeSoft.blocksHub.IBlocksHubApi;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.PrimeSoft.blocksHub.BlocksHub;
