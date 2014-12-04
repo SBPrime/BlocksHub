@@ -40,8 +40,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.api;
+package org.PrimeSoft.blocksHub;
 
+import org.PrimeSoft.blocksHub.api.IAccessController;
+import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import org.bukkit.Location;
 import org.bukkit.World;
 

@@ -42,7 +42,6 @@
 
 package org.PrimeSoft.blocksHub;
 
-import org.PrimeSoft.blocksHub.api.IBlocksHubApi;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

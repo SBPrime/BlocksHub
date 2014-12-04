@@ -41,7 +41,6 @@
  */
 package org.PrimeSoft.blocksHub;
 
-import org.PrimeSoft.blocksHub.api.IBlocksHubApi;
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;

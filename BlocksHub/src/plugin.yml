@@ -1,6 +1,6 @@
 name: BlocksHub
 main: org.PrimeSoft.blocksHub.BlocksHub
-version: 1.0
+version: 1.1
 website: https://github.com/SBPrime/BlocksHub/
 description: Logger & Block access API.
 authors: [SBPrime]
