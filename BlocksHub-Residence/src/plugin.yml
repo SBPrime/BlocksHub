@@ -1,6 +1,6 @@
 name: BlocksHub-Residence
 main: org.PrimeSoft.blocksHub.residence.BlocksHubPlugin
-version: 1.1
+version: 1.2
 website: https://github.com/SBPrime/BlocksHub/
 description: Residence blocks hub implementation.
 authors: [SBPrime]
