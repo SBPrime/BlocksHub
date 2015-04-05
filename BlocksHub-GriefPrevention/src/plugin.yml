@@ -1,5 +1,5 @@
-name: BlocksHub-GriefPrevention-8x
-main: org.PrimeSoft.blocksHub.griefPrevention8x.BlocksHubPlugin
+name: BlocksHub-GriefPrevention
+main: org.PrimeSoft.blocksHub.griefPrevention.BlocksHubPlugin
 version: 1.2
 website: https://github.com/SBPrime/BlocksHub/
 description: GriefPrevention blocks hub implementation.
