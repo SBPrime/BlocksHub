@@ -1460,4 +1460,19 @@ public class SilentPlayer /*extends CraftPlayer*/ implements Player {
     public void _INVALID_setMaxHealth(int i) {
         m_parent.setMaxHealth(i);
     }
+
+    @Override
+    public List<Block> getLineOfSight(Set<Material> set, int i) {
+        return m_parent.getLineOfSight(set, i);
+    }
+
+    @Override
+    public Block getTargetBlock(Set<Material> set, int i) {
+        return m_parent.getTargetBlock(set, i);
+    }
+
+    @Override
+    public List<Block> getLastTwoTargetBlocks(Set<Material> set, int i) {
+        return m_parent.getLastTwoTargetBlocks(set, i);
+    }
 }
