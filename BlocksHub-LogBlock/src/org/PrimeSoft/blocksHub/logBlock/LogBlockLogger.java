@@ -45,8 +45,16 @@ package org.PrimeSoft.blocksHub.logBlock;
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
+import de.diddiz.LogBlock.listeners.BlockBreakLogging;
+import de.diddiz.LogBlock.listeners.BlockPlaceLogging;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -69,6 +77,21 @@ public class LogBlockLogger implements IBlockLogger {
      * Is the logger enabled
      */
     private final boolean m_isEnabled;
+    
+    /**
+     * The bukkit server
+     */
+    private Server m_server;
+    
+    /**
+     * The block place logger
+     */
+    private BlockPlaceLogging m_blockPlaceLogger;
+    
+    /**
+     * The block break logger
+     */
+    private BlockBreakLogging m_blockBreakLogger;
 
     /**
      * Get instance of the log block plugin
@@ -88,7 +111,7 @@ public class LogBlockLogger implements IBlockLogger {
         } catch (NoClassDefFoundError ex) {
             return null;
         }
-    }
+    }    
 
     public LogBlockLogger(JavaPlugin plugin) {
         PluginDescriptionFile pd = null;
@@ -98,6 +121,10 @@ public class LogBlockLogger implements IBlockLogger {
         } else {
             m_isEnabled = true;
             pd = m_logBlock.getDescription();
+            
+            m_blockPlaceLogger = new BlockPlaceLogging(m_logBlock);
+            m_blockBreakLogger = new BlockBreakLogging(m_logBlock);
+            m_server = plugin.getServer();
         }
         
         m_name = pd != null ? pd.getFullName() : "Disabled - LogBlock";
@@ -110,12 +137,27 @@ public class LogBlockLogger implements IBlockLogger {
         if (!m_isEnabled) {
             return;
         }
+        
+        Player bPlayer = m_server.getPlayer(player);
+        if (bPlayer == null) {
+            return;
+        }
 
 
         Location l = new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        Consumer consumer = m_logBlock.getConsumer();
-        consumer.queueBlockBreak(player, l, oldBlockType, oldBlockData);
-        consumer.queueBlockPlace(player, l, newBlockType, newBlockData);
+        Block oldBlock = new FakeBlock(l.getBlock(), oldBlockData, Material.getMaterial(oldBlockType));
+        Block newBlock = new FakeBlock(l.getBlock(), newBlockData, Material.getMaterial(newBlockType));
+        
+        if (newBlockType == 0) {
+            m_blockBreakLogger.onBlockBreak(new BlockBreakEvent(oldBlock, bPlayer));
+        }else {
+            m_blockPlaceLogger.onBlockPlace(
+                    new BlockPlaceEvent(newBlock, oldBlock.getState(), 
+                            null, null, bPlayer, m_isEnabled));
+        }
+        
+        //consumer.queueBlockBreak(player, l, oldBlockType, oldBlockData);
+        //consumer.queueBlockPlace(player, l, newBlockType, newBlockData);
     }
 
     @Override
