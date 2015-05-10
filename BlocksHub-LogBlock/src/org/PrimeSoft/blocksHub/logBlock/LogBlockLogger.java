@@ -43,7 +43,6 @@
 package org.PrimeSoft.blocksHub.logBlock;
 
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
-import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 import de.diddiz.LogBlock.listeners.BlockBreakLogging;
 import de.diddiz.LogBlock.listeners.BlockPlaceLogging;
@@ -152,7 +151,7 @@ public class LogBlockLogger implements IBlockLogger {
             m_blockBreakLogger.onBlockBreak(new BlockBreakEvent(oldBlock, bPlayer));
         }else {
             m_blockPlaceLogger.onBlockPlace(
-                    new BlockPlaceEvent(newBlock, oldBlock.getState(), 
+                    new BlockPlaceEvent(newBlock, oldBlock.getState(),
                             null, null, bPlayer, m_isEnabled));
         }
         

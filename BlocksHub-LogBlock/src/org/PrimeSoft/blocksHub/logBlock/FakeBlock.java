@@ -5,7 +5,6 @@
  */
 package org.PrimeSoft.blocksHub.logBlock;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.bukkit.Chunk;
@@ -155,7 +154,7 @@ public class FakeBlock implements Block {
 
     @Override
     public BlockState getState() {
-        return m_parent.getState();
+        return new FakeBlockState(this, m_parent.getState());
     }
 
     @Override
