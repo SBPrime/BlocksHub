@@ -55,7 +55,7 @@ import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author prime
+ * @author SBPrime
  */
 public class FakeBlockState implements  BlockState {
     private final BlockState m_parent;

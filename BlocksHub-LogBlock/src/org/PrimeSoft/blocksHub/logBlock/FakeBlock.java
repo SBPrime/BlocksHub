@@ -22,7 +22,7 @@ import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author prime
+ * @author SBPrime
  */
 public class FakeBlock implements Block {
     private final byte m_data;
