@@ -1,0 +1,10 @@
+name: BlocksHub-Towny
+main: org.PrimeSoft.blocksHub.towny.TownyPlugin
+version: 1.2
+website: https://github.com/SBPrime/BlocksHub/
+description: Towny blocks hub implementation.
+authors: [SBPrime]
+depend: [BlocksHub, Towny]
+softdepend: []
+commands:
+permissions:
