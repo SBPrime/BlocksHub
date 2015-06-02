@@ -1,6 +1,6 @@
 name: BlocksHub-CoreProtect
 main: org.PrimeSoft.blocksHub.coreProtect.BlocksHubPlugin
-version: 1.2
+version: 1.3
 website: https://github.com/SBPrime/BlocksHub/
 description: CoreProtect blocks hub implementation.
 authors: [SBPrime]

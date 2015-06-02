@@ -1,4 +1,6 @@
 *.class
+.project
+.classpath
 
 # Package Files #
 *.jar
@@ -24,3 +26,4 @@
 /BlocksHub-GriefPrevention-8x/build/
 /BlocksHub-GriefPrevention/build/
 /BlocksHub-GriefPrevention/nbproject/private/
+/bin/*
