@@ -45,6 +45,7 @@ import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -68,6 +69,10 @@ public class CoreProtectLogger implements IBlockLogger {
      * Is the logger enabled
      */
     private final boolean m_isEnabled;
+    /**
+     * CoreProtect API version
+     */
+    private static int apiVersion;
 
     /**
      * Get instance of the core protect plugin
@@ -96,8 +101,14 @@ public class CoreProtectLogger implements IBlockLogger {
         if (m_coreProtect == null) {
             m_isEnabled = false;
         } else {
-            m_isEnabled = true;
-            pd = cp.getDescription();
+            apiVersion = m_coreProtect.APIVersion();
+            if (apiVersion >= 3){
+                m_isEnabled = true;
+                pd = cp.getDescription();
+            }
+            else {
+                m_isEnabled = false;
+            }
         }
 
         m_name = pd != null ? pd.getFullName() : "Disabled - CoreProtect";
@@ -112,8 +123,10 @@ public class CoreProtectLogger implements IBlockLogger {
         }
 
         Location l = new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        m_coreProtect.logRemoval(player, l, oldBlockType, oldBlockData);
-        m_coreProtect.logPlacement(player, l, newBlockType, newBlockData);
+        Material m_old = Material.getMaterial(oldBlockType);
+        Material m_new = Material.getMaterial(newBlockType);
+        m_coreProtect.logRemoval(player, l, m_old, oldBlockData);
+        m_coreProtect.logPlacement(player, l, m_new, newBlockData);
     }
 
     @Override
