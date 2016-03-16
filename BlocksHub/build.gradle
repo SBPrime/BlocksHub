@@ -1,0 +1,37 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'rebel'
+
+//noinspection GroovyUnusedAssignment
+sourceCompatibility = 1.6
+version = '0.0.0'
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath group: 'org.zeroturnaround', name: 'gradle-jrebel-plugin', version: '1.1.2'
+  }
+}
+jar.dependsOn(generateRebel)
+
+repositories {
+  mavenCentral()
+  maven { url 'https://hub.spigotmc.org/nexus/content/groups/public' }
+//  maven { url 'https://repo.techcable.net/content/groups/public' }
+}
+
+dependencies {
+  compile group: 'org.bukkit', name: 'bukkit', version: '1.8-R0.1-SNAPSHOT'
+}
+
+idea {
+  module {
+    downloadJavadoc = true
+  }
+}
+
