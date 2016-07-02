@@ -40,23 +40,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.api;
+package org.primesoft.blockshub;
 
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 /**
- *
  * @author SBPrime
  */
-public interface IAccessController extends IBaseEntity {
+public class PermissionManager {
     /**
-     * Check if a player can place a block
-     *
-     * @param player
-     * @param world
-     * @param location
-     * @return
+    * List of all permissions
+    */
+    public enum Perms {
+        ReloadConfig, 
+        ShowStatus
+    }
+    
+    /**
+     * Plugin permissions top node
      */
-    boolean canPlace(String player, World world, Location location);
+    private static String s_prefix = "BlocksHub.";
+
+        /**
+     * Check if player has a specific permission
+     * @param player player
+     * @param perms permission to check
+     * @return True if permission present
+     */
+    public static boolean isAllowed(Player player, Perms perms) {
+        if (player == null) {
+            return true;
+        }
+
+        String s = getPermString(perms);
+        if (s == null) {
+            return false;
+        }
+
+        return player.hasPermission(s);
+    }
+    
+    /**
+     * Convert permission to string
+     * @param perms Permission
+     * @return Permission node
+     */
+    private static String getPermString(Perms perms) {
+        switch (perms) {
+            case ReloadConfig:
+                return s_prefix + "admin.reload";
+            case ShowStatus:
+                return s_prefix + "admin.state";
+        }
+
+        return null;
+    }
 }

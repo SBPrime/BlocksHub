@@ -40,13 +40,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.primesoft.blockshub;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.PrimeSoft.blocksHub.configuration.ConfigProvider;
-import org.PrimeSoft.blocksHub.mcstats.MetricsLite;
+import org.primesoft.blockshub.configuration.ConfigProvider;
+import org.primesoft.blockshub.mcstats.MetricsLite;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -58,6 +58,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * @author SBPrime
  */
+@Deprecated
 public class BlocksHub extends JavaPlugin {
 
     private static final Logger s_log = Logger.getLogger("Minecraft.BlocksHub");
@@ -67,10 +68,6 @@ public class BlocksHub extends JavaPlugin {
     private static BlocksHub s_instance;
     private MetricsLite m_metrics;
     private Logic m_logic;
-
-    public static String getPrefix() {
-        return s_prefix;
-    }
 
     public BlocksHub getInstance() {
         return s_instance;

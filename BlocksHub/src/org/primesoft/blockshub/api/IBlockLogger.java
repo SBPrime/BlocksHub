@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2014, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,30 +40,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.api;
+package org.primesoft.blockshub.api;
+
+import org.bukkit.Location;
+import org.bukkit.World;
 
 /**
  *
  * @author SBPrime
  */
-interface IBaseEntity {
-    /**
-     * Is the entity enabled
-     * @return 
-     */
-    boolean isEnabled();
+public interface IBlockLogger extends IBaseEntity {
+    public void logBlock(Location location, String player, World world, 
+                         int oldBlockType, byte oldBlockData,
+                         int newBlockType, byte newBlockData);
     
-    
-    /**
-     * This method is called when BlocskHub 
-     * configuration reloads
-     * @return 
-     */
-    boolean reloadConfiguration();
-  
-    /**
-     * Get logger name
-     * @return 
-     */
-    String getName();
 }

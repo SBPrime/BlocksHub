@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.api;
+package org.primesoft.blockshub.api;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;

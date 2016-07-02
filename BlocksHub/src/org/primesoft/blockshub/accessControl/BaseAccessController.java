@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2014, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,17 +40,92 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
+package org.primesoft.blockshub.accessControl;
+
+import org.primesoft.blockshub.api.IAccessController;
+import org.bukkit.Server;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author SBPrime
+ * @param <T>
  */
-public final class Commands {
+public abstract class BaseAccessController<T extends Plugin> implements IAccessController {
 
-    public final static String COMMAND_MAIN = "BlocksHub";
-    public final static String COMMAND_MAIN2 = "BH";
-    public final static String COMMAND_RELOAD = "Reload";
-    public final static String COMMAND_STATUS = "Status";
-    
+    /**
+     * AC name
+     */
+    private final String m_name;
+
+    /**
+     * Craftbukkit server
+     */
+    protected Server m_server;
+
+    /**
+     * Is world guard integration enabled
+     */
+    protected boolean m_isEnabled;
+
+    /**
+     * The hook class
+     */
+    protected final T m_hook;
+
+    @Override
+    public boolean isEnabled() {
+        return m_isEnabled;
+    }
+
+    /**
+     * Get access controller name
+     *
+     * @return
+     */
+    @Override
+    public String getName() {
+        return m_name;
+    }
+
+    protected void disable() {
+
+    }
+
+    protected BaseAccessController(JavaPlugin plugin, final String pluginName) {
+        m_isEnabled = false;
+        PluginDescriptionFile pd = null;
+        T hook = null;
+        try {
+            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin(pluginName);
+
+            if ((cPlugin != null) && instanceOfT(cPlugin.getClass())) {
+                m_isEnabled = true;
+                hook = (T) cPlugin;
+                m_server = plugin.getServer();
+
+                pd = hook.getDescription();
+            }
+        } catch (NoClassDefFoundError ex) {
+            hook = null;
+            m_isEnabled = false;
+        } catch (NoSuchMethodError ex) {
+            hook = null;
+            m_isEnabled = false;
+        }
+
+        m_hook = hook;
+        if (m_isEnabled) {
+            m_isEnabled = postInit(pd);
+        }        
+        m_name = pd != null && m_isEnabled ? pd.getFullName() : "Disabled - " + pluginName;
+    }
+
+    protected boolean postInit(PluginDescriptionFile pd) {
+        return true;
+    }
+
+    protected abstract boolean instanceOfT(Class<? extends Plugin> aClass);
 }

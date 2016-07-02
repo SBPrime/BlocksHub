@@ -39,13 +39,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.PrimeSoft.blocksHub;
+package org.primesoft.blockshub;
 
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
+import org.primesoft.blockshub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;
-import org.PrimeSoft.blocksHub.api.IAccessController;
-import org.PrimeSoft.blocksHub.configuration.ConfigProvider;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.configuration.ConfigProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;

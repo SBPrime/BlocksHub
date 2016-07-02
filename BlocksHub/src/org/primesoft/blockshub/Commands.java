@@ -40,59 +40,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub;
-
-import org.bukkit.entity.Player;
+package org.primesoft.blockshub;
 
 /**
+ *
  * @author SBPrime
  */
-public class PermissionManager {
-    /**
-    * List of all permissions
-    */
-    public enum Perms {
-        ReloadConfig, 
-        ShowStatus
-    }
+public final class Commands {
+
+    public final static String COMMAND_MAIN = "BlocksHub";
+    public final static String COMMAND_MAIN2 = "BH";
+    public final static String COMMAND_RELOAD = "Reload";
+    public final static String COMMAND_STATUS = "Status";
     
-    /**
-     * Plugin permissions top node
-     */
-    private static String s_prefix = "BlocksHub.";
-
-        /**
-     * Check if player has a specific permission
-     * @param player player
-     * @param perms permission to check
-     * @return True if permission present
-     */
-    public static boolean isAllowed(Player player, Perms perms) {
-        if (player == null) {
-            return true;
-        }
-
-        String s = getPermString(perms);
-        if (s == null) {
-            return false;
-        }
-
-        return player.hasPermission(s);
-    }
-    
-    /**
-     * Convert permission to string
-     * @param perms Permission
-     * @return Permission node
-     */
-    private static String getPermString(Perms perms) {
-        switch (perms) {
-            case ReloadConfig:
-                return s_prefix + "admin.reload";
-            case ShowStatus:
-                return s_prefix + "admin.state";
-        }
-
-        return null;
-    }
 }

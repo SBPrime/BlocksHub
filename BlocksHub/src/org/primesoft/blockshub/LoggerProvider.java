@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,97 +39,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.primesoft.blockshub;
 
-package org.PrimeSoft.blocksHub;
+import org.primesoft.blockshub.platform.api.ILogger;
 
-import org.PrimeSoft.blocksHub.api.IAccessController;
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
-import org.bukkit.Location;
-import org.bukkit.World;
 
 /**
+ * The global logger
  *
  * @author SBPrime
  */
-public interface IBlocksHubApi {
+public class LoggerProvider {
+    public final static String PREFIX = "[BlocksHub]";
+    
+    
+    private static ILogger s_logger = null;
+    
     /**
-     * Get the current version of BlocksHub API
+     * Log the message using current platform
      *
-     * @return
+     * @param msg
      */
-    double getVersion();
-    
-    
-    /**
-     * Is the api initialized
-     * @return 
-     */
-    boolean isInitialized();
-        
-    /**
-     * Register blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean registerBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Register blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean registerAccessController(IAccessController accessController);
-    
-    /**
-     * Remove blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean removeBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Remove blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean removeAccessController(IAccessController accessController);
-    
-    
-    /**
-     * List all registered loggers
-     * @return 
-     */
-    IBlockLogger[] getRegisteredLoggers();
-    
-    /**
-     * List all registered access controllers
-     * @return 
-     */
-    IAccessController[] getRegisteredAccessControllers();
+    public static void log(String msg) {
+        ILogger logger = s_logger;
+        if (logger != null) {
+            logger.log(msg);
+        } else {
+            System.out.println(msg);
+        }
+    }
 
     /**
-     * Log block using all the enabled block loggers
-     * @param location
-     * @param player
-     * @param world
-     * @param oldBlockType
-     * @param oldBlockData
-     * @param newBlockType
-     * @param newBlockData
+     * Send message to the console
+     *
+     * @param msg
      */
-    void logBlock(String player, World world, Location location, 
-                  int oldBlockType, byte oldBlockData,
-                  int newBlockType, byte newBlockData);
+    public static void sayConsole(String msg) {
+        ILogger logger = s_logger;
+        if (logger != null) {
+            logger.sayConsole(msg);
+        } else {
+            System.out.println(msg);
+        }
+    }
     
-    
-    /**
-     * Check if a player can place a block
-     * @param player
-     * @param world
-     * @param location
-     * @return 
-     */
-    boolean canPlace(String player, World world, Location location);
+    public static void setLogger(ILogger logger) {
+        s_logger = logger;
+    }
 }

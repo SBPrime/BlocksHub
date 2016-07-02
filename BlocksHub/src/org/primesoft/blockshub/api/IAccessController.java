@@ -40,98 +40,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.configuration;
+package org.primesoft.blockshub.api;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.regex.Pattern;
-import org.PrimeSoft.blocksHub.BlocksHub;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 /**
- * This class contains configuration
  *
  * @author SBPrime
  */
-public class ConfigProvider {
-
-    private static final int CONFIG_VERSION = 2;
-    private static boolean m_isConfigUpdate = false;
-    private static int m_configVersion;
-    private final static HashSet<String> m_enabledWorlds = new HashSet<String>();
-
-    public static int getConfigVersion() {
-        return m_configVersion;
-    }
-
+public interface IAccessController extends IBaseEntity {
     /**
-     * Is the world being logged
+     * Check if a player can place a block
      *
+     * @param player
      * @param world
+     * @param location
      * @return
      */
-    public static boolean isLogging(String world) {
-        if (world == null) {
-            return false;
-        }                
-        
-        if (m_enabledWorlds.contains(world.toLowerCase())) {
-            return true;
-        }
-        
-        for (String pattern : m_enabledWorlds) {
-            if (Pattern.matches(pattern, world)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    /**
-     * Is the configuration up to date
-     *
-     * @return
-     */
-    public static boolean isConfigUpdated() {
-        return m_isConfigUpdate;
-    }
-
-    /**
-     * Load configuration
-     *
-     * @param plugin parent plugin
-     * @return true if config loaded
-     */
-    public static boolean load(BlocksHub plugin) {
-        if (plugin == null) {
-            return false;
-        }
-
-        plugin.saveDefaultConfig();
-
-        Configuration config = plugin.getConfig();
-        ConfigurationSection mainSection = config.getConfigurationSection("BlocksHub");
-        if (mainSection == null) {
-            return false;
-        }
-        m_configVersion = mainSection.getInt("version", 1);
-        m_isConfigUpdate = m_configVersion == CONFIG_VERSION;
-
-        List<String> worlds = mainSection.getStringList("worlds");
-        if (worlds == null) {
-            worlds = new ArrayList<String>();
-        }
-        m_enabledWorlds.clear();
-        for (String world : worlds) {
-            world = world.toLowerCase();
-            if (!m_enabledWorlds.contains(world)) {
-                m_enabledWorlds.add(world);
-            }
-        }
-           
-        return true;
-    }
+    boolean canPlace(String player, World world, Location location);
 }
