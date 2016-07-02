@@ -43,9 +43,8 @@ package org.primesoft.blockshub.platform.bukkit;
 
 import java.util.UUID;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.primesoft.blockshub.Permissions;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.api.IPlayer;
 
 /**
  *
@@ -65,7 +64,11 @@ public class BukkitPlayer implements IPlayer {
         }
         
         return m_player.hasPermission(node.getNode());
-    }        
+    }
+    
+    public Player getPlayer() {
+        return m_player;
+    }
 
     @Override
     public void say(String msg) {
@@ -81,6 +84,13 @@ public class BukkitPlayer implements IPlayer {
     public UUID getUUID() {
         return m_player.getUniqueId();
     }
+
+    @Override
+    public boolean isConsole() {
+        return false;
+    }
+    
+    
 
     @Override
     public boolean equals(Object obj) {

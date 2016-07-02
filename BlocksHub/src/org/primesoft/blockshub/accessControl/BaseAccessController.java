@@ -43,27 +43,19 @@
 package org.primesoft.blockshub.accessControl;
 
 import org.primesoft.blockshub.api.IAccessController;
-import org.bukkit.Server;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
  *
  * @author SBPrime
  * @param <T>
  */
-public abstract class BaseAccessController<T extends Plugin> implements IAccessController {
+public abstract class BaseAccessController<T> implements IAccessController {
 
     /**
      * AC name
      */
     private final String m_name;
-
-    /**
-     * Craftbukkit server
-     */
-    protected Server m_server;
 
     /**
      * Is world guard integration enabled
@@ -94,19 +86,16 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
 
     }
 
-    protected BaseAccessController(JavaPlugin plugin, final String pluginName) {
+    protected BaseAccessController(IPlatform platform, final String pluginName) {
         m_isEnabled = false;
-        PluginDescriptionFile pd = null;
+
         T hook = null;
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin(pluginName);
+        try {            
+            Object cPlugin = platform.getPlugin(pluginName);
 
             if ((cPlugin != null) && instanceOfT(cPlugin.getClass())) {
                 m_isEnabled = true;
                 hook = (T) cPlugin;
-                m_server = plugin.getServer();
-
-                pd = hook.getDescription();
             }
         } catch (NoClassDefFoundError ex) {
             hook = null;
@@ -118,14 +107,21 @@ public abstract class BaseAccessController<T extends Plugin> implements IAccessC
 
         m_hook = hook;
         if (m_isEnabled) {
-            m_isEnabled = postInit(pd);
-        }        
-        m_name = pd != null && m_isEnabled ? pd.getFullName() : "Disabled - " + pluginName;
+            m_isEnabled = postInit(m_hook);
+        }
+        
+        String name = getName(m_hook);
+        
+        m_name = name != null && m_isEnabled ? name : "Disabled - " + pluginName;
     }
 
-    protected boolean postInit(PluginDescriptionFile pd) {
+    protected String getName(T pluginClass) {
+        return null;
+    }
+    
+    protected boolean postInit(T pluginClass) {
         return true;
     }
 
-    protected abstract boolean instanceOfT(Class<? extends Plugin> aClass);
+    protected abstract boolean instanceOfT(Class<?> aClass);
 }

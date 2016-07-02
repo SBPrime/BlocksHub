@@ -44,7 +44,7 @@ package org.primesoft.blockshub.platform;
 import java.util.UUID;
 import org.primesoft.blockshub.LoggerProvider;
 import org.primesoft.blockshub.Permissions;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.api.IPlayer;
 
 /**
  *
@@ -83,6 +83,11 @@ public class ConsolePlayer implements IPlayer {
 
     @Override
     public boolean isAllowed(Permissions node) {
+        return true;
+    }
+
+    @Override
+    public boolean isConsole() {
         return true;
     }
 }

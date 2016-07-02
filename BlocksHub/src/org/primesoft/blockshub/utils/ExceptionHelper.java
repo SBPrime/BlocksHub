@@ -39,61 +39,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform.bukkit;
+package org.primesoft.blockshub.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.SimpleCommandMap;
-import org.primesoft.blockshub.platform.api.ICommandManager;
-import org.primesoft.blockshub.utils.Reflection;
+import org.primesoft.blockshub.LoggerProvider;
+
 
 /**
  *
  * @author SBPrime
  */
-public class CommandManager implements ICommandManager {
-   
-    /**
-     * The command map
-     */
-    private final SimpleCommandMap m_commandMap;
-    
-   /**
-    * The plugin name
-    */
-    private final String m_pluginName;
-    
-    
-    /**
-     * The command executor
-     */
-    private final CommandExecutor m_executor;
+public class ExceptionHelper {
 
-    
-    
-    CommandManager(Server server, String pluginName, CommandExecutor executor) {
-        m_pluginName = pluginName;
-        m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
-        m_executor = executor;
+    private static void log(String m) {
+        LoggerProvider.log(m);
     }
-    
 
-    
-    
-    @Override
-    public void registerCommand(String name, String[] alias, String description, String usage, String permission) {
-        if (m_commandMap == null) {
+    public static void printException(Throwable ex, String message) {
+        if (ex == null) {
             return;
         }
-    
-        SimpleCommand command = new SimpleCommand(name, description, usage, alias == null ?
-                new ArrayList<String>(0) : Arrays.asList(alias), m_executor);
-        if (permission != null && !permission.isEmpty()) {
-            command.setPermission(permission);
-        }
-                
-        m_commandMap.register(m_pluginName, command);
+
+        log("***********************************");
+        log(message);
+        log("***********************************");
+        log(String.format("* Exception: %1$s", ex.getClass().getCanonicalName()));
+        log(String.format("* Error message: %1$s", ex.getLocalizedMessage()));
+        log("* Stack: ");
+        printStack(ex, "* ");
+        log("***********************************");
     }
-}    
+
+    public static void printStack(Throwable ex, String lead) {
+        for (StackTraceElement element : ex.getStackTrace()) {
+            log(lead + element.toString());
+        }
+    }
+}

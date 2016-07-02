@@ -39,61 +39,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform.bukkit;
+package org.primesoft.blockshub.api;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.SimpleCommandMap;
-import org.primesoft.blockshub.platform.api.ICommandManager;
-import org.primesoft.blockshub.utils.Reflection;
+import java.util.UUID;
+import org.primesoft.blockshub.Permissions;
 
 /**
  *
  * @author SBPrime
  */
-public class CommandManager implements ICommandManager {
-   
-    /**
-     * The command map
-     */
-    private final SimpleCommandMap m_commandMap;
+public interface IPlayer {
+    boolean isConsole();    
     
-   /**
-    * The plugin name
-    */
-    private final String m_pluginName;
+    boolean isAllowed(Permissions node);    
     
+    void say(String msg);
     
-    /**
-     * The command executor
-     */
-    private final CommandExecutor m_executor;
-
+    String getName();
     
-    
-    CommandManager(Server server, String pluginName, CommandExecutor executor) {
-        m_pluginName = pluginName;
-        m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
-        m_executor = executor;
-    }
-    
-
-    
-    
-    @Override
-    public void registerCommand(String name, String[] alias, String description, String usage, String permission) {
-        if (m_commandMap == null) {
-            return;
-        }
-    
-        SimpleCommand command = new SimpleCommand(name, description, usage, alias == null ?
-                new ArrayList<String>(0) : Arrays.asList(alias), m_executor);
-        if (permission != null && !permission.isEmpty()) {
-            command.setPermission(permission);
-        }
-                
-        m_commandMap.register(m_pluginName, command);
-    }
-}    
+    UUID getUUID();
+}

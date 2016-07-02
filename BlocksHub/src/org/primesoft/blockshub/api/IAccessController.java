@@ -42,21 +42,30 @@
 
 package org.primesoft.blockshub.api;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-
 /**
  *
  * @author SBPrime
  */
 public interface IAccessController extends IBaseEntity {
     /**
-     * Check if a player can place a block
+     * Check if a player has build access at a location
      *
      * @param player
      * @param world
      * @param location
      * @return
      */
-    boolean canPlace(String player, World world, Location location);
+    boolean hasAccess(IPlayer player, IWorld world, Vector location);
+    
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(IPlayer player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
 }

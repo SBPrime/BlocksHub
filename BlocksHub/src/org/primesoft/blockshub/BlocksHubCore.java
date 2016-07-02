@@ -48,7 +48,7 @@ import org.primesoft.blockshub.platform.api.Colors;
 import org.primesoft.blockshub.platform.api.ICommandManager;
 import org.primesoft.blockshub.platform.api.IEnableAware;
 import org.primesoft.blockshub.platform.api.IPlatform;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.api.IPlayer;
 
 /**
  *

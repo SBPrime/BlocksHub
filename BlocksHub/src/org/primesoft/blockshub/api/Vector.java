@@ -39,21 +39,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform.api;
-
-import java.util.UUID;
-import org.primesoft.blockshub.Permissions;
+package org.primesoft.blockshub.api;
 
 /**
  *
  * @author SBPrime
  */
-public interface IPlayer {
-    boolean isAllowed(Permissions node);    
+public class Vector {
+    private final double m_x;
+    private final double m_y;
+    private final double m_z;
+
+    public double getX() {
+        return m_x;
+    }
     
-    void say(String msg);
+    public double getY() {
+        return m_y;
+    }
     
-    String getName();
+    public double getZ() {
+        return m_z;
+    }
     
-    UUID getUUID();
+    public Vector(double x, double y, double z){
+        m_x = x;
+        m_y = y;
+        m_z = z;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Vector)) {
+            return false;
+        }
+        
+        Vector v = (Vector)obj;
+        return m_x == v.m_x && m_y == v.m_y && m_z == v.m_z;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.m_x) ^ (Double.doubleToLongBits(this.m_x) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.m_y) ^ (Double.doubleToLongBits(this.m_y) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.m_z) ^ (Double.doubleToLongBits(this.m_z) >>> 32));
+        return hash;
+    }
+    
+    
 }

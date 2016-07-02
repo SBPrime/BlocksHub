@@ -39,114 +39,420 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub;
 
 import java.util.UUID;
+import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.IBlockLogger;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
 
 /**
  *
  * @author SBPrime
  */
 public interface IBlocksHubApi {
+
     /**
      * Get the current version of BlocksHub API
      *
      * @return
      */
     double getVersion();
-    
-    
+
     /**
      * Is the api initialized
-     * @return 
+     *
+     * @return
      */
     boolean isInitialized();
-        
+
     /**
      * Register blocks logger class
+     *
      * @param blocksLogger
-     * @return 
+     * @return
      */
     boolean registerBlocksLogger(IBlockLogger blocksLogger);
-    
-    
+
     /**
      * Register blocks access controller
+     *
      * @param accessController
-     * @return 
+     * @return
      */
     boolean registerAccessController(IAccessController accessController);
-    
+
     /**
      * Remove blocks logger class
+     *
      * @param blocksLogger
-     * @return 
+     * @return
      */
     boolean removeBlocksLogger(IBlockLogger blocksLogger);
-    
-    
+
     /**
      * Remove blocks access controller
+     *
      * @param accessController
-     * @return 
+     * @return
      */
     boolean removeAccessController(IAccessController accessController);
-    
-    
+
     /**
      * List all registered loggers
-     * @return 
+     *
+     * @return
      */
     IBlockLogger[] getRegisteredLoggers();
-    
+
     /**
      * List all registered access controllers
-     * @return 
+     *
+     * @return
      */
     IAccessController[] getRegisteredAccessControllers();
 
     /**
-     * Log block using all the enabled block loggers
-     * @param location
-     * @param player
-     * @param world
-     * @param oldBlockType
-     * @param oldBlockData
-     * @param newBlockType
-     * @param newBlockData
+     * Gets the special blocks hub player instance
+     *
+     * @param name
+     * @return
      */
-    void logBlock(String player, World world, Location location, 
-                  int oldBlockType, byte oldBlockData,
-                  int newBlockType, byte newBlockData);
-    
-    
-    /**
-     * Check if a player can place a block
-     * @param player
-     * @param world
-     * @param location
-     * @return 
-     */
-    boolean canPlace(String player, World world, Location location);
-    
+    IPlayer getPlayer(String name);
 
     /**
      * Gets the special blocks hub player instance
-     * @param name
-     * @return 
-     */
-    IPlayer getPlayer(String name);
-    
-    /**
-     * Gets the special blocks hub player instance
-     * @param uuid 
-     * @return 
+     *
+     * @param uuid
+     * @return
      */
     IPlayer getPlayer(UUID uuid);
+
+    /**
+     * Get world based on the UUID
+     *
+     * @param uuid
+     * @return
+     */
+    IWorld getWorld(UUID uuid);
+
+    /**
+     * Get world based on name
+     *
+     * @param name
+     * @return
+     */
+    IWorld getWorld(String name);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param player
+     * @param worldName
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, String player, String worldName,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param playerUuid
+     * @param worldName
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, UUID playerUuid, String worldName,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param player
+     * @param worldName
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, IPlayer player, String worldName,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param player
+     * @param worldUuid
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, String player, UUID worldUuid,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param playerUuid
+     * @param worldUuid
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, UUID playerUuid, UUID worldUuid,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param player
+     * @param worldUuid
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, IPlayer player, UUID worldUuid,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param player
+     * @param world
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, String player, IWorld world,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param playerUuid
+     * @param world
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, UUID playerUuid, IWorld world,
+            BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Log block change
+     *
+     * @param location
+     * @param player
+     * @param world
+     * @param oldBlock
+     * @param newBlock
+     */
+    public void logBlock(Vector location, IPlayer player, IWorld world,
+            BlockData oldBlock, BlockData newBlock);
+    
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param worldName
+     * @param location
+     * @return
+     */
+    boolean hasAccess(String player, String worldName, Vector location);
+    
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param worldName
+     * @param location
+     * @return
+     */
+    boolean hasAccess(UUID player, String worldName, Vector location);
+    
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param worldName
+     * @param location
+     * @return
+     */
+    boolean hasAccess(IPlayer player, String worldName, Vector location);
+
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param worldUuid
+     * @param location
+     * @return
+     */
+    boolean hasAccess(String player, UUID worldUuid, Vector location);
+
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param worldUuid
+     * @param location
+     * @return
+     */
+    boolean hasAccess(UUID player, UUID worldUuid, Vector location);
+
+
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param worldUuid
+     * @param location
+     * @return
+     */
+    boolean hasAccess(IPlayer player, UUID worldUuid, Vector location);
+    
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @return
+     */
+    boolean hasAccess(String player, IWorld world, Vector location);
+
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @return
+     */
+    boolean hasAccess(UUID player, IWorld world, Vector location);
+
+
+    /**
+     * Check if a player has build access at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @return
+     */
+    boolean hasAccess(IPlayer player, IWorld world, Vector location);
+
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param worldName
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(String player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock);
+    
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param worldName
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(UUID player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock);
+    
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param worldName
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(IPlayer player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock);
+    
+    
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(String player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+    
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(UUID player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+    
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param world
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(IPlayer player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param worldUuid
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(String player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param worldUuid
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(UUID player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock);
+
+    /**
+     * Check if a player can place a block at a location
+     *
+     * @param player
+     * @param worldUuid
+     * @param location
+     * @param oldBlock
+     * @param newBlock
+     * @return
+     */
+    boolean canPlace(IPlayer player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock);
 }

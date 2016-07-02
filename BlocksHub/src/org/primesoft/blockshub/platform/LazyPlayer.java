@@ -39,61 +39,122 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform.bukkit;
+package org.primesoft.blockshub.platform;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.SimpleCommandMap;
-import org.primesoft.blockshub.platform.api.ICommandManager;
-import org.primesoft.blockshub.utils.Reflection;
+import java.util.UUID;
+import org.primesoft.blockshub.Permissions;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
  *
  * @author SBPrime
  */
-public class CommandManager implements ICommandManager {
-   
-    /**
-     * The command map
-     */
-    private final SimpleCommandMap m_commandMap;
-    
-   /**
-    * The plugin name
-    */
-    private final String m_pluginName;
-    
-    
-    /**
-     * The command executor
-     */
-    private final CommandExecutor m_executor;
+public class LazyPlayer implements IPlayer {
 
-    
-    
-    CommandManager(Server server, String pluginName, CommandExecutor executor) {
-        m_pluginName = pluginName;
-        m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
-        m_executor = executor;
+    private final UUID m_uuid;
+    private final String m_name;
+    private final IPlatform m_platform;
+    private IPlayer m_resolved;
+
+    /**
+     * The MTA mutex
+     */
+    private final Object m_mutex = new Object();
+
+    public LazyPlayer(UUID uuid, IPlatform platform) {
+        m_uuid = uuid;
+        m_name = null;
+        m_resolved = null;
+        m_platform = platform;
     }
-    
+
+    public LazyPlayer(String name, IPlatform platform) {
+        m_uuid = null;
+        m_name = name;
+        m_resolved = null;
+        m_platform = platform;
+    }
+
+    /**
+     * Resolve the player
+     */
+    private void resolve() {
+        if (m_resolved != null) {
+            return;
+        }
+
+        synchronized (m_mutex) {
+            if (m_resolved != null) {
+                return;
+            }
+
+            IPlayer resolved;
+            if (m_uuid != null) {
+                resolved = m_platform.getPlayer(m_uuid);
+            } else if (m_name != null && m_name.length() > 0) {
+                resolved = m_platform.getPlayer(m_name);
+            } else {
+                resolved = null;
+            }
+
+            if (resolved == null) {
+                resolved = ConsolePlayer.getInstance();
+            }
+
+            m_resolved = resolved;
+        }
+    }
+
+    @Override
+    public boolean isConsole() {
+        resolve();
+        return m_resolved.isConsole();
+    }
 
     
     
     @Override
-    public void registerCommand(String name, String[] alias, String description, String usage, String permission) {
-        if (m_commandMap == null) {
-            return;
-        }
-    
-        SimpleCommand command = new SimpleCommand(name, description, usage, alias == null ?
-                new ArrayList<String>(0) : Arrays.asList(alias), m_executor);
-        if (permission != null && !permission.isEmpty()) {
-            command.setPermission(permission);
-        }
-                
-        m_commandMap.register(m_pluginName, command);
+    public boolean isAllowed(Permissions node) {
+        resolve();
+        return m_resolved.isAllowed(node);
     }
-}    
+
+    @Override
+    public void say(String msg) {
+        resolve();
+        m_resolved.say(msg);
+    }
+
+    @Override
+    public String getName() {
+        if (m_name != null) {
+            return m_name;
+        }
+        
+        resolve();
+        return m_resolved.getName();
+    }
+
+    @Override
+    public UUID getUUID() {
+        if (m_uuid != null) {
+            return m_uuid;
+        }
+        
+        resolve();
+        return m_resolved.getUUID();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        resolve();
+        return m_resolved.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        resolve();
+        return m_resolved.hashCode();
+    }
+}

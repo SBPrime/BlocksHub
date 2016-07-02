@@ -39,61 +39,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform.bukkit;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.SimpleCommandMap;
-import org.primesoft.blockshub.platform.api.ICommandManager;
-import org.primesoft.blockshub.utils.Reflection;
+package org.primesoft.blockshub.api;
 
 /**
  *
  * @author SBPrime
  */
-public class CommandManager implements ICommandManager {
-   
-    /**
-     * The command map
-     */
-    private final SimpleCommandMap m_commandMap;
+public class BlockData {
+    private int m_type;
+    private int m_data;
     
-   /**
-    * The plugin name
-    */
-    private final String m_pluginName;
-    
-    
-    /**
-     * The command executor
-     */
-    private final CommandExecutor m_executor;
-
-    
-    
-    CommandManager(Server server, String pluginName, CommandExecutor executor) {
-        m_pluginName = pluginName;
-        m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
-        m_executor = executor;
+    public int getType() {
+        return m_type;
     }
     
-
-    
-    
-    @Override
-    public void registerCommand(String name, String[] alias, String description, String usage, String permission) {
-        if (m_commandMap == null) {
-            return;
-        }
-    
-        SimpleCommand command = new SimpleCommand(name, description, usage, alias == null ?
-                new ArrayList<String>(0) : Arrays.asList(alias), m_executor);
-        if (permission != null && !permission.isEmpty()) {
-            command.setPermission(permission);
-        }
-                
-        m_commandMap.register(m_pluginName, command);
+    public int getData() {
+        return m_data;
     }
-}    
+    
+    public BlockData(int type, int data) {
+        m_data = data;
+        m_type = type;
+    }
+}

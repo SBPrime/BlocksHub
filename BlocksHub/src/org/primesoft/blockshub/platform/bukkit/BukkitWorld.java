@@ -41,59 +41,37 @@
  */
 package org.primesoft.blockshub.platform.bukkit;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.SimpleCommandMap;
-import org.primesoft.blockshub.platform.api.ICommandManager;
-import org.primesoft.blockshub.utils.Reflection;
+import java.util.UUID;
+import org.bukkit.World;
+import org.primesoft.blockshub.api.IWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class CommandManager implements ICommandManager {
-   
-    /**
-     * The command map
-     */
-    private final SimpleCommandMap m_commandMap;
-    
-   /**
-    * The plugin name
-    */
-    private final String m_pluginName;
-    
-    
-    /**
-     * The command executor
-     */
-    private final CommandExecutor m_executor;
+public class BukkitWorld implements IWorld {
+    private World m_world;
 
+    BukkitWorld(World world) {
+        m_world = world;
+    }        
     
-    
-    CommandManager(Server server, String pluginName, CommandExecutor executor) {
-        m_pluginName = pluginName;
-        m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
-        m_executor = executor;
+    public World getWorld() {
+        return m_world;
     }
-    
 
-    
-    
     @Override
-    public void registerCommand(String name, String[] alias, String description, String usage, String permission) {
-        if (m_commandMap == null) {
-            return;
-        }
-    
-        SimpleCommand command = new SimpleCommand(name, description, usage, alias == null ?
-                new ArrayList<String>(0) : Arrays.asList(alias), m_executor);
-        if (permission != null && !permission.isEmpty()) {
-            command.setPermission(permission);
-        }
-                
-        m_commandMap.register(m_pluginName, command);
+    public UUID getUuid() {
+        return m_world.getUID();
     }
-}    
+
+    @Override
+    public String getName() {
+        return m_world.getName();
+    }
+
+    @Override
+    public int getMaxHeight() {
+        return m_world.getMaxHeight();
+    }
+}

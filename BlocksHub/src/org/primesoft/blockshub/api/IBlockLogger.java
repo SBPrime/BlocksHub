@@ -42,16 +42,21 @@
 
 package org.primesoft.blockshub.api;
 
-import org.bukkit.Location;
-import org.bukkit.World;
+import java.util.UUID;
 
 /**
  *
  * @author SBPrime
  */
 public interface IBlockLogger extends IBaseEntity {
-    public void logBlock(Location location, String player, World world, 
-                         int oldBlockType, byte oldBlockData,
-                         int newBlockType, byte newBlockData);
-    
+    /**
+     * Log block change
+     * @param location
+     * @param player
+     * @param world
+     * @param oldBlock
+     * @param newBlock 
+     */
+    public void logBlock(Vector location, IPlayer player, IWorld world, 
+                         BlockData oldBlock, BlockData newBlock);
 }

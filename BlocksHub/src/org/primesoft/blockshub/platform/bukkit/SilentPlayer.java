@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub.api;
+package org.primesoft.blockshub.platform.bukkit;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -1465,176 +1465,176 @@ public class SilentPlayer /*extends CraftPlayer*/ implements Player {
 
     @Override
     public void stopSound(Sound sound) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.stopSound(sound);
     }
 
     @Override
     public void stopSound(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.stopSound(string);
     }
 
     @Override
     public Entity getSpectatorTarget() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.getSpectatorTarget();
     }
 
     @Override
     public void setSpectatorTarget(Entity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setSpectatorTarget(entity);
     }
 
     @Override
     public void sendTitle(String string, String string1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.sendTitle(string, string1);
     }
 
     @Override
     public void resetTitle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.resetTitle();
     }
 
     @Override
     public void spawnParticle(Particle prtcl, Location lctn, int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, lctn, i);
     }
 
     @Override
     public void spawnParticle(Particle prtcl, double d, double d1, double d2, int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, d, d1, d2, i);
     }
 
     @Override
     public <T> void spawnParticle(Particle prtcl, Location lctn, int i, T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, lctn, i, t);
     }
 
     @Override
     public <T> void spawnParticle(Particle prtcl, double d, double d1, double d2, int i, T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, d,d1, d2, i, t);
     }
 
     @Override
     public void spawnParticle(Particle prtcl, Location lctn, int i, double d, double d1, double d2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, lctn, i, d, d1, d2);
     }
 
     @Override
     public void spawnParticle(Particle prtcl, double d, double d1, double d2, int i, double d3, double d4, double d5) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, d, d1, d2, i, d3, d4, d5);
     }
 
     @Override
     public <T> void spawnParticle(Particle prtcl, Location lctn, int i, double d, double d1, double d2, T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, lctn, i, d, d1, d2, t);
     }
 
     @Override
     public <T> void spawnParticle(Particle prtcl, double d, double d1, double d2, int i, double d3, double d4, double d5, T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, d, d1, d2, i, d3, d4, d5, t);
     }
 
     @Override
     public void spawnParticle(Particle prtcl, Location lctn, int i, double d, double d1, double d2, double d3) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, lctn, i, d, d1, d2, d3);
     }
 
     @Override
     public void spawnParticle(Particle prtcl, double d, double d1, double d2, int i, double d3, double d4, double d5, double d6) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, d, d1, d2, i, d3, d4, d5, d6);
     }
 
     @Override
     public <T> void spawnParticle(Particle prtcl, Location lctn, int i, double d, double d1, double d2, double d3, T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, lctn, i, d, d1, d2, d3, t);
     }
 
     @Override
     public <T> void spawnParticle(Particle prtcl, double d, double d1, double d2, int i, double d3, double d4, double d5, double d6, T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.spawnParticle(prtcl, d, d1, d2, i, d3, d4, d5, d6, t);
     }
 
     @Override
     public MainHand getMainHand() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.getMainHand();
     }
 
     @Override
     public InventoryView openMerchant(Villager vlgr, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.openMerchant(vlgr, bln);
     }
 
     @Override
     public boolean isGliding() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.isGliding();
     }
 
     @Override
     public void setGliding(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setGliding(bln);
     }
 
     @Override
     public void setAI(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setAI(bln);
     }
 
     @Override
     public boolean hasAI() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.hasAI();
     }
 
     @Override
     public void setCollidable(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setCollidable(bln);
     }
 
     @Override
     public boolean isCollidable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.isCollidable();
     }
 
     @Override
     public AttributeInstance getAttribute(Attribute atrbt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.getAttribute(atrbt);
     }
 
     @Override
     public void setGlowing(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setGlowing(bln);
     }
 
     @Override
     public boolean isGlowing() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.isGlowing();
     }
 
     @Override
     public void setInvulnerable(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setInvulnerable(bln);
     }
 
     @Override
     public boolean isInvulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.isInvulnerable();
     }
 
     @Override
     public boolean isSilent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.isSilent();
     }
 
     @Override
     public void setSilent(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setSilent(bln);
     }
 
     @Override
     public boolean hasGravity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return m_parent.hasGravity();
     }
 
     @Override
     public void setGravity(boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m_parent.setGravity(bln);
     }
 }

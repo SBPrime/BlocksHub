@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -63,7 +64,8 @@ import org.primesoft.blockshub.platform.api.ICommandManager;
 import org.primesoft.blockshub.platform.api.IConfiguration;
 import org.primesoft.blockshub.platform.api.ILogger;
 import org.primesoft.blockshub.platform.api.IPlatform;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.platform.bukkit.mcstats.MetricsLite;
 
 /**
@@ -196,6 +198,26 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
     }
 
     @Override
+    public IWorld getWorld(String name) {
+        World world = m_server.getWorld(name);
+        if (world == null) {
+            return null;
+        }
+
+        return new BukkitWorld(world);
+    }
+
+    @Override
+    public IWorld getWorld(UUID uuid) {
+        World world = m_server.getWorld(uuid);
+        if (world == null) {
+            return null;
+        }
+
+        return new BukkitWorld(world);
+    }
+
+    @Override
     public ILogger getLogger() {
         return m_logger;
     }
@@ -235,8 +257,9 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
 
     /**
      * Get plugin
+     *
      * @param pluginName
-     * @return 
+     * @return
      */
     private Plugin getTypedPlugin(String pluginName) {
         if (pluginName == null) {
@@ -245,7 +268,7 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
 
         PluginManager pm = m_plugin.getServer().getPluginManager();
 
-        return pm.getPlugin(pluginName);        
+        return pm.getPlugin(pluginName);
     }
 
     @Override

@@ -45,30 +45,33 @@ import org.primesoft.blockshub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.configuration.ConfigProvider;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.primesoft.blockshub.api.Vector;
 import org.primesoft.blockshub.platform.api.Colors;
 import org.primesoft.blockshub.platform.api.IPlatform;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.configuration.ConfigProvider;
+import org.primesoft.blockshub.platform.LazyPlayer;
+import org.primesoft.blockshub.utils.ExceptionHelper;
 
 /**
  *
  * @author SBPrime
  */
 public class Logic implements IBlocksHubApi {
-
+    
     private final IPlatform m_platform;
     private final Object m_mtaMutex = new Object();
     private final List<IBlockLogger> m_loggers = new ArrayList<IBlockLogger>();
     private final List<IAccessController> m_ac = new ArrayList<IAccessController>();
     private boolean m_isInitialized;
-
+    
     public Logic(IPlatform platform) {
         m_platform = platform;
     }
-
+    
     @Override
     public double getVersion() {
         return 2.0;
@@ -96,7 +99,7 @@ public class Logic implements IBlocksHubApi {
             if (blocksLogger == null || m_loggers.contains(blocksLogger)) {
                 return false;
             }
-
+            
             m_loggers.add(blocksLogger);
             return true;
         }
@@ -114,7 +117,7 @@ public class Logic implements IBlocksHubApi {
             if (accessController == null || m_ac.contains(accessController)) {
                 return false;
             }
-
+            
             m_ac.add(accessController);
             return true;
         }
@@ -132,7 +135,7 @@ public class Logic implements IBlocksHubApi {
             if (blocksLogger == null || !m_loggers.contains(blocksLogger)) {
                 return false;
             }
-
+            
             m_loggers.remove(blocksLogger);
             return true;
         }
@@ -150,7 +153,7 @@ public class Logic implements IBlocksHubApi {
             if (accessController == null || !m_ac.contains(accessController)) {
                 return false;
             }
-
+            
             m_ac.remove(accessController);
             return true;
         }
@@ -189,7 +192,7 @@ public class Logic implements IBlocksHubApi {
         m_isInitialized = false;
         m_ac.clear();
         m_loggers.clear();
-
+        
         synchronized (m_mtaMutex) {
             player.say("Initializing access controllers");
             for (IAccessController ac : m_ac) {
@@ -201,7 +204,7 @@ public class Logic implements IBlocksHubApi {
                     player.say(" * " + acName + "...disabled");
                 }
             }
-
+            
             player.say("Initializing block loggers");
             for (IBlockLogger bl : m_loggers) {
                 String blName = bl.getName();
@@ -216,7 +219,7 @@ public class Logic implements IBlocksHubApi {
         m_isInitialized = true;
         return true;
     }
-
+    
     void doShowStatus(IPlayer player) {
         if (!m_isInitialized) {
             player.say(Colors.RED + "Plugin not initialized.");
@@ -226,55 +229,16 @@ public class Logic implements IBlocksHubApi {
         for (IBlockLogger bl : m_loggers) {
             player.say(Colors.YELLOW + " * " + bl.getName() + "..." + (bl.isEnabled() ? "enabled" : "disabled"));
         }
-
+        
         player.say(Colors.YELLOW + "Registered access controllers: ");
         for (IAccessController ac : m_ac) {
             player.say(Colors.YELLOW + " * " + ac.getName() + "..." + (ac.isEnabled() ? "enabled" : "disabled"));
         }
     }
-
-    @Override
-    public void logBlock(String player, World world, Location location, int oldBlockType, byte oldBlockData, int newBlockType, byte newBlockData) {
-        if (!m_isInitialized || world == null || location == null) {
-            return;
-        }
-
-        final int y = location.getBlockY();
-        if (!ConfigProvider.isLogging(world.getName()) || y < 0 || y > world.getMaxHeight()) {
-            return;
-        }
-
-        for (IBlockLogger bl : m_loggers) {
-            bl.logBlock(location, player, world, oldBlockType, oldBlockData, newBlockType, newBlockData);
-        }
-    }
-
-    @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (player == null) {
-            return true;
-        }
-
-        if (!m_isInitialized || world == null || location == null) {
-            return false;
-        }
-
-        final int y = location.getBlockY();
-        if (y < 0 || y >= world.getMaxHeight()) {
-            return false;
-        }
-        for (IAccessController ac : m_ac) {
-            if (!ac.canPlace(player, world, location)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
+    
     @Override
     public IPlayer getPlayer(String name) {
-        return m_platform.getPlayer(name);
+        return new LazyPlayer(name, m_platform);
     }
 
     /**
@@ -285,7 +249,240 @@ public class Logic implements IBlocksHubApi {
      */
     @Override
     public IPlayer getPlayer(UUID uuid) {
-        return m_platform.getPlayer(uuid);
+        return new LazyPlayer(uuid, m_platform);
     }
 
+    /**
+     * Get world based on the UUID
+     *
+     * @param uuid
+     * @return
+     */
+    @Override
+    public IWorld getWorld(UUID uuid) {
+        return m_platform.getWorld(uuid);
+    }
+
+    /**
+     * Get world based on name
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public IWorld getWorld(String name) {
+        return m_platform.getWorld(name);
+    }
+
+    /**
+     * Validates the logic state and the parameters
+     *
+     * @param location
+     * @param params
+     * @return
+     */
+    private boolean validate(IWorld world, Vector location, Object... params) {
+        if (location == null || world == null || !m_isInitialized) {
+            return false;
+        }
+        
+        if (location.getY() < 0 || location.getY() >= world.getMaxHeight()) {
+            return false;
+        }
+        
+        for (Object o : params) {
+            if (o == null) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public void logBlock(Vector location, String player, String worldName, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, getPlayer(player), getWorld(worldName), oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, UUID playerUuid, String worldName, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, getPlayer(playerUuid), getWorld(worldName), oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, IPlayer player, String worldName, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, player, getWorld(worldName), oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, String player, UUID worldUuid, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, getPlayer(player), getWorld(worldUuid), oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, UUID playerUuid, UUID worldUuid, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, getPlayer(playerUuid), getWorld(worldUuid), oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, IPlayer player, UUID worldUuid, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, player, getWorld(worldUuid), oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, String player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, getPlayer(player), world, oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, UUID playerUuid, IWorld world, BlockData oldBlock, BlockData newBlock) {
+        logBlock(location, getPlayer(playerUuid), world, oldBlock, newBlock);
+    }
+    
+    @Override
+    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+        if (!validate(world, location, player, oldBlock, newBlock)) {
+            return;
+        }
+        
+        if (!ConfigProvider.isLogging(world.getName())) {
+            return;
+        }
+        
+        for (IBlockLogger bl : m_loggers) {
+            try {
+                bl.logBlock(location, player, world, oldBlock, newBlock);
+            } catch (Exception ex) {
+                ExceptionHelper.printException(ex, "Unable to log block change using " + bl.getName());
+            }
+        }
+    }
+    
+    @Override
+    public boolean hasAccess(String player, String worldName, Vector location) {
+        return hasAccess(getPlayer(player), getWorld(worldName), location);
+    }
+    
+    @Override
+    public boolean hasAccess(UUID player, String worldName, Vector location) {
+        return hasAccess(getPlayer(player), getWorld(worldName), location);
+    }
+    
+    @Override
+    public boolean hasAccess(IPlayer player, String worldName, Vector location) {
+        return hasAccess(player, getWorld(worldName), location);
+    }
+    
+    @Override
+    public boolean hasAccess(String player, UUID worldUuid, Vector location) {
+        return hasAccess(getPlayer(player), getWorld(worldUuid), location);
+    }
+    
+    @Override
+    public boolean hasAccess(UUID player, UUID worldUuid, Vector location) {
+        return hasAccess(getPlayer(player), getWorld(worldUuid), location);
+    }
+    
+    @Override
+    public boolean hasAccess(IPlayer player, UUID worldUuid, Vector location) {
+        return hasAccess(player, getWorld(worldUuid), location);
+    }
+    
+    @Override
+    public boolean hasAccess(String player, IWorld world, Vector location) {
+        return hasAccess(getPlayer(player), world, location);
+    }
+    
+    @Override
+    public boolean hasAccess(UUID player, IWorld world, Vector location) {
+        return hasAccess(getPlayer(player), world, location);
+    }
+    
+    @Override
+    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
+        if (player == null || player.isConsole()) {
+            return true;
+        }
+        
+        if (!validate(world, location)) {
+            return false;
+        }
+        
+        for (IAccessController ac : m_ac) {
+            try {
+                if (!ac.hasAccess(player, world, location)) {
+                    return false;
+                }
+            } catch (Exception ex) {
+                ExceptionHelper.printException(ex, "Unable to check access controll using " + ac.getName());
+            }
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean canPlace(String player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(getPlayer(player), getWorld(worldName), location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(UUID player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(getPlayer(player), getWorld(worldName), location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(IPlayer player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(player, getWorld(worldName), location, oldBlock, newBlock);
+    }
+    
+    
+    @Override
+    public boolean canPlace(String player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(getPlayer(player), getWorld(worldUuid), location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(UUID player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(getPlayer(player), getWorld(worldUuid), location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(IPlayer player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(player, getWorld(worldUuid), location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(String player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(getPlayer(player), world, location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(UUID player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock) {
+        return canPlace(getPlayer(player), world, location, oldBlock, newBlock);
+    }
+    
+    @Override
+    public boolean canPlace(IPlayer player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock) {
+        if (player == null || player.isConsole()) {
+            return true;
+        }
+        
+        if (!validate(world, location)) {
+            return false;
+        }
+        
+        for (IAccessController ac : m_ac) {
+            try {
+                if (!ac.hasAccess(player, world, location)) {
+                    return false;
+                }
+            } catch (Exception ex) {
+                ExceptionHelper.printException(ex, "Unable to check if block can be placed using " + ac.getName());
+            }
+        }
+        
+        return true;
+    }
+    
 }
