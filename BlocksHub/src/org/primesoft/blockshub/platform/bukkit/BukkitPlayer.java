@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,114 +39,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.primesoft.blockshub;
+package org.primesoft.blockshub.platform.bukkit;
 
 import java.util.UUID;
-import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.api.IBlockLogger;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.primesoft.blockshub.Permissions;
 import org.primesoft.blockshub.platform.api.IPlayer;
 
 /**
  *
  * @author SBPrime
  */
-public interface IBlocksHubApi {
-    /**
-     * Get the current version of BlocksHub API
-     *
-     * @return
-     */
-    double getVersion();
+public class BukkitPlayer implements IPlayer {
+    private final Player m_player;
     
-    
-    /**
-     * Is the api initialized
-     * @return 
-     */
-    boolean isInitialized();
+    public BukkitPlayer(Player player) {
+        m_player = player;
+    }
+
+    @Override
+    public boolean isAllowed(Permissions node) {
+        if (node == null) {
+            return true;
+        }
         
-    /**
-     * Register blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean registerBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Register blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean registerAccessController(IAccessController accessController);
-    
-    /**
-     * Remove blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean removeBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Remove blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean removeAccessController(IAccessController accessController);
-    
-    
-    /**
-     * List all registered loggers
-     * @return 
-     */
-    IBlockLogger[] getRegisteredLoggers();
-    
-    /**
-     * List all registered access controllers
-     * @return 
-     */
-    IAccessController[] getRegisteredAccessControllers();
+        return m_player.hasPermission(node.getNode());
+    }        
 
-    /**
-     * Log block using all the enabled block loggers
-     * @param location
-     * @param player
-     * @param world
-     * @param oldBlockType
-     * @param oldBlockData
-     * @param newBlockType
-     * @param newBlockData
-     */
-    void logBlock(String player, World world, Location location, 
-                  int oldBlockType, byte oldBlockData,
-                  int newBlockType, byte newBlockData);
-    
-    
-    /**
-     * Check if a player can place a block
-     * @param player
-     * @param world
-     * @param location
-     * @return 
-     */
-    boolean canPlace(String player, World world, Location location);
-    
+    @Override
+    public void say(String msg) {
+        m_player.sendRawMessage(msg);
+    }
 
-    /**
-     * Gets the special blocks hub player instance
-     * @param name
-     * @return 
-     */
-    IPlayer getPlayer(String name);
-    
-    /**
-     * Gets the special blocks hub player instance
-     * @param uuid 
-     * @return 
-     */
-    IPlayer getPlayer(UUID uuid);
+    @Override
+    public String getName() {
+        return m_player.getName();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return m_player.getUniqueId();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BukkitPlayer)) {
+            return false;
+        }
+        
+        BukkitPlayer other = (BukkitPlayer)obj;
+        
+        return getUUID().equals(other.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.m_player != null ? this.m_player.hashCode() : 0);
+        return hash;
+    }
 }

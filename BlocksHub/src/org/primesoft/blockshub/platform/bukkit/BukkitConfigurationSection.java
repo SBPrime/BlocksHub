@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,97 +40,99 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub.configuration;
+package org.primesoft.blockshub.platform.bukkit;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Pattern;
-import org.primesoft.blockshub.platform.api.IConfiguration;
+import java.util.Set;
+import org.bukkit.configuration.ConfigurationSection;
 import org.primesoft.blockshub.platform.api.IConfigurationSection;
-import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
- * This class contains configuration
  *
  * @author SBPrime
  */
-public class ConfigProvider {
-
-    private static final int CONFIG_VERSION = 2;
-    private static boolean m_isConfigUpdate = false;
-    private static int m_configVersion;
-    private final static HashSet<String> m_enabledWorlds = new HashSet<String>();
-
-    public static int getConfigVersion() {
-        return m_configVersion;
+class BukkitConfigurationSection implements IConfigurationSection {
+    private final ConfigurationSection m_section;
+    
+    public BukkitConfigurationSection(ConfigurationSection section) {
+        m_section = section;
+    }
+    
+    @Override
+    public String getName() {
+        return m_section.getName();
     }
 
-    /**
-     * Is the world being logged
-     *
-     * @param world
-     * @return
-     */
-    public static boolean isLogging(String world) {
-        if (world == null) {
-            return false;
-        }                
+    @Override
+    public IConfigurationSection getConfigurationSection(String node) {
+        ConfigurationSection section = m_section.getConfigurationSection(node);
         
-        if (m_enabledWorlds.contains(world.toLowerCase())) {
-            return true;
+        if (section == null) {
+            return null;
         }
         
-        for (String pattern : m_enabledWorlds) {
-            if (Pattern.matches(pattern, world)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return new BukkitConfigurationSection(section);
     }
 
-    /**
-     * Is the configuration up to date
-     *
-     * @return
-     */
-    public static boolean isConfigUpdated() {
-        return m_isConfigUpdate;
+    @Override
+    public boolean contains(String node) {
+        return m_section.contains(node);
     }
 
-    /**
-     * Load configuration
-     *
-     * @param platform
-     * @return true if config loaded
-     */
-    public static boolean load(IPlatform platform) {
-        if (platform == null) {
-            return false;
-        }
-
-        IConfiguration config = platform.getConfiguration();
-
-        IConfigurationSection mainSection = config.getConfigurationSection("BlocksHub");
-        if (mainSection == null) {
-            return false;
-        }
-        m_configVersion = mainSection.getInt("version", 1);
-        m_isConfigUpdate = m_configVersion == CONFIG_VERSION;
-
-        List<String> worlds = mainSection.getStringList("worlds");
-        if (worlds == null) {
-            worlds = new ArrayList<String>();
-        }
-        m_enabledWorlds.clear();
-        for (String world : worlds) {
-            world = world.toLowerCase();
-            if (!m_enabledWorlds.contains(world)) {
-                m_enabledWorlds.add(world);
-            }
-        }
-           
-        return true;
+    @Override
+    public void set(String node, Object value) {
+        m_section.set(node, value);
     }
+
+    @Override
+    public void createSection(String name) {
+        m_section.createSection(name);
+    }
+
+    @Override
+    public Object get(String node) {
+        Object result = m_section.get(node);        
+        return (result instanceof ConfigurationSection) ? new BukkitConfigurationSection((ConfigurationSection)result) : result;
+    }
+
+    @Override
+    public Object get(String node, Object defaultValue) {
+        return m_section.get(node, defaultValue);
+    }
+
+    @Override
+    public boolean getBoolean(String node, boolean defaultValue) {
+        return m_section.getBoolean(node, defaultValue);
+    }
+
+    @Override
+    public int getInt(String node, int defaultValue) {
+        return m_section.getInt(node, defaultValue);
+    }
+
+    @Override
+    public long getLong(String node, long defaultValue) {
+        return m_section.getLong(node, defaultValue);
+    }
+
+    @Override
+    public String getString(String node, String defaultValue) {
+        return m_section.getString(node, defaultValue);
+    }
+
+    @Override
+    public List<Integer> getIntegerList(String node) {
+        return m_section.getIntegerList(node);
+    }
+
+    @Override
+    public List<String> getStringList(String node) {
+        return m_section.getStringList(node);
+    }
+
+    @Override
+    public Set<String> getSubNodes() {
+        return m_section.getKeys(false);
+    }
+    
 }

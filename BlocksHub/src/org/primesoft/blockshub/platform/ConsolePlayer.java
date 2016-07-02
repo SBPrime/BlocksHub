@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,114 +39,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.primesoft.blockshub;
+package org.primesoft.blockshub.platform;
 
 import java.util.UUID;
-import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.api.IBlockLogger;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.Permissions;
 import org.primesoft.blockshub.platform.api.IPlayer;
 
 /**
  *
  * @author SBPrime
  */
-public interface IBlocksHubApi {
-    /**
-     * Get the current version of BlocksHub API
-     *
-     * @return
-     */
-    double getVersion();
+public class ConsolePlayer implements IPlayer {
+    private final static String CONSOLE_NAME = "<CONSOLE>";
     
+    private final static UUID CONSOLE_UUID = UUID.randomUUID();
+    
+    private final static ConsolePlayer s_instance = new ConsolePlayer();
     
     /**
-     * Is the api initialized
+     * Get the console player instance
      * @return 
      */
-    boolean isInitialized();
-        
-    /**
-     * Register blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean registerBlocksLogger(IBlockLogger blocksLogger);
+    public static ConsolePlayer getInstance() {
+        return s_instance;
+    }
     
     
-    /**
-     * Register blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean registerAccessController(IAccessController accessController);
-    
-    /**
-     * Remove blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean removeBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Remove blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean removeAccessController(IAccessController accessController);
-    
-    
-    /**
-     * List all registered loggers
-     * @return 
-     */
-    IBlockLogger[] getRegisteredLoggers();
-    
-    /**
-     * List all registered access controllers
-     * @return 
-     */
-    IAccessController[] getRegisteredAccessControllers();
+    @Override
+    public void say(String msg) {
+        LoggerProvider.sayConsole(msg);
+    }
 
-    /**
-     * Log block using all the enabled block loggers
-     * @param location
-     * @param player
-     * @param world
-     * @param oldBlockType
-     * @param oldBlockData
-     * @param newBlockType
-     * @param newBlockData
-     */
-    void logBlock(String player, World world, Location location, 
-                  int oldBlockType, byte oldBlockData,
-                  int newBlockType, byte newBlockData);
-    
-    
-    /**
-     * Check if a player can place a block
-     * @param player
-     * @param world
-     * @param location
-     * @return 
-     */
-    boolean canPlace(String player, World world, Location location);
-    
+    @Override
+    public String getName() {
+        return CONSOLE_NAME;
+    }
 
-    /**
-     * Gets the special blocks hub player instance
-     * @param name
-     * @return 
-     */
-    IPlayer getPlayer(String name);
-    
-    /**
-     * Gets the special blocks hub player instance
-     * @param uuid 
-     * @return 
-     */
-    IPlayer getPlayer(UUID uuid);
+    @Override
+    public UUID getUUID() {
+        return CONSOLE_UUID;
+    }
+
+    @Override
+    public boolean isAllowed(Permissions node) {
+        return true;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,60 +39,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.primesoft.blockshub.platform.bukkit;
 
-package org.primesoft.blockshub;
-
-import org.bukkit.entity.Player;
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.bukkit.Server;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.SimpleCommandMap;
+import org.primesoft.asyncworldedit.utils.Reflection;
+import org.primesoft.blockshub.platform.api.ICommandManager;
 
 /**
+ *
  * @author SBPrime
  */
-public class PermissionManager {
+public class CommandManager implements ICommandManager {
+   
     /**
-    * List of all permissions
+     * The command map
+     */
+    private final SimpleCommandMap m_commandMap;
+    
+   /**
+    * The plugin name
     */
-    public enum Perms {
-        ReloadConfig, 
-        ShowStatus
-    }
+    private final String m_pluginName;
+    
     
     /**
-     * Plugin permissions top node
+     * The command executor
      */
-    private static String s_prefix = "BlocksHub.";
+    private final CommandExecutor m_executor;
 
-        /**
-     * Check if player has a specific permission
-     * @param player player
-     * @param perms permission to check
-     * @return True if permission present
-     */
-    public static boolean isAllowed(Player player, Perms perms) {
-        if (player == null) {
-            return true;
-        }
-
-        String s = getPermString(perms);
-        if (s == null) {
-            return false;
-        }
-
-        return player.hasPermission(s);
+    
+    
+    CommandManager(Server server, String pluginName, CommandExecutor executor) {
+        m_pluginName = pluginName;
+        m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
+        m_executor = executor;
     }
     
-    /**
-     * Convert permission to string
-     * @param perms Permission
-     * @return Permission node
-     */
-    private static String getPermString(Perms perms) {
-        switch (perms) {
-            case ReloadConfig:
-                return s_prefix + "admin.reload";
-            case ShowStatus:
-                return s_prefix + "admin.state";
-        }
 
-        return null;
+    
+    
+    @Override
+    public void registerCommand(String name, String[] alias, String description, String usage, String permission) {
+        if (m_commandMap == null) {
+            return;
+        }
+    
+        SimpleCommand command = new SimpleCommand(name, description, usage, alias == null ?
+                new ArrayList<String>(0) : Arrays.asList(alias), m_executor);
+        if (permission != null && !permission.isEmpty()) {
+            command.setPermission(permission);
+        }
+                
+        m_commandMap.register(m_pluginName, command);
     }
-}
+}    

@@ -26,7 +26,7 @@
  * either expressed or implied, of anybody else.
  */
 
-package org.primesoft.blockshub.mcstats;
+package org.primesoft.blockshub.platform.bukkit.mcstats;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;

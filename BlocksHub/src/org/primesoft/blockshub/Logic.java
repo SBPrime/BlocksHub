@@ -44,12 +44,14 @@ package org.primesoft.blockshub;
 import org.primesoft.blockshub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.configuration.ConfigProvider;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.primesoft.blockshub.platform.api.Colors;
+import org.primesoft.blockshub.platform.api.IPlatform;
+import org.primesoft.blockshub.platform.api.IPlayer;
 
 /**
  *
@@ -57,14 +59,19 @@ import org.bukkit.entity.Player;
  */
 public class Logic implements IBlocksHubApi {
 
+    private final IPlatform m_platform;
     private final Object m_mtaMutex = new Object();
     private final List<IBlockLogger> m_loggers = new ArrayList<IBlockLogger>();
     private final List<IAccessController> m_ac = new ArrayList<IAccessController>();
     private boolean m_isInitialized;
 
+    public Logic(IPlatform platform) {
+        m_platform = platform;
+    }
+
     @Override
     public double getVersion() {
-        return 1.0;
+        return 2.0;
     }
 
     /**
@@ -178,31 +185,31 @@ public class Logic implements IBlocksHubApi {
      *
      * @return
      */
-    boolean initializeConfig(Player player) {
+    boolean initializeConfig(IPlayer player) {
         m_isInitialized = false;
         m_ac.clear();
         m_loggers.clear();
 
         synchronized (m_mtaMutex) {
-            BlocksHub.say(player, "Initializing access controllers");
+            player.say("Initializing access controllers");
             for (IAccessController ac : m_ac) {
                 String acName = ac.getName();
                 ac.reloadConfiguration();
                 if (ac.isEnabled()) {
-                    BlocksHub.say(player, " * " + acName + "...enabled");
+                    player.say(" * " + acName + "...enabled");
                 } else {
-                    BlocksHub.say(player, " * " + acName + "...disabled");
+                    player.say(" * " + acName + "...disabled");
                 }
             }
 
-            BlocksHub.say(player, "Initializing block loggers");
+            player.say("Initializing block loggers");
             for (IBlockLogger bl : m_loggers) {
                 String blName = bl.getName();
                 bl.reloadConfiguration();
                 if (bl.isEnabled()) {
-                    BlocksHub.say(player, " * " + blName + "...enabled");
+                    player.say(" * " + blName + "...enabled");
                 } else {
-                    BlocksHub.say(player, " * " + blName + "...disabled");
+                    player.say(" * " + blName + "...disabled");
                 }
             }
         }
@@ -210,19 +217,19 @@ public class Logic implements IBlocksHubApi {
         return true;
     }
 
-    void doShowStatus(Player player) {
+    void doShowStatus(IPlayer player) {
         if (!m_isInitialized) {
-            BlocksHub.say(player, ChatColor.RED + "Plugin not initialized.");
+            player.say(Colors.RED + "Plugin not initialized.");
             return;
         }
-        BlocksHub.say(player, ChatColor.YELLOW + "Registered block loggers: ");
+        player.say(Colors.YELLOW + "Registered block loggers: ");
         for (IBlockLogger bl : m_loggers) {
-            BlocksHub.say(player, ChatColor.YELLOW + " * " + bl.getName() + "..." + (bl.isEnabled() ? "enabled" : "disabled"));
+            player.say(Colors.YELLOW + " * " + bl.getName() + "..." + (bl.isEnabled() ? "enabled" : "disabled"));
         }
 
-        BlocksHub.say(player, ChatColor.YELLOW + "Registered access controllers: ");
+        player.say(Colors.YELLOW + "Registered access controllers: ");
         for (IAccessController ac : m_ac) {
-            BlocksHub.say(player, ChatColor.YELLOW + " * " + ac.getName() + "..." + (ac.isEnabled() ? "enabled" : "disabled"));
+            player.say(Colors.YELLOW + " * " + ac.getName() + "..." + (ac.isEnabled() ? "enabled" : "disabled"));
         }
     }
 
@@ -264,4 +271,21 @@ public class Logic implements IBlocksHubApi {
 
         return true;
     }
+
+    @Override
+    public IPlayer getPlayer(String name) {
+        return m_platform.getPlayer(name);
+    }
+
+    /**
+     * Gets the special blocks hub player instance
+     *
+     * @param uuid
+     * @return
+     */
+    @Override
+    public IPlayer getPlayer(UUID uuid) {
+        return m_platform.getPlayer(uuid);
+    }
+
 }

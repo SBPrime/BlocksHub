@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,30 +40,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub;
-
-import org.bukkit.plugin.java.JavaPlugin;
+package org.primesoft.blockshub.platform.api;
 
 /**
+ *
  * @author SBPrime
  */
-@Deprecated
-public abstract class BlocksHub extends JavaPlugin implements IBlocksHubApiProvider {
-    private static BlocksHub s_instance;
-
-    public BlocksHub getInstance() {
-        return s_instance;
-    }
-
-    @Override
-    public void onEnable() {
-        s_instance = this;
-    }    
-
+public interface ICommandManager {
     /**
-     * Get the API
-     * @return 
+     * Register new command
+     * @param name
+     * @param alias
+     * @param description
+     * @param usage
+     * @param permission 
      */
-    @Override
-    public abstract IBlocksHubApi getApi();
+    void registerCommand(String name, String[] alias, String description, String usage, String permission);
 }

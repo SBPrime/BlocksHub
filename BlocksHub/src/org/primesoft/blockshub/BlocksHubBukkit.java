@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,114 +39,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub;
 
-import java.util.UUID;
-import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.api.IBlockLogger;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.primesoft.blockshub.platform.api.IPlayer;
+import org.primesoft.blockshub.platform.bukkit.BukkitPlatform;
 
 /**
  *
  * @author SBPrime
  */
-public interface IBlocksHubApi {
-    /**
-     * Get the current version of BlocksHub API
-     *
-     * @return
-     */
-    double getVersion();
+public class BlocksHubBukkit extends BlocksHub {
+    private BlocksHubCore m_core;
     
-    
-    /**
-     * Is the api initialized
-     * @return 
-     */
-    boolean isInitialized();
-        
-    /**
-     * Register blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean registerBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Register blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean registerAccessController(IAccessController accessController);
-    
-    /**
-     * Remove blocks logger class
-     * @param blocksLogger
-     * @return 
-     */
-    boolean removeBlocksLogger(IBlockLogger blocksLogger);
-    
-    
-    /**
-     * Remove blocks access controller
-     * @param accessController
-     * @return 
-     */
-    boolean removeAccessController(IAccessController accessController);
-    
-    
-    /**
-     * List all registered loggers
-     * @return 
-     */
-    IBlockLogger[] getRegisteredLoggers();
-    
-    /**
-     * List all registered access controllers
-     * @return 
-     */
-    IAccessController[] getRegisteredAccessControllers();
+    @Override
+    public void onEnable() {
+        super.onEnable();
 
-    /**
-     * Log block using all the enabled block loggers
-     * @param location
-     * @param player
-     * @param world
-     * @param oldBlockType
-     * @param oldBlockData
-     * @param newBlockType
-     * @param newBlockData
-     */
-    void logBlock(String player, World world, Location location, 
-                  int oldBlockType, byte oldBlockData,
-                  int newBlockType, byte newBlockData);
+        m_core = new BlocksHubCore(new BukkitPlatform(this));
+        m_core.onEnable();
+    }
     
+    @Override
+    public void onDisable() {
+        m_core.onDisable();
+    }
     
     /**
-     * Check if a player can place a block
-     * @param player
-     * @param world
-     * @param location
+     * Get the API
      * @return 
      */
-    boolean canPlace(String player, World world, Location location);
-    
-
-    /**
-     * Gets the special blocks hub player instance
-     * @param name
-     * @return 
-     */
-    IPlayer getPlayer(String name);
-    
-    /**
-     * Gets the special blocks hub player instance
-     * @param uuid 
-     * @return 
-     */
-    IPlayer getPlayer(UUID uuid);
+    @Override
+    public IBlocksHubApi getApi() {
+        return m_core.getApi();
+    }
 }

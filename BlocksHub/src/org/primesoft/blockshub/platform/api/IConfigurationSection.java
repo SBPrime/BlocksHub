@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,30 +40,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub;
+package org.primesoft.blockshub.platform.api;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.List;
+import java.util.Set;
 
 /**
+ *
  * @author SBPrime
  */
-@Deprecated
-public abstract class BlocksHub extends JavaPlugin implements IBlocksHubApiProvider {
-    private static BlocksHub s_instance;
+public interface IConfigurationSection {
+    public String getName();
+    
+    public IConfigurationSection getConfigurationSection(String node);
+    
+    public boolean contains(String node);
+    
+    public void set(String node, Object value);
+    
+    public void createSection(String name);
+    
+    public Object get(String node);
+    
+    public Object get(String node, Object defaultValue);
+        
+    public boolean getBoolean(String node, boolean defaultValue);
 
-    public BlocksHub getInstance() {
-        return s_instance;
-    }
+    public int getInt(String node, int defaultValue);
 
-    @Override
-    public void onEnable() {
-        s_instance = this;
-    }    
+    public long getLong(String node, long defaultValue);
 
-    /**
-     * Get the API
-     * @return 
-     */
-    @Override
-    public abstract IBlocksHubApi getApi();
+    public String getString(String node, String defaultValue);
+
+    public List<Integer> getIntegerList(String node);
+    
+    public List<String> getStringList(String node);
+    
+    public Set<String> getSubNodes();
 }

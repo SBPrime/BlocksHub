@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,31 +39,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.primesoft.blockshub.platform.bukkit;
 
-package org.primesoft.blockshub;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.platform.api.IEnableAware;
+import org.primesoft.blockshub.platform.api.ILogger;
 
 /**
+ *
  * @author SBPrime
  */
-@Deprecated
-public abstract class BlocksHub extends JavaPlugin implements IBlocksHubApiProvider {
-    private static BlocksHub s_instance;
+public class BukkitLogger implements ILogger, IEnableAware {
+    private static final Logger s_log = Logger.getLogger("Minecraft.BlocksHub");    
+    private static final String s_logFormat = "%s %s";    
+    private final JavaPlugin m_plugin;
+    private ConsoleCommandSender m_console;
 
-    public BlocksHub getInstance() {
-        return s_instance;
+    @Override
+    public void log(String msg) {
+        if (s_log == null || msg == null) {
+            return;
+        }
+
+        s_log.log(Level.INFO, String.format(s_logFormat, LoggerProvider.PREFIX, msg));
     }
 
     @Override
-    public void onEnable() {
-        s_instance = this;
+    public void sayConsole(String msg) {
+        if (m_console == null) {
+            return;
+        }
+        m_console.sendMessage(msg);
     }    
 
-    /**
-     * Get the API
-     * @return 
-     */
+    public BukkitLogger(JavaPlugin plugin) {
+        m_plugin = plugin;
+    }
+   
+
     @Override
-    public abstract IBlocksHubApi getApi();
+    public void onEnable() {
+        m_console = m_plugin.getServer().getConsoleSender();
+    }
+
+    @Override
+    public void onDisable() {        
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,30 +40,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub;
+package org.primesoft.blockshub.platform.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import java.io.File;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationOptions;
+import org.bukkit.configuration.file.FileConfigurationOptions;
+import org.bukkit.plugin.Plugin;
+import org.primesoft.blockshub.platform.api.IConfiguration;
 
 /**
+ *
  * @author SBPrime
  */
-@Deprecated
-public abstract class BlocksHub extends JavaPlugin implements IBlocksHubApiProvider {
-    private static BlocksHub s_instance;
+class BukkitConfiguration extends BukkitConfigurationSection implements IConfiguration {
 
-    public BlocksHub getInstance() {
-        return s_instance;
+    private final Configuration m_config;
+    private final Plugin m_plugin;
+
+    public BukkitConfiguration(Plugin plugin, Configuration configuration) {
+        super(configuration);
+
+        m_plugin = plugin;
+        m_config = configuration;
     }
 
     @Override
-    public void onEnable() {
-        s_instance = this;
-    }    
+    public void save() {
+        ConfigurationOptions options = m_config.options();
+        if (options instanceof FileConfigurationOptions) {
+            FileConfigurationOptions fOptions = (FileConfigurationOptions) options;
+            fOptions.header(null);
+            fOptions.copyHeader(true);
+        }
+        
+        m_plugin.saveConfig();
+    }
 
-    /**
-     * Get the API
-     * @return 
-     */
     @Override
-    public abstract IBlocksHubApi getApi();
+    public File getDataFolder() {
+        return m_plugin.getDataFolder();
+    }
+
 }
