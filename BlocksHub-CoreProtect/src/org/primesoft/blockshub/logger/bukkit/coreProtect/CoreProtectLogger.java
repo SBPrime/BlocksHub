@@ -39,9 +39,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.PrimeSoft.blocksHub.coreProtect;
+package org.primesoft.blockshub.logger.bukkit.coreProtect;
 
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
@@ -50,12 +49,36 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.api.IPlatform;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
 public class CoreProtectLogger implements IBlockLogger {
+
+    /**
+     * Create new instance of the logger
+     *
+     * @param platform
+     * @return
+     */
+    static IBlockLogger create(IPlatform platform) {
+        Object plugin = platform.getPlugin("CoreProtect");
+        if (!(plugin instanceof CoreProtect)) {
+            LoggerProvider.log("CoreProtect: plugin not found.");
+            return null;
+        }
+
+        return new CoreProtectLogger((CoreProtect) plugin);
+    }
 
     /**
      * Plugin name
@@ -94,39 +117,24 @@ public class CoreProtectLogger implements IBlockLogger {
         }
     }
 
-    public CoreProtectLogger(JavaPlugin plugin) {
+    public CoreProtectLogger(CoreProtect cp) {
         PluginDescriptionFile pd = null;
-        CoreProtect cp = getCoreProtect(plugin);
         m_coreProtect = cp != null ? cp.getAPI() : null;
         if (m_coreProtect == null) {
             m_isEnabled = false;
+            LoggerProvider.log("CoreProtect: unable to get CoreProtect API");
         } else {
             apiVersion = m_coreProtect.APIVersion();
-            if (apiVersion >= 3){
+            if (apiVersion >= 3) {
                 m_isEnabled = true;
                 pd = cp.getDescription();
-            }
-            else {
+            } else {
                 m_isEnabled = false;
+                LoggerProvider.log("CoreProtect: unsupported plugin version");
             }
         }
 
         m_name = pd != null ? pd.getFullName() : "Disabled - CoreProtect";
-    }
-
-    @Override
-    public void logBlock(Location location, String player, World world,
-            int oldBlockType, byte oldBlockData, int newBlockType,
-            byte newBlockData) {
-        if (!m_isEnabled) {
-            return;
-        }
-
-        Location l = new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        Material m_old = Material.getMaterial(oldBlockType);
-        Material m_new = Material.getMaterial(newBlockType);
-        m_coreProtect.logRemoval(player, l, m_old, oldBlockData);
-        m_coreProtect.logPlacement(player, l, m_new, newBlockData);
     }
 
     @Override
@@ -142,5 +150,25 @@ public class CoreProtectLogger implements IBlockLogger {
     @Override
     public boolean reloadConfiguration() {
         return true;
+    }
+
+    @Override
+    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+        if (!m_isEnabled) {
+            return;
+        }
+        
+        if (!(world instanceof BukkitWorld)) {
+            return;
+        }
+        
+        Location l = new Location(((BukkitWorld)world).getWorld(), location.getX(), location.getY(), location.getZ());
+        String playerName = player.getName();
+        
+        Material oldMaterial = Material.getMaterial(oldBlock.getType());
+        Material newMaterial = Material.getMaterial(newBlock.getType());
+        
+        m_coreProtect.logRemoval(playerName, l, oldMaterial, (byte)oldBlock.getData());
+        m_coreProtect.logPlacement(playerName, l, newMaterial, (byte)newBlock.getData());
     }
 }
