@@ -54,19 +54,21 @@ import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.configuration.ConfigProvider;
 import org.primesoft.blockshub.platform.LazyPlayer;
+import org.primesoft.blockshub.platform.api.IEnableAware;
 import org.primesoft.blockshub.utils.ExceptionHelper;
 
 /**
  *
  * @author SBPrime
  */
-public class Logic implements IBlocksHubApi {
+public class Logic implements IBlocksHubApi, IEnableAware {
+    private final static BlockData AIR_BLOCK = new BlockData(0, 0);
     
     private final IPlatform m_platform;
     private final Object m_mtaMutex = new Object();
     private final List<IBlockLogger> m_loggers = new ArrayList<IBlockLogger>();
     private final List<IAccessController> m_ac = new ArrayList<IAccessController>();
-    private boolean m_isInitialized;
+    private boolean m_isInitialized;    
     
     public Logic(IPlatform platform) {
         m_platform = platform;
@@ -341,8 +343,15 @@ public class Logic implements IBlocksHubApi {
     
     @Override
     public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
-        if (!validate(world, location, player, oldBlock, newBlock)) {
+        if (!validate(world, location, player)) {
             return;
+        }
+        
+        if (oldBlock == null) {
+            oldBlock = AIR_BLOCK;
+        }
+        if (newBlock == null) {
+            newBlock = AIR_BLOCK;
         }
         
         if (!ConfigProvider.isLogging(world.getName())) {
@@ -483,6 +492,19 @@ public class Logic implements IBlocksHubApi {
         }
         
         return true;
+    }
+
+    @Override
+    public void onEnable() {
+        
+    }
+
+    @Override
+    public void onDisable() {
+        synchronized (m_mtaMutex) {
+            m_ac.clear();
+            m_loggers.clear();
+        }
     }
     
 }

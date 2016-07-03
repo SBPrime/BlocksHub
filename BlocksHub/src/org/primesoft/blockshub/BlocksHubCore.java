@@ -69,6 +69,8 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
     @Override
     public void onEnable() {
         m_platform.onEnable();
+        m_logic.onEnable();
+        
         initializeCommands(m_platform.getCommandManager());
         
         if (!ConfigProvider.load(m_platform)) {
@@ -90,6 +92,7 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
 
     @Override
     public void onDisable() {
+        m_logic.onDisable();
         m_platform.onDisable();
         
         log("Disabled");

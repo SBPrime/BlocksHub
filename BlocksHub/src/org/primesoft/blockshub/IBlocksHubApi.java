@@ -60,6 +60,7 @@ public interface IBlocksHubApi extends org.PrimeSoft.blocksHub.IBlocksHubApi {
      *
      * @return
      */
+    @Override
     double getVersion();
 
     /**
