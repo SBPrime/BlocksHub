@@ -53,7 +53,7 @@ import org.primesoft.blockshub.api.IWorld;
  *
  * @author SBPrime
  */
-public interface IBlocksHubApi {
+public interface IBlocksHubApi extends org.PrimeSoft.blocksHub.IBlocksHubApi {
 
     /**
      * Get the current version of BlocksHub API

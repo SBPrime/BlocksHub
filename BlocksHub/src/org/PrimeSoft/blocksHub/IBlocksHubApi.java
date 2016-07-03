@@ -39,37 +39,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub;
-
-import org.PrimeSoft.blocksHub.BlocksHub;
-import org.primesoft.blockshub.platform.bukkit.BukkitPlatform;
+package org.PrimeSoft.blocksHub;
 
 /**
  *
  * @author SBPrime
  */
-public class BlocksHubBukkit extends BlocksHub implements IBlocksHubApiProvider {
-    private BlocksHubCore m_core;
-    
-    @Override
-    public void onEnable() {
-        super.onEnable();
-
-        m_core = new BlocksHubCore(new BukkitPlatform(this));
-        m_core.onEnable();
-    }
-    
-    @Override
-    public void onDisable() {
-        m_core.onDisable();
-    }
+@Deprecated
+public interface IBlocksHubApi {
     
     /**
-     * Get the API
-     * @return 
+     * Get the current version of BlocksHub API
+     *
+     * @return
      */
-    @Override
-    public IBlocksHubApi getApi() {
-        return m_core.getApi();
-    }
+    double getVersion();
 }

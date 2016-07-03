@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub;
+package org.PrimeSoft.blocksHub;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,7 +48,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author SBPrime
  */
 @Deprecated
-public abstract class BlocksHub extends JavaPlugin implements IBlocksHubApiProvider {
+public abstract class BlocksHub extends JavaPlugin {
     private static BlocksHub s_instance;
 
     public BlocksHub getInstance() {
@@ -64,6 +64,5 @@ public abstract class BlocksHub extends JavaPlugin implements IBlocksHubApiProvi
      * Get the API
      * @return 
      */
-    @Override
-    public abstract IBlocksHubApi getApi();
+    public abstract org.PrimeSoft.blocksHub.IBlocksHubApi getApi();
 }
