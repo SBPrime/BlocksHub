@@ -43,6 +43,7 @@
 package org.primesoft.blockshub.logger.bukkit.coreProtect;
 
 import org.primesoft.blockshub.IBlocksHubApi;
+import org.primesoft.blockshub.LoggerProvider;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.IBlocksHubEndpoint;
 import org.primesoft.blockshub.platform.api.IPlatform;
@@ -60,9 +61,15 @@ public class BlocksHubPlugin implements IBlocksHubEndpoint {
     public boolean initialize(IBlocksHubApi api, IPlatform platform) {
         IBlockLogger logger;
         
+        Object plugin = platform.getPlugin("CoreProtect");
+        if (plugin == null) {
+            LoggerProvider.log("CoreProtect: plugin not found.");
+            return false;
+        }
+        
         try {
-            logger = CoreProtectLogger.create(platform);
-        } catch (Exception ex) {            
+            logger = CoreProtectLogger.create(plugin);
+        } catch (Error ex) {            
             logger = null;
         }
         

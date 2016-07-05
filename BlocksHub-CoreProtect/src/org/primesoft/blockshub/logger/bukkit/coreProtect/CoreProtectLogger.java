@@ -45,24 +45,21 @@ import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
-import org.primesoft.blockshub.platform.api.IPlatform;
 import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class CoreProtectLogger implements IBlockLogger {
+public class CoreProtectLogger extends BaseEntity implements IBlockLogger {
 
     /**
      * Create new instance of the logger
@@ -70,81 +67,43 @@ public class CoreProtectLogger implements IBlockLogger {
      * @param platform
      * @return
      */
-    static IBlockLogger create(IPlatform platform) {
-        Object plugin = platform.getPlugin("CoreProtect");
+    static IBlockLogger create(Object plugin) {
         if (!(plugin instanceof CoreProtect)) {
             LoggerProvider.log("CoreProtect: plugin not found.");
             return null;
         }
 
-        return new CoreProtectLogger((CoreProtect) plugin);
+        CoreProtect cp = (CoreProtect) plugin;        
+        CoreProtectAPI coreProtect = cp.getAPI();
+        if (coreProtect == null) {
+            LoggerProvider.log("CoreProtect: unable to get CoreProtect API");
+            return null;
+        }
+        
+        int apiVersion = coreProtect.APIVersion();
+        if (apiVersion < 3) {
+            LoggerProvider.log("CoreProtect: unsupported plugin version");
+            return null;
+        }
+
+        PluginDescriptionFile pd = cp.getDescription();
+        if (pd == null) {
+            LoggerProvider.log("CoreProtect: unable to get plugin description");
+            return null;
+        }
+
+        return new CoreProtectLogger(coreProtect, pd.getFullName());
     }
 
-    /**
-     * Plugin name
-     */
-    private final String m_name;
     /**
      * Core protect
      */
     private final CoreProtectAPI m_coreProtect;
-    /**
-     * Is the logger enabled
-     */
-    private final boolean m_isEnabled;
-    /**
-     * CoreProtect API version
-     */
-    private static int apiVersion;
 
-    /**
-     * Get instance of the core protect plugin
-     *
-     * @param plugin
-     * @return
-     */
-    public static CoreProtect getCoreProtect(JavaPlugin plugin) {
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("CoreProtect");
-
-            if ((cPlugin == null) || (!(cPlugin instanceof CoreProtect))) {
-                return null;
-            }
-
-            return (CoreProtect) cPlugin;
-        } catch (NoClassDefFoundError ex) {
-            return null;
-        }
-    }
-
-    public CoreProtectLogger(CoreProtect cp) {
-        PluginDescriptionFile pd = null;
-        m_coreProtect = cp != null ? cp.getAPI() : null;
-        if (m_coreProtect == null) {
-            m_isEnabled = false;
-            LoggerProvider.log("CoreProtect: unable to get CoreProtect API");
-        } else {
-            apiVersion = m_coreProtect.APIVersion();
-            if (apiVersion >= 3) {
-                m_isEnabled = true;
-                pd = cp.getDescription();
-            } else {
-                m_isEnabled = false;
-                LoggerProvider.log("CoreProtect: unsupported plugin version");
-            }
-        }
-
-        m_name = pd != null ? pd.getFullName() : "Disabled - CoreProtect";
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return m_isEnabled;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
+    public CoreProtectLogger(CoreProtectAPI coreProtect, String name) {
+        super(name, true);
+        
+        m_coreProtect = coreProtect;
     }
 
     @Override
@@ -154,21 +113,21 @@ public class CoreProtectLogger implements IBlockLogger {
 
     @Override
     public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
-        if (!m_isEnabled) {
+        if (!isEnabled()) {
             return;
         }
-        
+
         if (!(world instanceof BukkitWorld)) {
             return;
         }
-        
-        Location l = new Location(((BukkitWorld)world).getWorld(), location.getX(), location.getY(), location.getZ());
+
+        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
         String playerName = player.getName();
-        
+
         Material oldMaterial = Material.getMaterial(oldBlock.getType());
         Material newMaterial = Material.getMaterial(newBlock.getType());
-        
-        m_coreProtect.logRemoval(playerName, l, oldMaterial, (byte)oldBlock.getData());
-        m_coreProtect.logPlacement(playerName, l, newMaterial, (byte)newBlock.getData());
+
+        m_coreProtect.logRemoval(playerName, l, oldMaterial, (byte) oldBlock.getData());
+        m_coreProtect.logPlacement(playerName, l, newMaterial, (byte) newBlock.getData());
     }
 }
