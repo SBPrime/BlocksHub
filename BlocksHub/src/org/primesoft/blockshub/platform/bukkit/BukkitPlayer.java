@@ -45,6 +45,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.primesoft.blockshub.Permissions;
 import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.platform.LazyPlayer;
 
 /**
  *
@@ -52,6 +53,18 @@ import org.primesoft.blockshub.api.IPlayer;
  */
 public class BukkitPlayer implements IPlayer {
     private final Player m_player;
+    
+    public static BukkitPlayer getPlayer(IPlayer player) {
+        if (player instanceof LazyPlayer) {
+            player = ((LazyPlayer)player).getResolved();
+        }
+        
+        if (player instanceof BukkitPlayer) {
+            return (BukkitPlayer)player;
+        }
+        
+        return null;
+    }
     
     public BukkitPlayer(Player player) {
         m_player = player;

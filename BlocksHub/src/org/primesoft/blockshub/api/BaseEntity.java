@@ -39,131 +39,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform;
-
-import java.util.UUID;
-import org.primesoft.blockshub.Permissions;
-import org.primesoft.blockshub.api.IPlayer;
-import org.primesoft.blockshub.platform.api.IPlatform;
+package org.primesoft.blockshub.api;
 
 /**
  *
  * @author SBPrime
  */
-public class LazyPlayer implements IPlayer {
-
-    private final UUID m_uuid;
+public abstract class BaseEntity implements IBaseEntity {
+    /**
+     * Is the entity enabled
+     */
+    private final boolean m_isEnabled;
+    
+    /**
+     * The name
+     */
     private final String m_name;
-    private final IPlatform m_platform;
-    private IPlayer m_resolved;
-
-    /**
-     * The MTA mutex
-     */
-    private final Object m_mutex = new Object();
-
-    public LazyPlayer(UUID uuid, IPlatform platform) {
-        m_uuid = uuid;
-        m_name = null;
-        m_resolved = null;
-        m_platform = platform;
-    }
-
-    public LazyPlayer(String name, IPlatform platform) {
-        m_uuid = null;
-        m_name = name;
-        m_resolved = null;
-        m_platform = platform;
-    }
-
-    /**
-     * Resolve the player
-     */
-    private void resolve() {
-        if (m_resolved != null) {
-            return;
-        }
-
-        synchronized (m_mutex) {
-            if (m_resolved != null) {
-                return;
-            }
-
-            IPlayer resolved;
-            if (m_uuid != null) {
-                resolved = m_platform.getPlayer(m_uuid);
-            } else if (m_name != null && m_name.length() > 0) {
-                resolved = m_platform.getPlayer(m_name);
-            } else {
-                resolved = null;
-            }
-
-            if (resolved == null) {
-                resolved = ConsolePlayer.getInstance();
-            }
-
-            m_resolved = resolved;
-        }
-    }
+            
     
-    @Override
-    public boolean isConsole() {
-        resolve();
-        return m_resolved.isConsole();
-    }
-
-    
-    
-    @Override
-    public boolean isAllowed(Permissions node) {
-        resolve();
-        return m_resolved.isAllowed(node);
-    }
-
-    @Override
-    public void say(String msg) {
-        resolve();
-        m_resolved.say(msg);
-    }
-
     @Override
     public String getName() {
-        if (m_name != null) {
-            return m_name;
-        }
-        
-        resolve();
-        return m_resolved.getName();
+        return m_name;
+    }
+    
+
+    @Override
+    public boolean isEnabled() {
+        return m_isEnabled;
+    }
+    
+    protected BaseEntity(String name, boolean  enabled) {
+        m_name = name;
+        m_isEnabled = enabled;
     }
 
     @Override
-    public UUID getUUID() {
-        if (m_uuid != null) {
-            return m_uuid;
-        }
-        
-        resolve();
-        return m_resolved.getUUID();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        resolve();
-        return m_resolved.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        resolve();
-        return m_resolved.hashCode();
-    }
-
-    /**
-     * Get the resolved player
-     * @return 
-     */
-    public IPlayer getResolved() {
-        resolve();
-        return m_resolved;
+    public boolean reloadConfiguration() {
+        return true;
     }
 }
