@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2014, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -40,75 +40,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.factions;
+package org.primesoft.blockshub.logger.accessors.factions;
 
-import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.engine.EngineMain;
-import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.IBlocksHubApi;
+import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.IBlocksHubEndpoint;
+import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
- *
  * @author SBPrime
  */
-public class FactionsAc extends BaseAccessController<Factions> {
-    /**
-     * The factions main engine
-     */
-    private EngineMain m_engine;
+public class FactionsPlugin implements IBlocksHubEndpoint {
 
-    public FactionsAc(JavaPlugin plugin) {
-        super(plugin, "Factions");
+    @Override
+    public String getName() {
+        return "Factions";
     }
 
     @Override
-    protected boolean postInit(PluginDescriptionFile pd) {
-        try {
-            m_engine = m_hook != null ? EngineMain.get() : null;
-            return m_engine != null;
-        } catch (NoClassDefFoundError ex) {
+    public boolean initialize(IBlocksHubApi api, IPlatform platform) {
+        IAccessController accessor;
+        
+        Object plugin = platform.getPlugin("Factions");
+        if (plugin == null) {
+            LoggerProvider.log("Factions: plugin not found.");
             return false;
         }
-    }
-    
-    
-    /**
-     * /**
-     * Check if a player is allowed to place a block
-     *
-     * @param player
-     * @param location
-     * @param world
-     * @return
-     */
-    @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null) {
-            return true;
+        
+        try {
+            accessor = FactionsAc.create(plugin);
+        } catch (Error ex) {            
+            accessor = null;
         }
-
         
-        Player p = m_server.getPlayer(player);
-        BlockPlaceEvent bpEvent = new BlockPlaceEvent(new FakeBlock(location), null, null, null, p, true);        
+        if (accessor == null) {
+            return false;
+        }
         
-        m_engine.blockBuild(bpEvent);
-        
-        return bpEvent.canBuild() && !bpEvent.isCancelled();
-    }
-
-    @Override
-    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
-        return Factions.class.isAssignableFrom(aClass);
-    }
-
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
+        return api.registerAccessController(accessor);
     }
 }
