@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.griefPrevention;
+package org.primesoft.blockshub.accessors.bukkit.griefPrevention;
 
 import org.PrimeSoft.blocksHub.IBlocksHubApi;
 import java.util.logging.Level;
