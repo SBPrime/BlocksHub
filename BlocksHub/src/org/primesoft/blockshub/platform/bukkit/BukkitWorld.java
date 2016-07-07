@@ -50,7 +50,7 @@ import org.primesoft.blockshub.api.IWorld;
  * @author SBPrime
  */
 public class BukkitWorld implements IWorld {
-    private World m_world;
+    private final World m_world;
 
     BukkitWorld(World world) {
         m_world = world;

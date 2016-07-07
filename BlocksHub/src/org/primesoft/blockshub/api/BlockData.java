@@ -46,8 +46,14 @@ package org.primesoft.blockshub.api;
  * @author SBPrime
  */
 public class BlockData {
-    private int m_type;
-    private int m_data;
+    public static final BlockData AIR = new BlockData(0, 0);
+    
+    private final int m_type;
+    private final int m_data;
+
+    public boolean isAir() {
+        return m_type == 0;
+    }
     
     public int getType() {
         return m_type;

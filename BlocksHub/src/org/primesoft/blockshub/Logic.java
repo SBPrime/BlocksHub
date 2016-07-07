@@ -62,8 +62,6 @@ import org.primesoft.blockshub.utils.ExceptionHelper;
  * @author SBPrime
  */
 public class Logic implements IBlocksHubApi, IEnableAware {
-    private final static BlockData AIR_BLOCK = new BlockData(0, 0);
-    
     private final IPlatform m_platform;
     private final Object m_mtaMutex = new Object();
     private final List<IBlockLogger> m_loggers = new ArrayList<IBlockLogger>();
@@ -348,10 +346,10 @@ public class Logic implements IBlocksHubApi, IEnableAware {
         }
         
         if (oldBlock == null) {
-            oldBlock = AIR_BLOCK;
+            oldBlock = BlockData.AIR;
         }
         if (newBlock == null) {
-            newBlock = AIR_BLOCK;
+            newBlock = BlockData.AIR;
         }
         
         if (!ConfigProvider.isLogging(world.getName())) {
