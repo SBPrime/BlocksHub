@@ -41,83 +41,135 @@
  */
 package org.primesoft.blockshub.accessors.bukkit.griefPrevention;
 
-import me.ryanhamshire.GriefPrevention.BlockEventHandler;
+import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
-import org.PrimeSoft.blocksHub.api.SilentPlayer;
+import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.BaseEntity;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
+import org.primesoft.blockshub.platform.bukkit.TypeOnlyBlock;
 
 /**
  *
  * @author SBPrime
  */
-public class GriefPreventionAc extends BaseAccessController<GriefPrevention> {
+public class GriefPreventionAc extends BaseEntity implements IAccessController {
 
-    private BlockEventHandler m_listener;
-
-    public GriefPreventionAc(JavaPlugin plugin) {
-        super(plugin, "GriefPrevention");
-    }
-
-    @Override
-    protected boolean postInit(PluginDescriptionFile pd) {
-        if (m_hook == null) {
-            return false;
+    static IAccessController create(Object plugin) {
+        if (!(plugin instanceof GriefPrevention)) {
+            LoggerProvider.log("GriefPrevention: plugin not found.");
+            return null;
         }
+        
+        return new GriefPreventionAc((GriefPrevention)plugin);
+    }
+    
+    
+    private final GriefPrevention m_griefPrevention;
 
-        m_listener = new BlockEventHandler(m_hook.dataStore);
-        return m_listener != null;
+    
+    public GriefPreventionAc(GriefPrevention griefPrevention) {
+        super("GriefPrevention", true);
+        
+        m_griefPrevention = griefPrevention;
+    }    
+    
+    /**
+     * Get the player data
+     * @param player
+     * @return 
+     */
+    private PlayerData getPlayerData(IPlayer player) {
+        if (player == null) {
+            return null;
+        }
+        
+        return m_griefPrevention.dataStore.getPlayerData(player.getUUID());
     }
 
     @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null || world == null || location == null) {
+    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
+        if (location == null || !(world instanceof BukkitWorld)) {
             return true;
         }
-        Player bPlayer = m_server.getPlayer(player);
-        if (bPlayer == null) {
+        
+        World bWorld = ((BukkitWorld)world).getWorld();
+        BukkitPlayer bPlayer = BukkitPlayer.getPlayer(player);        
+            
+        if (bWorld == null || bPlayer == null) {
+            return true;
+        }
+        
+        Player bukkitPlayer = bPlayer.getPlayer();
+        if (bukkitPlayer == null) {
+            return true;
+        }
+        
+        if (!m_griefPrevention.claimsEnabledForWorld(bWorld)) {
             return true;
         }
 
-        bPlayer = new SilentPlayer(bPlayer);
-        Block block = location.getBlock();
+        PlayerData playerData = getPlayerData(player);
+        if (playerData == null || playerData.ignoreClaims || 
+                m_griefPrevention.config_mods_ignoreClaimsAccounts.contains(player.getName())) {
+            return true;
+        }
+        
+        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());
+        Claim claim = m_griefPrevention.dataStore.getClaimAt(l, true, playerData.lastClaim);
+        
+        playerData.lastClaim = claim;        
+                        
+        return (claim == null) || (claim.allowAccess(bukkitPlayer) == null);
+    }
 
-        if (!block.isEmpty()) {
-            BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
-            m_listener.onBlockBreak(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-        } else {
-            BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
-                    bPlayer.getItemInHand(), bPlayer, true);
-            m_listener.onBlockPlace(event);
-
-            if (event.isCancelled()) {
+    @Override
+    public boolean canPlace(IPlayer player, IWorld world, Vector location, 
+            BlockData blockOld, BlockData blockNew) {
+        boolean airOld = blockOld.isAir();
+        boolean airNew = blockNew.isAir();
+        
+        if (airOld && airNew) {
+            return true;
+        }
+        
+        if (location == null || !(world instanceof BukkitWorld)) {
+            return true;
+        }
+        
+        World bWorld = ((BukkitWorld)world).getWorld();
+        BukkitPlayer bPlayer = BukkitPlayer.getPlayer(player);        
+            
+        if (bWorld == null || bPlayer == null) {
+            return true;
+        }
+        
+        Player bukkitPlayer = bPlayer.getPlayer();
+        if (bukkitPlayer == null) {
+            return true;
+        }
+        
+        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());               
+        
+        if (airOld) {
+            if (m_griefPrevention.allowBreak(bukkitPlayer, new TypeOnlyBlock(blockOld), l) != null) {
                 return false;
             }
         }
-
-        //We do not support white/black lists
-        return true;
-    }
-
-    @Override
-    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
-        return GriefPrevention.class.isAssignableFrom(aClass);
-    }
-
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
+        
+        return m_griefPrevention.allowBuild(bukkitPlayer, l, Material.getMaterial(blockOld.getType())) == null;
     }
 }
