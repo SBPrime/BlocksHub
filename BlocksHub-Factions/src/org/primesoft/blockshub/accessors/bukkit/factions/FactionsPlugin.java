@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub.logger.accessors.factions;
+package org.primesoft.blockshub.accessors.bukkit.factions;
 
 import org.primesoft.blockshub.IBlocksHubApi;
 import org.primesoft.blockshub.LoggerProvider;

@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.primesoft.blockshub.logger.accessors.factions;
+package org.primesoft.blockshub.accessors.bukkit.factions;
 
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.engine.EngineMain;
