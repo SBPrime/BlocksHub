@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.hawkEye;
+package org.primesoft.blockshub.logger.bukkit.hawkEye;
 
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import org.bukkit.Location;
