@@ -39,16 +39,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub.logger.bukkit.hawkEye;
 
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.BaseEntity;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 import uk.co.oliwali.HawkEye.DataType;
 import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.database.DataManager;
@@ -59,86 +61,58 @@ import uk.co.oliwali.HawkEye.entry.BlockEntry;
  *
  * @author SBPrime
  */
-public class HawkEyeLogger implements IBlockLogger {
+public class HawkEyeLogger extends BaseEntity implements IBlockLogger {
 
     /**
-     * Plugin name
-     */
-    private final String m_name;
-    /**
-     * HawkEye protect
-     */
-    private final HawkEye m_hawkEye;
-    /**
-     * Is the logger enabled
-     */
-    private final boolean m_isEnabled;
-
-    /**
-     * Get instance of the core protect plugin
+     * Create new instance of the logger
      *
-     * @param plugin
+     * @param platform
      * @return
      */
-    public static HawkEye getHawkEye(JavaPlugin plugin) {
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("HawkEye");
-
-            if ((cPlugin == null) || (!(cPlugin instanceof HawkEye))) {
-                return null;
-            }
-
-            return (HawkEye) cPlugin;
-        } catch (NoClassDefFoundError ex) {
+    static IBlockLogger create(Object plugin) {
+        if (!(plugin instanceof HawkEye)) {
+            LoggerProvider.log("HawkEye: plugin not found.");
             return null;
         }
+
+        return new HawkEyeLogger();
     }
 
-    public HawkEyeLogger(JavaPlugin plugin) {
-        PluginDescriptionFile pd = null;
-        m_hawkEye = getHawkEye(plugin);
-        if (m_hawkEye == null) {
-            m_isEnabled = false;
-        } else {
-            m_isEnabled = true;
-            pd = m_hawkEye.getDescription();
-        }
-        
-        m_name = pd != null ? pd.getFullName() : "Disabled - HawkEye";
+    public HawkEyeLogger() {
+        super("HawkEye", true);
     }
 
     @Override
-    public void logBlock(Location location, String player, World world,
-            int oldBlockType, byte oldBlockData, int newBlockType,
-            byte newBlockData) {
+    public void logBlock(Vector location, IPlayer player, IWorld world,
+            BlockData blockOld, BlockData blockNew) {
+        boolean airOld = blockOld.isAir();
+        boolean airNew = blockNew.isAir();
 
-        if (!m_isEnabled) {
+        if (airOld && airNew) {
             return;
         }
 
-        Location l = new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-
-        if (newBlockType == Material.AIR.getId()) {
-            DataManager.addEntry(new BlockEntry(player, DataType.WORLDEDIT_BREAK, oldBlockType, oldBlockData, l));
-        } else {
-            DataManager.addEntry(new BlockChangeEntry(player, DataType.WORLDEDIT_PLACE, l,
-                    oldBlockType, oldBlockData,
-                    newBlockType, newBlockData));
+        if (location == null || !(world instanceof BukkitWorld)) {
+            return;
         }
-    }
 
-    @Override
-    public boolean isEnabled() {
-        return m_isEnabled;
-    }
+        World bWorld = ((BukkitWorld) world).getWorld();
 
-    @Override
-    public String getName() {
-        return m_name;
-    }
+        if (bWorld == null) {
+            return;
+        }
 
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
+        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());               
+        
+        
+        if (airNew) {
+            DataManager.addEntry(new BlockEntry(player.getName(), DataType.WORLDEDIT_BREAK, blockOld.getType(), blockOld.getData(), l));
+            return;
+        }
+
+        DataManager.addEntry(new BlockChangeEntry(player.getName(), DataType.WORLDEDIT_PLACE, 
+                l,
+                blockOld.getType(), blockOld.getData(),
+                blockNew.getType(), blockNew.getData()));
     }
 }
