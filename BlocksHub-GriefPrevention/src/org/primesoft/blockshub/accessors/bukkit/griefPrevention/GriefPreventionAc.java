@@ -48,10 +48,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.primesoft.blockshub.LoggerProvider;
 import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
@@ -65,9 +65,9 @@ import org.primesoft.blockshub.platform.bukkit.TypeOnlyBlock;
  */
 public class GriefPreventionAc extends BaseEntity implements IAccessController {
 
-    static IAccessController create(Object plugin) {
+    static IAccessController create(ILog logger, Object plugin) {
         if (!(plugin instanceof GriefPrevention)) {
-            LoggerProvider.log("GriefPrevention: plugin not found.");
+            logger.log("GriefPrevention: plugin not found.");
             return null;
         }
         

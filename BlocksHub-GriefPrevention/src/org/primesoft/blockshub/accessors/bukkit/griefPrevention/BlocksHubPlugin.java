@@ -43,40 +43,21 @@
 package org.primesoft.blockshub.accessors.bukkit.griefPrevention;
 
 import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.LoggerProvider;
-import org.primesoft.blockshub.api.IBlocksHubEndpoint;
+import org.primesoft.blockshub.api.BaseAccessorEndpoint;
+import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
  * @author SBPrime
  */
-public class BlocksHubPlugin implements IBlocksHubEndpoint {
+public class BlocksHubPlugin extends BaseAccessorEndpoint {
 
-    @Override
-    public String getName() {
-        return "GriefPrevention";
+    public BlocksHubPlugin() {
+        super("GriefPrevention");
     }
 
     @Override
-    public boolean initialize(IBlocksHubApi api, IPlatform platform) {
-        org.primesoft.blockshub.api.IAccessController accessor;
-        
-        Object plugin = platform.getPlugin("GriefPrevention");
-        if (plugin == null) {
-            LoggerProvider.log("GriefPrevention: plugin not found.");
-            return false;
-        }
-        
-        try {
-            accessor = GriefPreventionAc.create(plugin);
-        } catch (Error ex) {            
-            accessor = null;
-        }
-        
-        if (accessor == null) {
-            return false;
-        }
-        
-        return api.registerAccessController(accessor);
+    protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
+        return GriefPreventionAc.create(this, plugin);
     }
 }
