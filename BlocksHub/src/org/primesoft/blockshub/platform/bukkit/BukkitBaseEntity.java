@@ -49,7 +49,11 @@ import org.primesoft.blockshub.api.BaseEntity;
  *
  * @author SBPrime
  */
-public class BukkitBaseEntity extends BaseEntity {    
+public class BukkitBaseEntity extends BaseEntity {
+    protected BukkitBaseEntity(JavaPlugin plugin) {
+        this(plugin, null);
+    }
+    
     protected BukkitBaseEntity(JavaPlugin plugin, String name) {
         this(getName(plugin, name), plugin != null);
     }
