@@ -48,13 +48,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
 import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
 import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 import org.primesoft.blockshub.platform.bukkit.TypeOnlyBlock;
@@ -63,7 +63,7 @@ import org.primesoft.blockshub.platform.bukkit.TypeOnlyBlock;
  *
  * @author SBPrime
  */
-public class GriefPreventionAc extends BaseEntity implements IAccessController {
+public class GriefPreventionAc extends BukkitBaseEntity implements IAccessController {
 
     static IAccessController create(ILog logger, Object plugin) {
         if (!(plugin instanceof GriefPrevention)) {
@@ -79,7 +79,7 @@ public class GriefPreventionAc extends BaseEntity implements IAccessController {
 
     
     public GriefPreventionAc(GriefPrevention griefPrevention) {
-        super("GriefPrevention", true);
+        super(griefPrevention, "GriefPrevention");
         
         m_griefPrevention = griefPrevention;
     }    
