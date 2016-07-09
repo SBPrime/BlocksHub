@@ -42,135 +42,89 @@
 
 package org.primesoft.blockshub.logger.bukkit.logBlock;
 
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
+import de.diddiz.LogBlock.Actor;
+import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
-import de.diddiz.LogBlock.listeners.BlockBreakLogging;
-import de.diddiz.LogBlock.listeners.BlockPlaceLogging;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class LogBlockLogger implements IBlockLogger {
+public class LogBlockLogger extends BukkitBaseEntity implements IBlockLogger {
 
-    /**
-     * Plugin name
-     */
-    private final String m_name;
-    /**
-     * Log block
-     */
-    private final LogBlock m_logBlock;
-    /**
-     * Is the logger enabled
-     */
-    private final boolean m_isEnabled;
-    
-    /**
-     * The bukkit server
-     */
-    private Server m_server;
-    
-    /**
-     * The block place logger
-     */
-    private BlockPlaceLogging m_blockPlaceLogger;
-    
-    /**
-     * The block break logger
-     */
-    private BlockBreakLogging m_blockBreakLogger;
-
-    /**
-     * Get instance of the log block plugin
-     *
-     * @param plugin
-     * @return
-     */
-    public static LogBlock getLogBlock(JavaPlugin plugin) {
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("LogBlock");
-
-            if ((cPlugin == null) || (!(cPlugin instanceof LogBlock))) {
-                return null;
-            }
-
-            return (LogBlock) cPlugin;
-        } catch (NoClassDefFoundError ex) {
+    static IBlockLogger create(ILog logger, Object plugin) {
+        if (!(plugin instanceof LogBlock)) {
+            logger.log("plugin not found.");
+            return null;    
+        }
+        
+        LogBlock logBlock = (LogBlock)plugin;
+        Consumer consumer = logBlock.getConsumer();
+        if (consumer == null) {
+            logger.log("unable to get the Consumer");
             return null;
         }
-    }    
+        
+        
+        return new LogBlockLogger(logBlock, consumer);
+    }
 
-    public LogBlockLogger(JavaPlugin plugin) {
-        PluginDescriptionFile pd = null;
-        m_logBlock = getLogBlock(plugin);
-        if (m_logBlock == null) {
-            m_isEnabled = false;
+    /**
+     * The log block consumer
+     */
+    private final Consumer m_consumer;
+
+    
+    private LogBlockLogger(LogBlock plugin, Consumer consumer) {
+        super(plugin);
+        m_consumer = consumer;
+    }
+
+    /**
+     * Get actor
+     * @param player
+     * @return 
+     */
+    private static Actor getActor(IPlayer player) {
+        return new Actor(player.getName(), player.getUUID());
+    }
+    
+    @Override
+    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData blockOld, BlockData blockNew) {
+        boolean airOld = blockOld.isAir();
+        boolean airNew = blockNew.isAir();
+        
+        World bWorld = ((BukkitWorld) world).getWorld();
+
+        if (bWorld == null) {
+            return;
+        }
+
+        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());
+        Actor actor = getActor(player);
+        
+        if (airOld && airNew) {
+            return;
+        }
+        
+        if (airOld) {
+            m_consumer.queueBlockPlace(actor, l, blockNew.getType(), (byte)blockNew.getData());
+        }
+        else if (airNew) {
+            m_consumer.queueBlockBreak(actor, l, blockOld.getType(), (byte)blockOld.getData());
         } else {
-            m_isEnabled = true;
-            pd = m_logBlock.getDescription();
-            
-            m_blockPlaceLogger = new BlockPlaceLogging(m_logBlock);
-            m_blockBreakLogger = new BlockBreakLogging(m_logBlock);
-            m_server = plugin.getServer();
+            m_consumer.queueBlockReplace(actor, l, blockOld.getType(), (byte)blockOld.getData(),
+                    blockNew.getType(), (byte)blockNew.getData());
         }
-        
-        m_name = pd != null ? pd.getFullName() : "Disabled - LogBlock";
-    }
-
-    @Override
-    public void logBlock(Location location, String player, World world,
-            int oldBlockType, byte oldBlockData, int newBlockType,
-            byte newBlockData) {
-        if (!m_isEnabled) {
-            return;
-        }
-        
-        Player bPlayer = m_server.getPlayer(player);
-        if (bPlayer == null) {
-            return;
-        }
-
-
-        Location l = new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        Block oldBlock = new FakeBlock(l.getBlock(), oldBlockData, Material.getMaterial(oldBlockType));
-        Block newBlock = new FakeBlock(l.getBlock(), newBlockData, Material.getMaterial(newBlockType));
-        
-        if (newBlockType == 0) {
-            m_blockBreakLogger.onBlockBreak(new BlockBreakEvent(oldBlock, bPlayer));
-        }else {
-            m_blockPlaceLogger.onBlockPlace(
-                    new BlockPlaceEvent(newBlock, oldBlock.getState(),
-                            null, null, bPlayer, m_isEnabled));
-        }
-        
-        //consumer.queueBlockBreak(player, l, oldBlockType, oldBlockData);
-        //consumer.queueBlockPlace(player, l, newBlockType, newBlockData);
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return m_isEnabled;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
-    }
-
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
     }
 }
