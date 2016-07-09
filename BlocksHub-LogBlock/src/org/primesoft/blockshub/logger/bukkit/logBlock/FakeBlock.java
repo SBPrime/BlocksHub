@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.PrimeSoft.blocksHub.logBlock;
+package org.primesoft.blockshub.logger.bukkit.logBlock;
 
 import java.util.Collection;
 import java.util.List;

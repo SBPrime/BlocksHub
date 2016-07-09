@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.logBlock;
+package org.primesoft.blockshub.logger.bukkit.logBlock;
 
 import org.PrimeSoft.blocksHub.IBlocksHubApi;
 import java.util.logging.Level;

@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.logBlock;
+package org.primesoft.blockshub.logger.bukkit.logBlock;
 
 import java.util.List;
 import org.bukkit.Chunk;
