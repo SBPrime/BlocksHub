@@ -50,6 +50,7 @@ import org.primesoft.blockshub.LoggerProvider;
 import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
@@ -61,14 +62,14 @@ import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
  */
 public class FactionsAc extends BaseEntity implements IAccessController {
 
-    static IAccessController create(Object plugin) {
+    static IAccessController create(ILog logger, Object plugin) {
         if (!(plugin instanceof Factions)) {
-            LoggerProvider.log("Factions: plugin not found.");
+            logger.log("plugin not found.");
             return null;
         }
         
         if (EngineMain.get() == null) {
-            LoggerProvider.log("Factions: unable to get engine.");
+            logger.log("unable to get engine.");
             return null;
         }
         

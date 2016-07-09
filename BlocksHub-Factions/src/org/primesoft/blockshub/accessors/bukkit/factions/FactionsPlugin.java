@@ -43,41 +43,20 @@
 package org.primesoft.blockshub.accessors.bukkit.factions;
 
 import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.BaseAccessorEndpoint;
 import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.api.IBlocksHubEndpoint;
 import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
  * @author SBPrime
  */
-public class FactionsPlugin implements IBlocksHubEndpoint {
-
-    @Override
-    public String getName() {
-        return "Factions";
+public class FactionsPlugin extends BaseAccessorEndpoint {
+    public FactionsPlugin() {
+        super("Factions");
     }
 
     @Override
-    public boolean initialize(IBlocksHubApi api, IPlatform platform) {
-        IAccessController accessor;
-        
-        Object plugin = platform.getPlugin("Factions");
-        if (plugin == null) {
-            LoggerProvider.log("Factions: plugin not found.");
-            return false;
-        }
-        
-        try {
-            accessor = FactionsAc.create(plugin);
-        } catch (Error ex) {            
-            accessor = null;
-        }
-        
-        if (accessor == null) {
-            return false;
-        }
-        
-        return api.registerAccessController(accessor);
+    protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
+        return FactionsAc.create(this, plugin);
     }
 }
