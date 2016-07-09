@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2014, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2016, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,89 +39,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.primesoft.blockshub.platform.bukkit;
 
-package org.primesoft.blockshub.accessControl;
-
-import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.platform.api.IPlatform;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.api.BaseEntity;
 
 /**
  *
  * @author SBPrime
- * @param <T>
  */
-public abstract class BaseAccessController<T> implements IAccessController {
-
-    /**
-     * AC name
-     */
-    private final String m_name;
-
-    /**
-     * Is world guard integration enabled
-     */
-    protected boolean m_isEnabled;
-
-    /**
-     * The hook class
-     */
-    protected final T m_hook;
-
-    @Override
-    public boolean isEnabled() {
-        return m_isEnabled;
-    }
-
-    /**
-     * Get access controller name
-     *
-     * @return
-     */
-    @Override
-    public String getName() {
-        return m_name;
-    }
-
-    protected void disable() {
-
-    }
-
-    protected BaseAccessController(IPlatform platform, final String pluginName) {
-        m_isEnabled = false;
-
-        T hook = null;
-        try {            
-            Object cPlugin = platform.getPlugin(pluginName);
-
-            if ((cPlugin != null) && instanceOfT(cPlugin.getClass())) {
-                m_isEnabled = true;
-                hook = (T) cPlugin;
-            }
-        } catch (NoClassDefFoundError ex) {
-            hook = null;
-            m_isEnabled = false;
-        } catch (NoSuchMethodError ex) {
-            hook = null;
-            m_isEnabled = false;
-        }
-
-        m_hook = hook;
-        if (m_isEnabled) {
-            m_isEnabled = postInit(m_hook);
-        }
-        
-        String name = getName(m_hook);
-        
-        m_name = name != null && m_isEnabled ? name : "Disabled - " + pluginName;
-    }
-
-    protected String getName(T pluginClass) {
-        return null;
+public class BukkitBaseEntity extends BaseEntity {    
+    protected BukkitBaseEntity(JavaPlugin plugin, String name) {
+        this(getName(plugin, name), plugin != null);
     }
     
-    protected boolean postInit(T pluginClass) {
-        return true;
+    private BukkitBaseEntity(String name, boolean isEnabled) {
+        super(name, isEnabled && name != null);
     }
-
-    protected abstract boolean instanceOfT(Class<?> aClass);
+    
+    
+    private static String getName(JavaPlugin plugin, String name) {
+        if (plugin == null) {
+            return name;
+        }
+        
+        PluginDescriptionFile pd = plugin.getDescription();
+        if (pd == null) {
+            return name;
+        }
+        
+        String pName = pd.getName();
+        if (pName == null) {
+            return name;
+        }
+        
+        return pName;
+    }
 }
