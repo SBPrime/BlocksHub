@@ -46,10 +46,10 @@ import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.primesoft.blockshub.LoggerProvider;
 import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
@@ -67,28 +67,28 @@ public class CoreProtectLogger extends BaseEntity implements IBlockLogger {
      * @param platform
      * @return
      */
-    static IBlockLogger create(Object plugin) {
+    static IBlockLogger create(ILog logger, Object plugin) {
         if (!(plugin instanceof CoreProtect)) {
-            LoggerProvider.log("CoreProtect: plugin not found.");
+            logger.log("plugin not found.");
             return null;
         }
 
         CoreProtect cp = (CoreProtect) plugin;        
         CoreProtectAPI coreProtect = cp.getAPI();
         if (coreProtect == null) {
-            LoggerProvider.log("CoreProtect: unable to get CoreProtect API");
+            logger.log("unable to get CoreProtect API");
             return null;
         }
         
         int apiVersion = coreProtect.APIVersion();
         if (apiVersion < 3) {
-            LoggerProvider.log("CoreProtect: unsupported plugin version");
+            logger.log("unsupported plugin version");
             return null;
         }
 
         PluginDescriptionFile pd = cp.getDescription();
         if (pd == null) {
-            LoggerProvider.log("CoreProtect: unable to get plugin description");
+            logger.log("unable to get plugin description");
             return null;
         }
 
