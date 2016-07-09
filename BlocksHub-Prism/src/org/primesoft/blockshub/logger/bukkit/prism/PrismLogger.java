@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.prism;
+package org.primesoft.blockshub.logger.bukkit.prism;
 
 import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import java.lang.reflect.InvocationTargetException;

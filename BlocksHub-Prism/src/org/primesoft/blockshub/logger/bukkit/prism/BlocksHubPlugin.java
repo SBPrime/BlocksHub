@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.prism;
+package org.primesoft.blockshub.logger.bukkit.prism;
 
 import org.PrimeSoft.blocksHub.IBlocksHubApi;
 import java.util.logging.Level;
