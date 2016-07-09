@@ -45,21 +45,21 @@ import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.primesoft.blockshub.api.BaseEntity;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
 import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class CoreProtectLogger extends BaseEntity implements IBlockLogger {
+public class CoreProtectLogger extends BukkitBaseEntity implements IBlockLogger {
 
     /**
      * Create new instance of the logger
@@ -86,13 +86,7 @@ public class CoreProtectLogger extends BaseEntity implements IBlockLogger {
             return null;
         }
 
-        PluginDescriptionFile pd = cp.getDescription();
-        if (pd == null) {
-            logger.log("unable to get plugin description");
-            return null;
-        }
-
-        return new CoreProtectLogger(coreProtect, pd.getFullName());
+        return new CoreProtectLogger(cp, coreProtect);
     }
 
     /**
@@ -100,10 +94,10 @@ public class CoreProtectLogger extends BaseEntity implements IBlockLogger {
      */
     private final CoreProtectAPI m_coreProtect;
 
-    public CoreProtectLogger(CoreProtectAPI coreProtect, String name) {
-        super(name, true);
+    public CoreProtectLogger(JavaPlugin plugin, CoreProtectAPI api) {
+        super(plugin);
         
-        m_coreProtect = coreProtect;
+        m_coreProtect = api;
     }
 
     @Override
