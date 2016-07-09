@@ -41,68 +41,14 @@
  */
 package org.primesoft.blockshub.api;
 
-import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.LoggerProvider;
-import org.primesoft.blockshub.platform.api.IPlatform;
-
 /**
  *
  * @author SBPrime
  */
-public abstract class BaseEndpoint implements IBlocksHubEndpoint, ILog {
-
-    private final String m_endpointName;
-
-    private final String m_pluginName;
-
-    @Override
-    public String getName() {
-        return m_endpointName;
-    }
-
-    protected BaseEndpoint(String pluginName) {
-        this(pluginName, pluginName);
-    }
-
-    protected BaseEndpoint(String endpointName, String pluginName) {
-        m_endpointName = endpointName;
-        m_pluginName = pluginName;
-    }
-
+public interface ILog {
     /**
      * Log a message
      * @param message 
      */
-    @Override
-    public void log(String message) {
-        if (message == null) {
-            return;
-        }
-        
-        LoggerProvider.log(String.format("{0}: {1}", m_pluginName, message));
-    }
-    
-    @Override
-    public boolean initialize(IBlocksHubApi api, IPlatform platform) {
-        if (api == null || platform == null) {
-            return false;
-        }
-
-        Object plugin = platform.getPlugin(m_pluginName);
-        if (plugin == null) {
-            log("plugin not found.");
-            return false;
-        }
-
-        return finalizeInitialization(api, platform, plugin);
-    }
-
-    /**
-     * Finalize the endpoint initialization
-     * @param api
-     * @param platform
-     * @param plugin
-     * @return 
-     */
-    protected abstract boolean finalizeInitialization(IBlocksHubApi api, IPlatform platform, Object plugin);
+    void log(String message);
 }
