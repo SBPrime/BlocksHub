@@ -43,14 +43,13 @@ package org.primesoft.blockshub.logger.bukkit.hawkEye;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.primesoft.blockshub.LoggerProvider;
-import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
 import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 import uk.co.oliwali.HawkEye.DataType;
 import uk.co.oliwali.HawkEye.HawkEye;
@@ -62,7 +61,7 @@ import uk.co.oliwali.HawkEye.entry.BlockEntry;
  *
  * @author SBPrime
  */
-public class HawkEyeLogger extends BaseEntity implements IBlockLogger {
+public class HawkEyeLogger extends BukkitBaseEntity implements IBlockLogger {
 
     /**
      * Create new instance of the logger
@@ -76,11 +75,11 @@ public class HawkEyeLogger extends BaseEntity implements IBlockLogger {
             return null;
         }
 
-        return new HawkEyeLogger();
+        return new HawkEyeLogger((HawkEye)plugin);
     }
 
-    public HawkEyeLogger() {
-        super("HawkEye", true);
+    public HawkEyeLogger(HawkEye plugin) {
+        super(plugin);
     }
 
     @Override
