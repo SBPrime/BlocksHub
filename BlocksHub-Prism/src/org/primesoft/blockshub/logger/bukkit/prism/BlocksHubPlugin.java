@@ -42,113 +42,22 @@
 
 package org.primesoft.blockshub.logger.bukkit.prism;
 
-import org.PrimeSoft.blocksHub.IBlocksHubApi;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.PrimeSoft.blocksHub.BlocksHub;
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.IBlocksHubApi;
+import org.primesoft.blockshub.api.BaseLoggerEndpoint;
+import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
  * @author SBPrime
  */
-public class BlocksHubPlugin extends JavaPlugin {
-    private static final Logger s_log = Logger.getLogger("Minecraft.BlocksHub.Logger.Prism");
-    private static String s_prefix = null;
-    private static final String s_logFormat = "%s %s";
-    /**
-     * THe blocks hub instance
-     */
-    private BlocksHub m_blocksHub;
-    
-    /**
-     * The blocks hub api
-     */
-    private IBlocksHubApi m_api;
-    
-    /**
-     * The logger class
-     */
-    private IBlockLogger m_logger;
+public class BlocksHubPlugin extends BaseLoggerEndpoint {
 
-    /**
-     * Get instance of the BlocksHub plugin
-     *
-     * @param plugin
-     * @return
-     */
-    public static BlocksHub getBlocksHub(JavaPlugin plugin) {
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("BlocksHub");
-
-            if ((cPlugin == null) || (!(cPlugin instanceof BlocksHub))) {
-                return null;
-            }
-
-            return (BlocksHub) cPlugin;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    public static void log(String msg) {
-        if (s_log == null || msg == null || s_prefix == null) {
-            return;
-        }
-
-        s_log.log(Level.INFO, String.format(s_logFormat, s_prefix, msg));
-    }
-    
-    public IBlockLogger CreateLogger() {
-        try {
-            return new PrismLogger(this);
-        } catch (Exception ex) {            
-            return null;
-        }
+    public BlocksHubPlugin() {
+        super("Prism");
     }
 
     @Override
-    public void onEnable() {
-        PluginDescriptionFile desc = getDescription();
-        s_prefix = String.format("[%s]", desc.getName());
-
-        m_logger = CreateLogger();        
-        if (m_logger == null) {
-            log("Error initializeng");
-            return;
-        } else if (!m_logger.isEnabled()) {
-            log("logger not found");
-            return;
-        }
-        
-        m_blocksHub = getBlocksHub(this);
-        if (m_blocksHub == null)
-        {
-            log("BlocksHub plugin not found");
-            return;
-        }
-        
-        m_api = m_blocksHub.getApi();
-        if (m_api == null)
-        {
-            log("Unable to get BlocksHub API");
-            return;
-        }
-        
-        m_api.registerBlocksLogger(m_logger);        
-        log("Enabled");
-    }
-
-    @Override
-    public void onDisable() {
-        if (m_blocksHub != null &&
-                m_api != null &&
-                m_logger != null)
-        {
-            m_api.removeBlocksLogger(m_logger);
-        }
-        log("Disabled");
+    protected IBlockLogger createLogger(IBlocksHubApi api, IPlatform platform, Object plugin) {
+        return PrismLogger.create(this, plugin);
     }
 }

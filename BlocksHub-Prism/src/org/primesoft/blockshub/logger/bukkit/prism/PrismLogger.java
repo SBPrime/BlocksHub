@@ -42,7 +42,6 @@
 
 package org.primesoft.blockshub.logger.bukkit.prism;
 
-import org.PrimeSoft.blocksHub.api.IBlockLogger;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
@@ -51,22 +50,29 @@ import me.botsko.prism.Prism;
 import me.botsko.prism.actionlibs.ActionFactory;
 import me.botsko.prism.actions.Handler;
 import me.botsko.prism.actionlibs.RecordingQueue;
-import org.PrimeSoft.blocksHub.BlocksHub;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
+import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
+import org.primesoft.blockshub.utils.ExceptionHelper;
 
 /**
  *
  * @author SBPrime
  */
-public class PrismLogger implements IBlockLogger {
+public class PrismLogger extends BukkitBaseEntity implements IBlockLogger {
     /**
      * All prism hooks
      */
-    private final PrismLoggerHook[] s_hooks = new PrismLoggerHook[]{
+    private static final PrismLoggerHook[] s_hooks = new PrismLoggerHook[]{
         new PrismLoggerHook(ActionFactory.class, "2.x", "createBlockChange", new Class<?>[]{
             String.class,
             Location.class, int.class, byte.class, int.class, byte.class,
@@ -75,69 +81,73 @@ public class PrismLogger implements IBlockLogger {
             Location.class, int.class, byte.class, int.class, byte.class,
             String.class})
     };
+    
+    
+    static IBlockLogger create(ILog logger, Object plugin) {
+        if (!(plugin instanceof Prism)) {
+            logger.log("plugin not found.");
+            return null;
+        }
+        
+        Method m = getMethod(logger);
+        
+        return new PrismLogger((Prism)plugin, m);
+    }
+    
+    
+    private static Method getMethod(ILog logger) {
+        try {
+            for (PrismLoggerHook hook : s_hooks) {
+                Method m = hook.getMethod();
 
-    /**
-     * Plugin name
-     */
-    private final String m_name;
+                if (m != null) {
+                    logger.log(String.format("Detected Prism API {0}", hook.getVersion()));
+                    return m;
+                }
+            }
+
+            logger.log("Unable to detect prism API version. Disabling");
+            return null;
+        }
+        catch (SecurityException ex) {
+            logger.log("Unable to detect prism API version (Security exception). Disabling");
+            
+            
+            return null;
+        }
+    }
+    
 
     /**
      * The log method
      */
-    private Method m_logMethod;
+    private final Method m_logMethod;
 
-    /**
-     * Is the logger enabled
-     */
-    private boolean m_isEnabled;
-
-    /**
-     * Get instance of the prism plugin
-     *
-     * @param plugin
-     * @return
-     */
-    public static Prism getPrism(JavaPlugin plugin) {
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("Prism");
-
-            if ((cPlugin == null) || (!(cPlugin instanceof Prism))) {
-                return null;
-            }
-
-            return (Prism) cPlugin;
-        }
-        catch (NoClassDefFoundError ex) {
-            return null;
-        }
-    }
-
-    public PrismLogger(JavaPlugin plugin) {
-        Prism prism = getPrism(plugin);
-        PluginDescriptionFile pd = null;
-        if (prism == null) {
-            m_isEnabled = false;
-        } else {
-            pd = prism.getDescription();
-            if (pd != null) {
-                m_isEnabled = getMethod();
-            } else {
-                m_isEnabled = false;
-            }
-        }
-
-        m_name = pd != null ? pd.getFullName() : "Disabled - PrismLogger";
+    private PrismLogger(Prism prism, Method method) {
+        super(prism);
+        
+        m_logMethod = method;
     }
 
     @Override
-    public void logBlock(Location location, String player, World world,
-                         int oldBlockType, byte oldBlockData, int newBlockType,
-                         byte newBlockData) {
-        if (!m_isEnabled) {
+    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+        if (!isEnabled()) {
             return;
         }
 
-        Location l = new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        if (!(world instanceof BukkitWorld)) {
+            return;
+        }
+
+        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
+
+        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
+        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
+        if (bPlayer == null) {
+            return;
+        }
+        
+        
         /*
          * Prism version 1.x
          * Handler action = ActionFactory.create("world-edit", l,
@@ -151,57 +161,19 @@ public class PrismLogger implements IBlockLogger {
         Handler action;
         try {
             action = (Handler) m_logMethod.invoke(null, new Object[]{
-                "world-edit", l, oldBlockType, oldBlockData, newBlockType,
-                newBlockData, player});
+                "world-edit", l, oldBlock.getType(), (byte)oldBlock.getData(), 
+                                 newBlock.getType(), (byte)newBlock.getData(),
+                                 bPlayer});
             RecordingQueue.addToQueue(action);
         }
         catch (IllegalAccessException ex) {
-            Logger.getLogger(PrismLogger.class.getName()).log(Level.SEVERE, null, ex);
+            ExceptionHelper.printException(ex, "PrismLogger");            
         }
         catch (IllegalArgumentException ex) {
-            Logger.getLogger(PrismLogger.class.getName()).log(Level.SEVERE, null, ex);
+            ExceptionHelper.printException(ex, "PrismLogger");
         }
         catch (InvocationTargetException ex) {
-            Logger.getLogger(PrismLogger.class.getName()).log(Level.SEVERE, null, ex);
+            ExceptionHelper.printException(ex, "PrismLogger");
         }
-    }
-
-
-    @Override
-    public boolean isEnabled() {
-        return m_isEnabled;
-    }
-
-    @Override
-    public String getName() {
-        return m_name;
-    }
-
-    private boolean getMethod() {
-        try {
-            for (PrismLoggerHook hook : s_hooks) {
-                Method m = hook.getMethod();
-
-                if (m != null) {
-                    BlocksHub.log("Detected Prism API " + hook.getVersion());
-                    m_logMethod = m;
-                    return true;
-                }
-            }
-
-            BlocksHub.log("Unable to detect prism API version. Disabling");
-            m_logMethod = null;
-            return false;
-        }
-        catch (SecurityException ex) {
-            BlocksHub.log("Unable to detect prism API version (Security exception). Disabling");
-            m_logMethod = null;
-            return false;
-        }
-    }
-
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
     }
 }
