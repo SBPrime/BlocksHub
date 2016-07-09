@@ -59,7 +59,7 @@ public class BukkitBaseEntity extends BaseEntity {
     }
     
     private BukkitBaseEntity(String name, boolean isEnabled) {
-        super(name, isEnabled && name != null);
+        super(name != null ? name : "?", isEnabled && name != null);
     }
     
     
@@ -74,10 +74,14 @@ public class BukkitBaseEntity extends BaseEntity {
         }
         
         String pName = pd.getName();
-        if (pName == null) {
-            return name;
+        if (pName != null) {
+            return pName;
         }
         
-        return pName;
+        if (name == null) {
+            return plugin.getClass().getCanonicalName();
+        }
+        
+        return name;
     }
 }
