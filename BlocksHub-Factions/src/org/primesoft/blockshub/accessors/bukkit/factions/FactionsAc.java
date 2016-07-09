@@ -46,21 +46,20 @@ import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.engine.EngineMain;
 import com.massivecraft.massivecore.ps.PS;
 import org.bukkit.entity.Player;
-import org.primesoft.blockshub.LoggerProvider;
-import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
 import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
 
 /**
  *
  * @author SBPrime
  */
-public class FactionsAc extends BaseEntity implements IAccessController {
+public class FactionsAc extends BukkitBaseEntity implements IAccessController {
 
     static IAccessController create(ILog logger, Object plugin) {
         if (!(plugin instanceof Factions)) {
@@ -73,11 +72,11 @@ public class FactionsAc extends BaseEntity implements IAccessController {
             return null;
         }
         
-        return new FactionsAc();
+        return new FactionsAc((Factions)plugin);
     }
 
-    public FactionsAc() {
-        super("Factions", true);
+    public FactionsAc(Factions plugin) {
+        super(plugin, "Factions");
     }
 
     @Override
