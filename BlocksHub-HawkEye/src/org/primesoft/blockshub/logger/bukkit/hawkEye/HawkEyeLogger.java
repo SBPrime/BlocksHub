@@ -47,6 +47,7 @@ import org.primesoft.blockshub.LoggerProvider;
 import org.primesoft.blockshub.api.BaseEntity;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
+import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
@@ -69,9 +70,9 @@ public class HawkEyeLogger extends BaseEntity implements IBlockLogger {
      * @param platform
      * @return
      */
-    static IBlockLogger create(Object plugin) {
+    static IBlockLogger create(ILog logger, Object plugin) {
         if (!(plugin instanceof HawkEye)) {
-            LoggerProvider.log("HawkEye: plugin not found.");
+            logger.log("HawkEye: plugin not found.");
             return null;
         }
 

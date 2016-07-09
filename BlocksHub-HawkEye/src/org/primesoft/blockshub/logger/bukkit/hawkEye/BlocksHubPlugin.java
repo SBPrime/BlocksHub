@@ -43,40 +43,21 @@
 package org.primesoft.blockshub.logger.bukkit.hawkEye;
 
 import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.LoggerProvider;
+import org.primesoft.blockshub.api.BaseLoggerEndpoint;
 import org.primesoft.blockshub.api.IBlockLogger;
-import org.primesoft.blockshub.api.IBlocksHubEndpoint;
 import org.primesoft.blockshub.platform.api.IPlatform;
 
 /**
  * @author SBPrime
  */
-public class BlocksHubPlugin implements IBlocksHubEndpoint {
-    @Override
-    public String getName() {
-        return "Factions";
+public class BlocksHubPlugin extends BaseLoggerEndpoint {
+
+    public BlocksHubPlugin() {
+        super("HawkEye");
     }
 
     @Override
-    public boolean initialize(IBlocksHubApi api, IPlatform platform) {
-        IBlockLogger logger;
-        
-        Object plugin = platform.getPlugin("HawkEye");
-        if (plugin == null) {
-            LoggerProvider.log("HawkEye: plugin not found.");
-            return false;
-        }
-        
-        try {
-            logger = HawkEyeLogger.create(plugin);
-        } catch (Error ex) {            
-            logger = null;
-        }
-        
-        if (logger == null) {
-            return false;
-        }
-        
-        return api.registerBlocksLogger(logger);
+    protected IBlockLogger createLogger(IBlocksHubApi api, IPlatform platform, Object plugin) {
+        return HawkEyeLogger.create(this, plugin);
     }
 }
