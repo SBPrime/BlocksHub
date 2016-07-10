@@ -45,6 +45,7 @@ import org.primesoft.blockshub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import static org.primesoft.blockshub.LoggerProvider.log;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.Vector;
@@ -101,6 +102,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
             }
             
             m_loggers.add(blocksLogger);
+            log(String.format("Registered %1$s logger.", blocksLogger.getName()));
             return true;
         }
     }
@@ -119,6 +121,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
             }
             
             m_ac.add(accessController);
+            log(String.format("Registered %1$s access controller.", accessController.getName()));
             return true;
         }
     }
@@ -137,6 +140,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
             }
             
             m_loggers.remove(blocksLogger);
+            log(String.format("Removes %1$s logger.", blocksLogger.getName()));
             return true;
         }
     }
@@ -155,6 +159,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
             }
             
             m_ac.remove(accessController);
+            log(String.format("Removes %1$s access controller.", accessController.getName()));
             return true;
         }
     }

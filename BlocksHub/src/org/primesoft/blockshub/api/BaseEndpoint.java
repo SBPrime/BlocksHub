@@ -79,7 +79,7 @@ public abstract class BaseEndpoint implements IBlocksHubEndpoint, ILog {
             return;
         }
         
-        LoggerProvider.log(String.format("{0}: {1}", m_pluginName, message));
+        LoggerProvider.log(String.format("%1$s: %2$s", m_pluginName, message));
     }
     
     @Override
