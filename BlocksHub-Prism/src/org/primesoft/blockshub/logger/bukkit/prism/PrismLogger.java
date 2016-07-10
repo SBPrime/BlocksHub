@@ -44,14 +44,11 @@ package org.primesoft.blockshub.logger.bukkit.prism;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.botsko.prism.Prism;
 import me.botsko.prism.actionlibs.ActionFactory;
 import me.botsko.prism.actions.Handler;
 import me.botsko.prism.actionlibs.RecordingQueue;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
