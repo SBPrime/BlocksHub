@@ -128,7 +128,7 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
         m_plugin = plugin;
         m_logger = new BukkitLogger(plugin);
         m_server = m_plugin.getServer();
-        m_commandManager = new CommandManager(m_server, description.getName(), plugin);
+        m_commandManager = new CommandManager(m_server, description.getName(), this);
 
         Colors.setPlatform(this);
     }

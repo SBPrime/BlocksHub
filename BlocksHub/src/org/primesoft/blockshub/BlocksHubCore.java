@@ -111,6 +111,7 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
         log("Disabled");
     }        
     
+    
     /**
      * Handle the command
      * @param player
@@ -203,9 +204,8 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
             return;
         }
         
-        commandManager.registerCommand("bh", new String[]{ "BlocksHub" }, 
-                "BlocksHub plugin main command. Displays the help for BlocksHub.", 
-                "/blocksHub", null);
+        commandManager.registerCommand(Commands.COMMAND_MAIN, null, "BlocksHub plugin main command. Displays the help for BlocksHub.", "/blocksHub", null);
+        commandManager.registerCommand(Commands.COMMAND_MAIN2, null, "BlocksHub plugin main command. Displays the help for BlocksHub.", "/blocksHub", null);
     }
 
     
