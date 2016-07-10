@@ -81,7 +81,7 @@ public class CoreProtectLogger extends BukkitBaseEntity implements IBlockLogger 
         }
         
         int apiVersion = coreProtect.APIVersion();
-        if (apiVersion < 3) {
+        if (apiVersion < 2) {
             logger.log("unsupported plugin version");
             return null;
         }
