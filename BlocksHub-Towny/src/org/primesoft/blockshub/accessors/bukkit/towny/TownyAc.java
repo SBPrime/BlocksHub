@@ -39,80 +39,114 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub.accessors.bukkit.towny;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.listeners.TownyBlockListener;
-import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
-import org.PrimeSoft.blocksHub.api.SilentPlayer;
+import com.palmergames.bukkit.towny.object.PlayerCache;
+import com.palmergames.bukkit.towny.object.TownyPermission;
+import com.palmergames.bukkit.towny.object.WorldCoord;
+import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
+import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class TownyAc extends BaseAccessController<Towny> {
-    /**
-     * The towny block listener
-     */
-    private TownyBlockListener m_listener;
+public class TownyAc extends BukkitBaseEntity implements IAccessController {
 
-    public TownyAc(JavaPlugin plugin) {
-        super(plugin, "Towny");
-    }
-
-    @Override
-    protected boolean postInit(PluginDescriptionFile pd) {
-        try {
-            m_listener = m_hook != null ? new TownyBlockListener(m_hook) : null;            
-            return m_listener != null;
-        } catch (NoClassDefFoundError ex) {
-            return false;
+    static IAccessController create(ILog logger, Object plugin) {
+        if (!(plugin instanceof Towny)) {
+            logger.log("plugin not found.");
+            return null;
         }
+
+        return new TownyAc((Towny) plugin);
     }
-    
-    
-    /**
-     * /**
-     * Check if a player is allowed to place a block
-     *
-     * @param player
-     * @param location
-     * @param world
-     * @return
-     */
+
+    public TownyAc(Towny plugin) {
+        super(plugin);
+    }
+
     @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null) {
+    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
+        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
+        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
+        if (bPlayer == null) {
             return true;
         }
 
-        
-        Player p = new SilentPlayer(m_server.getPlayer(player));
-        Block b = location.getBlock();
-        BlockBreakEvent bpEvent = new BlockBreakEvent(b, p);
-        
-        m_listener.onBlockBreak(bpEvent);
-        
-        return !bpEvent.isCancelled();
-    }
+        PlayerCache.TownBlockStatus status = PlayerCacheUtil.getTownBlockStatus(bPlayer,
+                new WorldCoord(world.getName(), (int) location.getX(), (int) location.getZ()));
 
-    @Override
-    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
-        return Towny.class.isAssignableFrom(aClass);
-    }
-
-    @Override
-    public boolean reloadConfiguration() {
+        switch (status) {
+            case ADMIN:
+            case NOT_REGISTERED:
+            case OFF_WORLD:
+            case PLOT_ALLY:
+            case PLOT_FRIEND:
+            case PLOT_OWNER:
+            case TOWN_ALLY:
+            case TOWN_OWNER:
+            case TOWN_RESIDENT:
+            case UNCLAIMED_ZONE:
+            case UNKOWN:
+            case WARZONE:
+                return true;
+            case ENEMY:
+            case LOCKED:
+            case OUTSIDER:
+                return false;
+        }
+        
         return true;
+    }
+
+    @Override
+    public boolean canPlace(IPlayer player, IWorld world, Vector location,
+            BlockData blockOld, BlockData blockNew) {
+        boolean airOld = blockOld.isAir();
+        boolean airNew = blockNew.isAir();
+
+        if (airNew && airOld) {
+            return true;
+        }
+
+        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
+        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
+        if (bPlayer == null) {
+            return true;
+        }
+
+        if (!(world instanceof BukkitWorld)) {
+            return true;
+        }
+
+        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
+
+        boolean allow = true;
+
+        if (!airOld) {
+            allow &= PlayerCacheUtil.getCachePermission(bPlayer, l,
+                    blockOld.getType(), (byte) blockOld.getData(),
+                    TownyPermission.ActionType.DESTROY);
+        }
+        if (!airNew) {
+            allow &= PlayerCacheUtil.getCachePermission(bPlayer, l,
+                    blockOld.getType(), (byte) blockOld.getData(),
+                    TownyPermission.ActionType.BUILD);
+        }
+
+        return allow;
     }
 }

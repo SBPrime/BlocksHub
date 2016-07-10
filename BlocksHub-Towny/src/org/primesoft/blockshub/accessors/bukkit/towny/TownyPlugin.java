@@ -42,113 +42,25 @@
 
 package org.primesoft.blockshub.accessors.bukkit.towny;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.PrimeSoft.blocksHub.BlocksHub;
-import org.PrimeSoft.blocksHub.IBlocksHubApi;
-import org.PrimeSoft.blocksHub.api.IAccessController;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.IBlocksHubApi;
+import org.primesoft.blockshub.api.BaseAccessorEndpoint;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.platform.api.IPlatform;
+
 
 /**
  * @author SBPrime
  */
-public class TownyPlugin extends JavaPlugin {
-    private static final Logger s_log = Logger.getLogger("Minecraft.BlocksHub.Ac.Towny");
-    private static String s_prefix = null;
-    private static final String s_logFormat = "%s %s";
-    /**
-     * THe blocks hub instance
-     */
-    private BlocksHub m_blocksHub;
-    
-    /**
-     * The blocks hub api
-     */
-    private IBlocksHubApi m_api;
-    
-    /**
-     * The access controller class
-     */
-    private IAccessController m_ac;
+public class TownyPlugin extends BaseAccessorEndpoint  {
 
-    /**
-     * Get instance of the BlocksHub plugin
-     *
-     * @param plugin
-     * @return
-     */
-    public static BlocksHub getBlocksHub(JavaPlugin plugin) {
-        try {
-            Plugin cPlugin = plugin.getServer().getPluginManager().getPlugin("BlocksHub");
-
-            if ((cPlugin == null) || (!(cPlugin instanceof BlocksHub))) {
-                return null;
-            }
-
-            return (BlocksHub) cPlugin;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    public static void log(String msg) {
-        if (s_log == null || msg == null || s_prefix == null) {
-            return;
-        }
-
-        s_log.log(Level.INFO, String.format(s_logFormat, s_prefix, msg));
-    }
-    
-    public IAccessController CreateLogger() {
-        try {
-            return new TownyAc(this);
-        } catch (Exception ex) {            
-            return null;
-        }
+    public TownyPlugin() {
+        super("Towny");
     }
 
     @Override
-    public void onEnable() {
-        PluginDescriptionFile desc = getDescription();
-        s_prefix = String.format("[%s]", desc.getName());
-
-        m_ac = CreateLogger();        
-        if (m_ac == null) {
-            log("Error initializeng");
-            return;
-        } else if (!m_ac.isEnabled()) {
-            log("logger not found");
-            return;
-        }
-        
-        m_blocksHub = getBlocksHub(this);
-        if (m_blocksHub == null)
-        {
-            log("BlocksHub plugin not found");
-            return;
-        }
-        
-        m_api = m_blocksHub.getApi();
-        if (m_api == null)
-        {
-            log("Unable to get BlocksHub API");
-            return;
-        }
-        
-        m_api.registerAccessController(m_ac);        
-        log("Enabled");
+    protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
+        return TownyAc.create(this, plugin);
     }
-
-    @Override
-    public void onDisable() {
-        if (m_blocksHub != null &&
-                m_api != null &&
-                m_ac != null)
-        {
-            m_api.removeAccessController(m_ac);
-        }
-        log("Disabled");
-    }
+    
+    
 }
