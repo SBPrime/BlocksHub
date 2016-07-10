@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.residence;
+package org.primesoft.blockshub.accessors.bukkit.residence;
 
 import org.PrimeSoft.blocksHub.IBlocksHubApi;
 import java.util.logging.Level;
