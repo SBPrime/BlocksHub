@@ -50,38 +50,40 @@ import org.primesoft.blockshub.api.BaseEntity;
  * @author SBPrime
  */
 public class BukkitBaseEntity extends BaseEntity {
+
     protected BukkitBaseEntity(JavaPlugin plugin) {
         this(plugin, null);
     }
-    
+
     protected BukkitBaseEntity(JavaPlugin plugin, String name) {
         this(getName(plugin, name), plugin != null);
     }
-    
+
     private BukkitBaseEntity(String name, boolean isEnabled) {
         super(name != null ? name : "?", isEnabled && name != null);
     }
-    
-    
+
     private static String getName(JavaPlugin plugin, String name) {
         if (plugin == null) {
             return name;
         }
-        
+
         PluginDescriptionFile pd = plugin.getDescription();
-        if (pd == null) {
-            return name;
+        if (pd != null) {
+            String pName = pd.getName();
+            String version = pd.getVersion();
+            if (pName != null && version != null) {
+                return String.format("%1$s %2$s", pName, version);
+            }
+            else if (pName != null) {
+                return pName;
+            }
         }
-        
-        String pName = pd.getName();
-        if (pName != null) {
-            return pName;
-        }
-        
+
         if (name == null) {
             return plugin.getClass().getCanonicalName();
         }
-        
+
         return name;
     }
 }
