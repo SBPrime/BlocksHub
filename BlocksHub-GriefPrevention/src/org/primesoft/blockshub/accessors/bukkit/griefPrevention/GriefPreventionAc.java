@@ -67,7 +67,7 @@ public class GriefPreventionAc extends BukkitBaseEntity implements IAccessContro
 
     static IAccessController create(ILog logger, Object plugin) {
         if (!(plugin instanceof GriefPrevention)) {
-            logger.log("GriefPrevention: plugin not found.");
+            logger.log("plugin not found.");
             return null;
         }
         
