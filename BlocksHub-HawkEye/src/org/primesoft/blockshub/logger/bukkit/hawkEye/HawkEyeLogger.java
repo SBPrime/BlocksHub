@@ -71,7 +71,7 @@ public class HawkEyeLogger extends BukkitBaseEntity implements IBlockLogger {
      */
     static IBlockLogger create(ILog logger, Object plugin) {
         if (!(plugin instanceof HawkEye)) {
-            logger.log("HawkEye: plugin not found.");
+            logger.log("plugin not found.");
             return null;
         }
 
