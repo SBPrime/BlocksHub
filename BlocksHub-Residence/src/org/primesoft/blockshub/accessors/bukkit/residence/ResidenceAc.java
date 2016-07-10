@@ -39,14 +39,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub.accessors.bukkit.residence;
 
 import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
-import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
-import org.PrimeSoft.blocksHub.api.SilentPlayer;
+import com.bekvon.bukkit.residence.ResidenceCommandListener;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.ResidenceManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -54,74 +57,151 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
+import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class ResidenceAc extends BaseAccessController<Residence> {
+public class ResidenceAc extends BukkitBaseEntity implements IAccessController {
+
+    static IAccessController create(ILog logger, Object plugin) {
+        if (!(plugin instanceof ResidenceCommandListener)) {
+            logger.log("plugin not found.");
+            return null;
+        }
+
+        ResidenceManager manager = Residence.getResidenceManager();
+        if (manager == null) {
+            logger.log("unable to get residence manager");
+            return null;
+        }
+
+        return new ResidenceAc((ResidenceCommandListener) plugin, manager);
+    }
 
     /**
-     * The residence block listener
+     * The residence manager
      */
-    private ResidenceBlockListener m_listener;
+    private ResidenceManager m_manager;
 
-    public ResidenceAc(JavaPlugin plugin) {
-        super(plugin, "Residence");
+    public ResidenceAc(ResidenceCommandListener plugin, ResidenceManager manager) {
+        super(plugin);
+
+        m_manager = manager;
+    }
+
+    /*
+     @Override
+     public boolean canPlace(String player, World world, Location location) {
+     if (!m_isEnabled || player == null || world == null || location == null) {
+     return true;
+     }
+
+     Player bPlayer = m_server.getPlayer(player);
+     if (bPlayer == null) {
+     return true;
+     }
+     bPlayer = new SilentPlayer(bPlayer);
+     Block block = location.getBlock();
+
+     if (!block.isEmpty()) {
+     BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
+     m_listener.onBlockBreak(event);
+
+     if (event.isCancelled()) {
+     return false;
+     }
+     } else {
+     BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
+     bPlayer.getItemInHand(), bPlayer, true);
+     m_listener.onBlockPlace(event);
+
+     if (event.isCancelled()) {
+     return false;
+     }
+     }
+
+     //We do not support white/black lists
+     return true;
+     }
+     */
+    private ClaimedResidence getResidence(IWorld world, Vector location) {
+        World bWorld = ((BukkitWorld) world).getWorld();
+        if (bWorld == null) {
+            return null;
+        }
+
+        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());
+        return m_manager.getByLoc(l);
     }
 
     @Override
-    protected boolean postInit(PluginDescriptionFile pd) {
-        try {
-            m_listener = m_hook != null ? new ResidenceBlockListener() : null;
+    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
+        ClaimedResidence residence = getResidence(world, location);
+        if (residence == null) {
             return true;
-        } catch (NoClassDefFoundError ex) {
+        }
+
+        return hasPlayer(residence, player);
+    }
+
+    /**
+     * Checks if residence contains player
+     *
+     * @param residence
+     * @param player
+     * @return
+     */
+    private boolean hasPlayer(ClaimedResidence residence, IPlayer player) {
+        List<Player> players = residence.getPlayersInResidence();
+        if (players == null || players.isEmpty()) {
             return false;
         }
-    }
 
-    @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null || world == null || location == null) {
-            return true;
-        }
-
-        Player bPlayer = m_server.getPlayer(player);
-        if (bPlayer == null) {
-            return true;
-        }
-        bPlayer = new SilentPlayer(bPlayer);
-        Block block = location.getBlock();
-
-        if (!block.isEmpty()) {
-            BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
-            m_listener.onBlockBreak(event);
-
-            if (event.isCancelled()) {
-                return false;
-            }
-        } else {
-            BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
-                    bPlayer.getItemInHand(), bPlayer, true);
-            m_listener.onBlockPlace(event);
-
-            if (event.isCancelled()) {
-                return false;
+        UUID uuid = player.getUUID();
+        for (Player p : players) {
+            if (p.getUniqueId().equals(uuid)) {
+                return true;
             }
         }
 
-        //We do not support white/black lists
-        return true;
+        return false;
     }
 
     @Override
-    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
-        return Residence.class.isAssignableFrom(aClass);
-    }
+    public boolean canPlace(IPlayer player, IWorld world, Vector location,
+            BlockData blockOld, BlockData blockNew) {
+        boolean airOld = blockOld.isAir();
+        boolean airNew = blockNew.isAir();
 
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
+        if (airNew && airOld) {
+            return true;
+        }
+
+        ClaimedResidence residence = getResidence(world, location);
+        if (residence == null) {
+            return true;
+        }
+
+        if (!airNew && 
+            !residence.getItemBlacklist().isAllowed(Material.getMaterial(blockNew.getType()))) {
+            return false;
+        }
+        
+        boolean hasBuild = residence.getPermissions().playerHas(player.getName(), world.getName(), "build", true);
+
+        String flag = (airNew) ? "destroy" : "place";
+        boolean isAllowed = residence.getPermissions().playerHas(player.getName(), world.getName(), flag,hasBuild);
+        
+        return isAllowed;
     }
 }
