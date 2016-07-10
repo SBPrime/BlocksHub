@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.worldGuard;
+package org.primesoft.blockshub.accessors.bukkit.worldGuard;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;

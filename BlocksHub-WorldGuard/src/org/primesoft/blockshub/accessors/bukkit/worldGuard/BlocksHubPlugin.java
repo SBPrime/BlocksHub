@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.worldGuard;
+package org.primesoft.blockshub.accessors.bukkit.worldGuard;
 
 import org.PrimeSoft.blocksHub.IBlocksHubApi;
 import java.util.logging.Level;
