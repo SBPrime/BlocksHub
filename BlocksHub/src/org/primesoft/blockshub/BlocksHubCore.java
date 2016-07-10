@@ -41,20 +41,31 @@
  */
 package org.primesoft.blockshub;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import static org.primesoft.blockshub.LoggerProvider.log;
 import static org.primesoft.blockshub.LoggerProvider.sayConsole;
+import org.primesoft.blockshub.api.IBlocksHubEndpoint;
 import org.primesoft.blockshub.configuration.ConfigProvider;
 import org.primesoft.blockshub.platform.api.Colors;
 import org.primesoft.blockshub.platform.api.ICommandManager;
 import org.primesoft.blockshub.platform.api.IEnableAware;
 import org.primesoft.blockshub.platform.api.IPlatform;
 import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.platform.ConsolePlayer;
+import org.primesoft.blockshub.utils.JarUtils;
+import org.primesoft.blockshub.utils.Reflection;
+import org.primesoft.blockshub.utils.ResourceClassLoader;
 
 /**
  *
  * @author SBPrime
  */
-public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider {
+public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider {        
+    private final static Class<IBlocksHubEndpoint> clsIBlocksHubEndpoint = IBlocksHubEndpoint.class;
+
+    
     private final IPlatform m_platform;
     
     private final Logic m_logic;
@@ -63,7 +74,9 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
         m_platform = platform;
         m_platform.initialize(this);
         
-        m_logic = new Logic(platform);        
+        LoggerProvider.setLogger(m_platform.getLogger());
+        
+        m_logic = new Logic(platform);
     }            
 
     @Override
@@ -81,7 +94,7 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
             log("Please update your config file!");
         }
 
-        if (!m_logic.initializeConfig(null)) {
+        if (!m_logic.initializeConfig(ConsolePlayer.getInstance())) {
             log("Error initializing config");
             return;
         }
@@ -193,5 +206,72 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
         commandManager.registerCommand("bh", new String[]{ "BlocksHub" }, 
                 "BlocksHub plugin main command. Displays the help for BlocksHub.", 
                 "/blocksHub", null);
+    }
+
+    
+    /**
+     * Load all bridge plugins
+     */
+    void loadPlugins() {
+        log("Loading plugins...");
+        
+        List<String> files = JarUtils.ls(m_platform.getPluginsDir(), true);
+        
+        for (String resource : files) {
+            if (!(resource.endsWith(".jar"))) {
+                continue;
+            }
+            loadPlugin(resource);
+        }
+    }
+
+    
+    /**
+     * Load the actual plugin
+     * @param resource 
+     */
+    private void loadPlugin(String resource) {
+        ResourceClassLoader classLoader = ResourceClassLoader.create(resource);
+        if (classLoader == null) {
+            return;
+        }
+        
+        List<Class<?>> entryPoints = new ArrayList<Class<?>>();
+        for (Class<?> cls : classLoader.getAllClasses()) {
+            if (!clsIBlocksHubEndpoint.isAssignableFrom(cls)) {
+                continue;
+            }
+            
+            entryPoints.add(cls);
+        }
+        
+        if (entryPoints.isEmpty()) {
+            log(String.format("Resource %1$s has no entry points.", resource));
+            return;
+        } 
+        
+        if (entryPoints.size() > 1) {
+            log(String.format("Resource %1$s has multiple entry points.", resource));
+            return;
+        } 
+        
+        Class<?> entryPoint = entryPoints.get(0);
+        Constructor ctor = Reflection.findConstructor(entryPoint, "Unable to find constructor");
+        
+        if (ctor == null) {
+            log(String.format("Resource %1$s entry point %2$s has no default constructor.", resource, entryPoint.getCanonicalName()));
+            return;
+        }
+        
+        IBlocksHubEndpoint endPoint = Reflection.create(clsIBlocksHubEndpoint, ctor, "Unable to reate entry point.");
+        
+        if (endPoint == null) {
+            log(String.format("Unable to create entry point %2$s for resource %1$s.", resource, entryPoint.getCanonicalName()));
+            return;
+        }
+        
+        boolean result = endPoint.initialize(m_logic, m_platform);
+        log(String.format("BlocksHub plugin %1$s...%2$s", 
+                endPoint.getName(), result ? "enabled" : "disabled"));
     }
 }

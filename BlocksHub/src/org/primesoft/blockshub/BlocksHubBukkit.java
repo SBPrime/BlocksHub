@@ -57,6 +57,14 @@ public class BlocksHubBukkit extends BlocksHub implements IBlocksHubApiProvider 
 
         m_core = new BlocksHubCore(new BukkitPlatform(this));
         m_core.onEnable();
+        
+        getServer().getScheduler().runTaskLater(this, new Runnable() {
+
+            @Override
+            public void run() {
+                m_core.loadPlugins();
+            }
+        }, 1);
     }
     
     @Override

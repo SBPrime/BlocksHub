@@ -39,117 +39,77 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.platform.api;
+package org.primesoft.blockshub.utils;
 
-import org.primesoft.blockshub.api.IPlayer;
-import java.util.UUID;
-import org.primesoft.blockshub.BlocksHubCore;
-import org.primesoft.blockshub.api.IWorld;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  *
  * @author SBPrime
  */
-public interface IPlatform extends IEnableAware {
+public class JarUtils {
+    private final static File s_jarFile = new File(JarUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
     /**
-     * Get the platform name
+     * List all all files in directory Based on:
      *
+     * @param path
      * @return
      */
-    String getName();
-
+    public static List<String> ls(String path) {
+        return ls(path, false);
+    }
+        
     /**
-     * Get the plugin version string
+     * List all all files in directory Based on:
      *
+     * @param path
+     * @param subDirs
      * @return
      */
-    String getVersion();
+    public static List<String> ls(String path, boolean subDirs) {
+        if (path == null) {
+            path = "/";
+        }
 
-    /**
-     * Get player based on the UUID
-     *
-     * @param uuid
-     * @return
-     */
-    IPlayer getPlayer(UUID uuid);
+        path = String.format("%1$s/", path.substring(1));
+        int pathLen = path.length();
 
-    /**
-     * Get player based on the name
-     *
-     * @param name
-     * @return
-     */
-    IPlayer getPlayer(String name);
-    
-    /**
-     * Get world based on the UUID
-     * @param uuid
-     * @return 
-     */
-    IWorld getWorld(UUID uuid);
-    
-    /**
-     * Get world based on name
-     * @param name
-     * @return 
-     */
-    IWorld getWorld(String name);
-    
+        List<String> result = new ArrayList<String>();
 
-    /**
-     * Creates the current platform logger
-     *
-     * @return
-     */
-    ILogger getLogger();
-
-    /**
-     * Get the configuration
-     *
-     * @return
-     */
-    IConfiguration getConfiguration();
-
-    /**
-     * Reload the configuration
-     */
-    void reloadConfig();
-
-    /**
-     * Get the command manager
-     *
-     * @return
-     */
-    ICommandManager getCommandManager();
-
-    /**
-     * Initialize the platform
-     *
-     * @param core
-     */
-    void initialize(BlocksHubCore core);
-
-    /**
-     * Get the color code
-     *
-     * @param color
-     * @return
-     */
-    String getColorCode(Colors color);
-
-    /**
-     * Get plugin
-     *
-     * @param pluginName
-     * @return
-     */
-    Object getPlugin(String pluginName);
-
-    
-    /**
-     * Get the BlocksHub plugins directory
-     * @return 
-     */
-    String getPluginsDir();
+        try {
+            final JarFile jar = new JarFile(s_jarFile);
+            final Enumeration<JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                final String name = entry.getName();
+                
+                if (entry.isDirectory()) {
+                    continue;
+                }
+                
+                if (!name.startsWith(path)) {
+                    continue;
+                }
+                
+                if (!subDirs && name.substring(pathLen).contains("/")) {
+                    continue;
+                }
+                
+                result.add(String.format("/%1$s", name));
+            }
+            jar.close();
+            
+        } catch (IOException ex) {
+            ExceptionHelper.printException(ex, "Unable to read JAR");
+        }
+        
+        return result;
+    }
 }

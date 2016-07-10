@@ -275,4 +275,11 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
     public Object getPlugin(String pluginName) {
         return getTypedPlugin(pluginName);
     }
+
+    @Override
+    public String getPluginsDir() {
+        return "/plugins/bukkit";
+    }
+    
+    
 }
