@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.towny;
+package org.primesoft.blockshub.accessors.bukkit.towny;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.listeners.TownyBlockListener;

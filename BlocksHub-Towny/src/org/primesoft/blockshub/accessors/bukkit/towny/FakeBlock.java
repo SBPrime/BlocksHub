@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.PrimeSoft.blocksHub.towny;
+package org.primesoft.blockshub.accessors.bukkit.towny;
 
 import java.util.Collection;
 import java.util.List;

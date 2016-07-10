@@ -40,7 +40,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.PrimeSoft.blocksHub.towny;
+package org.primesoft.blockshub.accessors.bukkit.towny;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
