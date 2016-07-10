@@ -92,41 +92,6 @@ public class ResidenceAc extends BukkitBaseEntity implements IAccessController {
         m_manager = manager;
     }
 
-    /*
-     @Override
-     public boolean canPlace(String player, World world, Location location) {
-     if (!m_isEnabled || player == null || world == null || location == null) {
-     return true;
-     }
-
-     Player bPlayer = m_server.getPlayer(player);
-     if (bPlayer == null) {
-     return true;
-     }
-     bPlayer = new SilentPlayer(bPlayer);
-     Block block = location.getBlock();
-
-     if (!block.isEmpty()) {
-     BlockBreakEvent event = new BlockBreakEvent(block, bPlayer);
-     m_listener.onBlockBreak(event);
-
-     if (event.isCancelled()) {
-     return false;
-     }
-     } else {
-     BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), block,
-     bPlayer.getItemInHand(), bPlayer, true);
-     m_listener.onBlockPlace(event);
-
-     if (event.isCancelled()) {
-     return false;
-     }
-     }
-
-     //We do not support white/black lists
-     return true;
-     }
-     */
     private ClaimedResidence getResidence(IWorld world, Vector location) {
         World bWorld = ((BukkitWorld) world).getWorld();
         if (bWorld == null) {
