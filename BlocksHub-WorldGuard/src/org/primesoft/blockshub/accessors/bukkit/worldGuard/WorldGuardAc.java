@@ -39,53 +39,65 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub.accessors.bukkit.worldGuard;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import org.PrimeSoft.blocksHub.accessControl.BaseAccessController;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
+import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
  *
  * @author SBPrime
  */
-public class WorldGuardAc extends BaseAccessController<WorldGuardPlugin> {
+public class WorldGuardAc extends BukkitBaseEntity implements IAccessController {
 
-    public WorldGuardAc(JavaPlugin plugin) {
-        super(plugin, "WorldGuard");
+    static IAccessController create(ILog logger, Object plugin) {
+        if (!(plugin instanceof WorldGuardPlugin)) {
+            logger.log("plugin not found.");
+            return null;
+        }
+
+        return new WorldGuardAc((WorldGuardPlugin) plugin);
+    }
+    
+    private final WorldGuardPlugin m_worldGuard;
+
+    private WorldGuardAc(WorldGuardPlugin plugin) {
+        super(plugin);
+        
+        m_worldGuard = plugin;
     }
 
-    /**
-     * /**
-     * Check if a player is allowed to place a block
-     *
-     * @param player
-     * @param location
-     * @param world
-     * @return
-     */
     @Override
-    public boolean canPlace(String player, World world, Location location) {
-        if (!m_isEnabled || player == null) {
+    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
+        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
+        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
+        if (bPlayer == null) {
             return true;
         }
 
-        Player p = m_server.getPlayer(player);
-        return m_hook.canBuild(p, location);
+        if (!(world instanceof BukkitWorld)) {
+            return true;
+        }
+
+        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
+        
+        return m_worldGuard.canBuild(bPlayer, l);
     }
 
     @Override
-    protected boolean instanceOfT(Class<? extends Plugin> aClass) {
-        return WorldGuardPlugin.class.isAssignableFrom(aClass);
-    }
-
-    @Override
-    public boolean reloadConfiguration() {
-        return true;
+    public boolean canPlace(IPlayer player, IWorld world, Vector location,
+            BlockData blockOld, BlockData blockNew) {
+        return hasAccess(player, world, location);
     }
 }
