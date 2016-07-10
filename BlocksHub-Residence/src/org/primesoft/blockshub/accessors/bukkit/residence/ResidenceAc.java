@@ -45,18 +45,12 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.ResidenceCommandListener;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.ResidenceManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.ILog;
@@ -64,7 +58,6 @@ import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.Vector;
 import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
-import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
 import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 
 /**
