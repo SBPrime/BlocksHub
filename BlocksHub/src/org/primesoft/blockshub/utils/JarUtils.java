@@ -43,6 +43,8 @@ package org.primesoft.blockshub.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -54,7 +56,22 @@ import java.util.jar.JarFile;
  * @author SBPrime
  */
 public class JarUtils {
-    private final static File s_jarFile = new File(JarUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+
+    private final static File s_jarFile;
+
+    static {
+        URL codeLocation = JarUtils.class.getProtectionDomain().getCodeSource().getLocation();
+
+        File file = null;
+        try {
+            file = new File(URLDecoder.decode(codeLocation.getPath(), "UTF-8"));            
+        }
+        catch (Exception ex) {
+            ExceptionHelper.printException(ex, "Unable to get JAR path");            
+        }
+        
+        s_jarFile = file;
+    }
 
     /**
      * List all all files in directory Based on:
@@ -65,7 +82,7 @@ public class JarUtils {
     public static List<String> ls(String path) {
         return ls(path, false);
     }
-        
+
     /**
      * List all all files in directory Based on:
      *
@@ -83,33 +100,37 @@ public class JarUtils {
 
         List<String> result = new ArrayList<String>();
 
+        if (s_jarFile == null) {
+            return result;
+        }
+        
         try {
             final JarFile jar = new JarFile(s_jarFile);
             final Enumeration<JarEntry> entries = jar.entries();
             while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
                 final String name = entry.getName();
-                
+
                 if (entry.isDirectory()) {
                     continue;
                 }
-                
+
                 if (!name.startsWith(path)) {
                     continue;
                 }
-                
+
                 if (!subDirs && name.substring(pathLen).contains("/")) {
                     continue;
                 }
-                
+
                 result.add(String.format("/%1$s", name));
             }
             jar.close();
-            
+
         } catch (IOException ex) {
             ExceptionHelper.printException(ex, "Unable to read JAR");
         }
-        
+
         return result;
     }
 }
