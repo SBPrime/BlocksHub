@@ -53,7 +53,7 @@ import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
 import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
 import uk.co.oliwali.HawkEye.DataType;
 import uk.co.oliwali.HawkEye.HawkEye;
-import uk.co.oliwali.HawkEye.database.DataManager;
+import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 import uk.co.oliwali.HawkEye.entry.BlockChangeEntry;
 import uk.co.oliwali.HawkEye.entry.BlockEntry;
 
@@ -106,11 +106,11 @@ public class HawkEyeLogger extends BukkitBaseEntity implements IBlockLogger {
         
         
         if (airNew) {
-            DataManager.addEntry(new BlockEntry(player.getName(), DataType.WORLDEDIT_BREAK, blockOld.getType(), blockOld.getData(), l));
+            HawkEyeAPI.addEntry(new BlockEntry(player.getName(), DataType.WORLDEDIT_BREAK, blockOld.getType(), blockOld.getData(), l));
             return;
         }
 
-        DataManager.addEntry(new BlockChangeEntry(player.getName(), DataType.WORLDEDIT_PLACE, 
+        HawkEyeAPI.addEntry(new BlockChangeEntry(player.getName(), DataType.WORLDEDIT_PLACE,
                 l,
                 blockOld.getType(), blockOld.getData(),
                 blockNew.getType(), blockNew.getData()));
