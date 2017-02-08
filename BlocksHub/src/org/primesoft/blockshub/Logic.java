@@ -486,7 +486,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
         
         for (IAccessController ac : m_ac) {
             try {
-                if (!ac.hasAccess(player, world, location)) {
+                if (!ac.canPlace(player, world, location, oldBlock, newBlock)) {
                     return false;
                 }
             } catch (Exception ex) {
