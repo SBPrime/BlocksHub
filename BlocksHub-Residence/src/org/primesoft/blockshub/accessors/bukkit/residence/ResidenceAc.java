@@ -45,6 +45,8 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.ResidenceCommandListener;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.ResidenceManager;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Location;
@@ -72,7 +74,13 @@ public class ResidenceAc extends BukkitBaseEntity implements IAccessController {
             return null;
         }
 
-        ResidenceManager manager = Residence.getResidenceManager();
+        ResidenceManager manager;
+        try {
+            manager = Residence.getResidenceManager();
+        } catch (Error ex) {
+            manager = null;
+        }
+        
         if (manager == null) {
             logger.log("unable to get residence manager");
             return null;
