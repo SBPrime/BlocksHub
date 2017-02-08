@@ -160,7 +160,7 @@ public class PrismLogger extends BukkitBaseEntity implements IBlockLogger {
             action = (Handler) m_logMethod.invoke(null, new Object[]{
                 "world-edit", l, oldBlock.getType(), (byte)oldBlock.getData(), 
                                  newBlock.getType(), (byte)newBlock.getData(),
-                                 bPlayer});
+                                 bPlayer.getName()});
             RecordingQueue.addToQueue(action);
         }
         catch (IllegalAccessException ex) {
