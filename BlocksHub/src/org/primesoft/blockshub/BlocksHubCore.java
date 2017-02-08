@@ -269,6 +269,11 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider 
             log(String.format("Unable to create entry point %2$s for resource %1$s.", resource, entryPoint.getCanonicalName()));
             return;
         }
+    
+        if (!ConfigProvider.isEnabled(endPoint.getName())) {
+            log(String.format("Entry point %1$s is disabled.", endPoint.getName()));
+            return;
+        }
         
         boolean result = endPoint.initialize(m_logic, m_platform);
         log(String.format("BlocksHub plugin %1$s...%2$s", 

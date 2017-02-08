@@ -61,9 +61,24 @@ public class ConfigProvider {
     private static boolean m_isConfigUpdate = false;
     private static int m_configVersion;
     private final static HashSet<String> m_enabledWorlds = new HashSet<String>();
+    private final static HashSet<String> m_disabledBridges = new HashSet<String>();
 
     public static int getConfigVersion() {
         return m_configVersion;
+    }
+    
+    
+    /**
+     * Checks if a bridge is enabled in the config file
+     * @param bridge
+     * @return 
+     */
+    public static boolean isEnabled(String bridge) {
+        if (bridge == null) {
+            return false;
+        }
+        
+        return !m_disabledBridges.contains(bridge.toLowerCase());
     }
 
     /**
@@ -128,6 +143,18 @@ public class ConfigProvider {
             world = world.toLowerCase();
             if (!m_enabledWorlds.contains(world)) {
                 m_enabledWorlds.add(world);
+            }
+        }
+        
+        List<String> bridges = mainSection.getStringList("disabledBridges");
+        if (bridges == null) {
+            bridges = new ArrayList<String>();
+        }
+        m_disabledBridges.clear();
+        for (String bridge : bridges) {
+            bridge = bridge.toLowerCase();
+            if (!m_disabledBridges.contains(bridge)) {
+                m_disabledBridges.add(bridge);
             }
         }
            

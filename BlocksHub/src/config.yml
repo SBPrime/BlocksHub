@@ -1,5 +1,16 @@
 BlocksHub:
   version: 2
+  disabledBridges: {}
+#    - CoreProtect
+#    - Factions
+#    - GriefPrevention
+#    - HawkEye
+#    - LogBlock
+#    - Prism
+#    - Residence
+#    - Residence 4.6
+#    - Towny
+#    - WorldGuard
   worlds:
     - world
     - world_nether
