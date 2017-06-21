@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2017, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -42,7 +42,7 @@
 package org.primesoft.blockshub.accessors.bukkit.factions;
 
 import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.engine.EngineMain;
+import com.massivecraft.factions.engine.EnginePermBuild;
 import com.massivecraft.massivecore.ps.PS;
 import org.bukkit.entity.Player;
 import org.primesoft.blockshub.api.BlockData;
@@ -57,8 +57,8 @@ import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
  *
  * @author SBPrime
  */
-public class FactionsAc extends BukkitBaseEntity implements IAccessController {
-    public FactionsAc(Factions plugin) {
+public class FactionsAc12 extends BukkitBaseEntity implements IAccessController {
+    public FactionsAc12(Factions plugin) {
         super(plugin, "Factions");
     }
 
@@ -83,7 +83,7 @@ public class FactionsAc extends BukkitBaseEntity implements IAccessController {
                 blockX, blockY, blockZ,
                 null, null, null, null, null, null, null, null, null, null);
 
-        return EngineMain.canPlayerBuildAt(bPlayer, ps, false);
+        return EnginePermBuild.canPlayerBuildAt(bPlayer, ps, false);
     }
 
     @Override

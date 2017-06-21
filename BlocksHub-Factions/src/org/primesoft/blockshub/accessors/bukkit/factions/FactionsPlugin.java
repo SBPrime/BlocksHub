@@ -42,6 +42,10 @@
 
 package org.primesoft.blockshub.accessors.bukkit.factions;
 
+import com.massivecraft.factions.Factions;
+import com.massivecraft.factions.engine.EngineMain;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.primesoft.blockshub.IBlocksHubApi;
 import org.primesoft.blockshub.api.BaseAccessorEndpoint;
 import org.primesoft.blockshub.api.IAccessController;
@@ -57,6 +61,27 @@ public class FactionsPlugin extends BaseAccessorEndpoint {
 
     @Override
     protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
-        return FactionsAc.create(this, plugin);
+        if (!(plugin instanceof Factions)) {
+            log("plugin not found.");
+            return null;
+        }
+        
+        try {
+            if (EngineMain.get() != null) {                
+                return new FactionsAc((Factions)plugin);
+            }
+        } catch (Error ex) {
+        }
+        
+        try {
+            if (Class.forName("com.massivecraft.factions.engine.EnginePermBuild") != null) {
+                return new FactionsAc12((Factions)plugin);
+            }
+        } catch (Error ex) {
+        } catch (Exception ex) {            
+        }
+        
+        log("unsupported version");
+        return null;
     }
 }
