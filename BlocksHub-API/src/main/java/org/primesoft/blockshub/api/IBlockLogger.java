@@ -42,8 +42,6 @@
 
 package org.primesoft.blockshub.api;
 
-import java.util.UUID;
-
 /**
  *
  * @author SBPrime

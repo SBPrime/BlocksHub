@@ -92,4 +92,13 @@ public interface IPlatform {
      * @return 
      */
     IWorld getWorld(String name);
+    
+    
+    /**
+     * Get plugin
+     *
+     * @param pluginName
+     * @return
+     */
+    Object getPlugin(String pluginName);
 }

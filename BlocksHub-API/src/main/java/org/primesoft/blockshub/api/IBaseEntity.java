@@ -46,7 +46,7 @@ package org.primesoft.blockshub.api;
  *
  * @author SBPrime
  */
-interface IBaseEntity {
+public interface IBaseEntity {
     /**
      * Is the entity enabled
      * @return 
