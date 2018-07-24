@@ -16,17 +16,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>[1.13, 1.14)</version>
-            <type>jar</type>
-        </dependency>
-        
-        <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-API</artifactId>
             <version>[3.0.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
-   </dependencies>
+        <dependency>
+            <groupId>org.primesoft.blockshub</groupId>
+            <artifactId>BlocksHub-Base</artifactId>
+            <version>[3.0.0, 4.0.0)</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 </project>

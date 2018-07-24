@@ -41,6 +41,7 @@
  */
 package org.primesoft.blockshub.inner.api.platform;
 
+import org.primesoft.blockshub.api.platform.ILogger;
 import org.primesoft.blockshub.inner.api.IBlocksHubCore;
 
 /**
@@ -88,15 +89,6 @@ public interface IPlatform extends IEnableAware, org.primesoft.blockshub.api.IPl
      * @return
      */
     String getColorCode(Colors color);
-
-    /**
-     * Get plugin
-     *
-     * @param pluginName
-     * @return
-     */
-    Object getPlugin(String pluginName);
-
     
     /**
      * Get the BlocksHub plugins directory

@@ -41,10 +41,12 @@
  */
 package org.primesoft.blockshub.inner.api;
 
+import org.primesoft.blockshub.api.IPlayer;
+
 /**
  *
  * @author SBPrime
  */
 public interface IBlocksHubCore {
-    
+    boolean onCommand(IPlayer player, String commandName, String[] args);
 }
