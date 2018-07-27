@@ -75,7 +75,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
     
     @Override
     public double getVersion() {
-        return 2.0;
+        return 3.0;
     }
 
     /**
