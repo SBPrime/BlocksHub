@@ -59,7 +59,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.primesoft.blockshub.platform.ConsolePlayer;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
-import static org.primesoft.blockshub.api.base.LoggerProvider.log;
+import static org.primesoft.blockshub.utils.LoggerProvider.log;
 import org.primesoft.blockshub.api.platform.ILogger;
 import org.primesoft.blockshub.inner.api.IBlocksHubCore;
 import org.primesoft.blockshub.inner.api.platform.Colors;

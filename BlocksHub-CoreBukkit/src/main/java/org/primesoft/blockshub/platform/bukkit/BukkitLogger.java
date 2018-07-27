@@ -45,7 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.primesoft.blockshub.api.base.LoggerProvider;
+import org.primesoft.blockshub.utils.LoggerProvider;
 import org.primesoft.blockshub.api.platform.ILogger;
 import org.primesoft.blockshub.inner.api.platform.IEnableAware;
 
