@@ -9,12 +9,12 @@
    
     <packaging>jar</packaging>
     
-    <repositories>
+    <repositories>        
         <repository>
             <name>CoreProtect</name>
             <id>core-protect</id>
             <url>http://maven.playpro.com/</url>
-        </repository>         
+        </repository>  
     </repositories>
 
     <dependencies>
