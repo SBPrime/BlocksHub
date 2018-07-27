@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.primesoft</groupId>
-            <artifactId>BlocksHub-Api</artifactId>
+            <artifactId>BlocksHubBukkitApi</artifactId>
             <version>[3.0.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
