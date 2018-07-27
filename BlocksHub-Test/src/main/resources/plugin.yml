@@ -1,6 +1,6 @@
 name: BlocksHubTest
 main: org.primesoft.blockshub.test.TestPlugin
-version: 2.1.0
+version: 3.0.0
 website: https://github.com/SBPrime/BlocksHub/
 description: Logger & Block access API.
 authors: [SBPrime]

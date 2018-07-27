@@ -41,7 +41,9 @@
  */
 package org.primesoft.blockshub.test;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -51,9 +53,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.primesoft.blockshub.IBlocksHubApi;
 import org.primesoft.blockshub.IBlocksHubApiProvider;
-import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IPlayer;
-import org.primesoft.blockshub.api.Vector;
+import org.primesoft.blockshub.api.platform.BukkitBlockData;
 
 /**
  *
@@ -96,7 +97,7 @@ public class TestPlugin extends JavaPlugin {
         }
 
         boolean hasAccess = m_api.hasAccess(bcPlayer, world.getUID(),
-                new Vector(x, y, z));
+                x, y - 1, z);
         
         player.sendRawMessage("Has access: " + hasAccess);
 
@@ -108,9 +109,9 @@ public class TestPlugin extends JavaPlugin {
         
         Block b = world.getBlockAt(x, y - 1, z);
         hasAccess = m_api.canPlace(bcPlayer, world.getUID(), 
-                new Vector(x, y - 1, z), 
-                new BlockData(b.getTypeId(), b.getData()),  
-                new BlockData(itemStack.getTypeId(), itemStack.getDurability()));
+                x, y - 1, z, 
+                new BukkitBlockData(b.getBlockData()),
+                new BukkitBlockData(Bukkit.createBlockData(itemStack.getType())));
         
         player.sendRawMessage("Can place: " + hasAccess);
         
