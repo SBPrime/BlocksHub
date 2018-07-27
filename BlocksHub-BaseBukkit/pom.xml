@@ -30,18 +30,6 @@
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
-            <artifactId>BlocksHub-InnerAPI</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.primesoft.blockshub</groupId>
-            <artifactId>BlocksHub-Core</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-Base</artifactId>
             <version>[3.0.0, 4.0.0)</version>
             <type>jar</type>

@@ -39,7 +39,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.primesoft.blockshub.api.platform.base;
+package org.primesoft.blockshub.api.platform;
 
 import java.util.Collection;
 import java.util.List;
@@ -56,7 +56,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.primesoft.blockshub.api.platform.BukkitBlockData;
 
 /**
  *
