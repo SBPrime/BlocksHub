@@ -44,6 +44,7 @@ package org.primesoft.blockshub.platform.bukkit;
 import java.io.IOException;
 import java.util.UUID;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -279,5 +280,17 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
     @Override
     public String getPluginsDir() {
         return "/plugins/bukkit";
+    }
+
+    @Override
+    public <T> T getPlatformLocation(IWorld world, double x, double y, double z, Class<T> locationType) {
+        World w;
+        if (world instanceof BukkitWorld) {
+            w = ((BukkitWorld) world).getWorld();
+        } else {
+            w = m_server.getWorld(world.getUuid());
+        }
+
+        return (T) new Location(w, x, y, z);
     }
 }

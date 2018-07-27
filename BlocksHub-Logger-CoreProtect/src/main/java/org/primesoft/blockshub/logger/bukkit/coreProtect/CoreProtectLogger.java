@@ -44,16 +44,15 @@ package org.primesoft.blockshub.logger.bukkit.coreProtect;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlatform;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
-import org.primesoft.blockshub.api.Vector;
-import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
-import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
+import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
 
 /**
  *
@@ -67,26 +66,26 @@ public class CoreProtectLogger extends BukkitBaseEntity implements IBlockLogger 
      * @param platform
      * @return
      */
-    static IBlockLogger create(ILog logger, Object plugin) {
+    static IBlockLogger create(ILog logger, IPlatform platform, Object plugin) {
         if (!(plugin instanceof CoreProtect)) {
             logger.log("plugin not found.");
             return null;
         }
 
-        CoreProtect cp = (CoreProtect) plugin;        
+        CoreProtect cp = (CoreProtect) plugin;
         CoreProtectAPI coreProtect = cp.getAPI();
         if (coreProtect == null) {
             logger.log("unable to get CoreProtect API");
             return null;
         }
-        
+
         int apiVersion = coreProtect.APIVersion();
         if (apiVersion < 4) {
             logger.log("unsupported plugin version");
             return null;
         }
 
-        return new CoreProtectLogger(cp, coreProtect);
+        return new CoreProtectLogger(cp, coreProtect, platform);
     }
 
     /**
@@ -94,10 +93,13 @@ public class CoreProtectLogger extends BukkitBaseEntity implements IBlockLogger 
      */
     private final CoreProtectAPI m_coreProtect;
 
-    public CoreProtectLogger(JavaPlugin plugin, CoreProtectAPI api) {
+    private final IPlatform m_platform;
+
+    public CoreProtectLogger(JavaPlugin plugin, CoreProtectAPI api, IPlatform platform) {
         super(plugin);
-        
+
         m_coreProtect = api;
+        m_platform = platform;
     }
 
     @Override
@@ -106,22 +108,22 @@ public class CoreProtectLogger extends BukkitBaseEntity implements IBlockLogger 
     }
 
     @Override
-    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(IPlayer player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock) {
         if (!isEnabled()) {
             return;
         }
 
-        if (!(world instanceof BukkitWorld)) {
-            return;
-        }
-
-        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
+        Location l = m_platform.getPlatformLocation(world, x, y, z, Location.class);
         String playerName = player.getName();
 
-        Material oldMaterial = Material.getMaterial(oldBlock.getType());
-        Material newMaterial = Material.getMaterial(newBlock.getType());
-
-        m_coreProtect.logRemoval(playerName, l, oldMaterial, (byte) oldBlock.getData());
-        m_coreProtect.logPlacement(playerName, l, newMaterial, (byte) newBlock.getData());
+        BlockData bd;
+        if (oldBlock != null && !oldBlock.isAir()) {
+            bd = oldBlock.getData(BlockData.class);
+            m_coreProtect.logRemoval(playerName, l, bd.getMaterial(), bd);
+        }
+        if (newBlock != null && !newBlock.isAir()) {
+            bd = newBlock.getData(BlockData.class);
+            m_coreProtect.logPlacement(playerName, l, bd.getMaterial(), bd);
+        }
     }
 }
