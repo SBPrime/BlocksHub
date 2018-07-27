@@ -67,6 +67,7 @@ import org.primesoft.blockshub.inner.api.platform.Colors;
 import org.primesoft.blockshub.inner.api.platform.ICommandManager;
 import org.primesoft.blockshub.inner.api.platform.IConfiguration;
 import org.primesoft.blockshub.inner.api.platform.IPlatform;
+import org.primesoft.blockshub.platform.LazyPlayer;
 import org.primesoft.blockshub.platform.bukkit.mcstats.MetricsLite;
 
 /**
@@ -292,5 +293,28 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
         }
 
         return (T) new Location(w, x, y, z);
+    }
+
+    @Override
+    public <T> T getPlatformPlayer(IPlayer player, Class<T> type) {
+        if (player instanceof LazyPlayer) {
+            player = ((LazyPlayer)player).getResolved();
+        }
+        
+        if (player instanceof BukkitPlayer) {
+            return (T) ((BukkitPlayer)player).getPlayer();
+        }
+        
+        return (T) m_server.getPlayer(player.getUUID());
+        
+    }
+
+    @Override
+    public <T> T getPlatformWorld(IWorld world, Class<T> type) {
+        if (world instanceof BukkitWorld) {
+            return (T) ((BukkitWorld) world).getWorld();
+        }
+        
+        return (T) m_server.getWorld(world.getUuid());
     }
 }

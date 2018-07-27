@@ -113,4 +113,22 @@ public interface IPlatform {
      * @return  
      */
     <T> T getPlatformLocation(IWorld world, double x, double y, double z, Class<T> locationType);
+    
+    /**
+     * Converts the BlocksHub player to platform specific player
+     * @param <T>
+     * @param player
+     * @param type
+     * @return 
+     */
+    <T> T getPlatformPlayer(IPlayer player, Class<T> type);
+    
+    /**
+     * Converts the BlocksHub world to platform specific world
+     * @param <T>
+     * @param world
+     * @param type
+     * @return 
+     */
+    <T> T getPlatformWorld(IWorld world, Class<T> type);
 }

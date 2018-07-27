@@ -17,3 +17,5 @@
 *~
 /*/target/
 /*/nbproject/*
+/**/nbproject/*
+/test-server/*
