@@ -45,13 +45,19 @@ package org.primesoft.blockshub.api;
  *
  * @author SBPrime
  * 
- * @param <TMaterialType> The type of the material type
- * @param <TDataType> The type of material data
  */
-public interface IBlockData<TMaterialType, TDataType> {
-    public static final IBlockData AIR = null;
-
-    boolean isAir();    
-    TMaterialType getType();
-    TDataType getData();
+public interface IBlockData {
+    /**
+     * Check if the data represents an AIR block
+     * @return 
+     */
+    boolean isAir();
+    
+    /**
+     * Converts the stored data to platform specific data.
+     * @param <T>
+     * @param dataType
+     * @return 
+     */
+    <T> T getData(Class<T> dataType);
 }

@@ -101,4 +101,16 @@ public interface IPlatform {
      * @return
      */
     Object getPlugin(String pluginName);
+    
+    /**
+     * Converts the BlocksHub location to platform specific location
+     * @param <T>
+     * @param world
+     * @param x
+     * @param locationType 
+     * @param y 
+     * @param z 
+     * @return  
+     */
+    <T> T getPlatformLocation(IWorld world, double x, double y, double z, Class<T> locationType);
 }

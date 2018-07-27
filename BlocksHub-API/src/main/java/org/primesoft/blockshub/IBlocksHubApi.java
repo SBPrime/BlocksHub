@@ -45,7 +45,6 @@ import java.util.UUID;
 import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.IBlockLogger;
-import org.primesoft.blockshub.api.Vector;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 
@@ -150,160 +149,179 @@ public interface IBlocksHubApi {
     /**
      * Log block change
      *
-     * @param location
      * @param player
      * @param worldName
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, String player, String worldName,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(String player, String worldName, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param playerUuid
      * @param worldName
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, UUID playerUuid, String worldName,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(UUID playerUuid, String worldName, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param player
      * @param worldName
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, IPlayer player, String worldName,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(IPlayer player, String worldName, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param player
      * @param worldUuid
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, String player, UUID worldUuid,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(String player, UUID worldUuid, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param playerUuid
      * @param worldUuid
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, UUID playerUuid, UUID worldUuid,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(UUID playerUuid, UUID worldUuid, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param player
      * @param worldUuid
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, IPlayer player, UUID worldUuid,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(IPlayer player, UUID worldUuid, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param player
      * @param world
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, String player, IWorld world,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(String player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param playerUuid
      * @param world
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, UUID playerUuid, IWorld world,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(UUID playerUuid, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
      *
-     * @param location
      * @param player
      * @param world
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      */
-    public void logBlock(Vector location, IPlayer player, IWorld world,
-            IBlockData oldBlock, IBlockData newBlock);
+    public void logBlock(IPlayer player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param worldName
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(String player, String worldName, Vector location);
+    boolean hasAccess(String player, String worldName, double x, double y, double z);
     
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param worldName
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(UUID player, String worldName, Vector location);
+    boolean hasAccess(UUID player, String worldName, double x, double y, double z);
     
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param worldName
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(IPlayer player, String worldName, Vector location);
+    boolean hasAccess(IPlayer player, String worldName, double x, double y, double z);
 
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param worldUuid
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(String player, UUID worldUuid, Vector location);
+    boolean hasAccess(String player, UUID worldUuid, double x, double y, double z);
 
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param worldUuid
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(UUID player, UUID worldUuid, Vector location);
+    boolean hasAccess(UUID player, UUID worldUuid, double x, double y, double z);
 
 
     /**
@@ -311,30 +329,37 @@ public interface IBlocksHubApi {
      *
      * @param player
      * @param worldUuid
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(IPlayer player, UUID worldUuid, Vector location);
+    boolean hasAccess(IPlayer player, UUID worldUuid, double x, double y, double z);
     
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(String player, IWorld world, Vector location);
+
+    boolean hasAccess(String player, IWorld world, double x, double y, double z);
 
     /**
      * Check if a player has build access at a location
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(UUID player, IWorld world, Vector location);
+    boolean hasAccess(UUID player, IWorld world, double x, double y, double z);
 
 
     /**
@@ -342,46 +367,53 @@ public interface IBlocksHubApi {
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(IPlayer player, IWorld world, Vector location);
+    boolean hasAccess(IPlayer player, IWorld world, double x, double y, double z);
 
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param worldName
-     * @param location
+     * @param x
      * @param oldBlock
      * @param newBlock
+     * @param z
      * @return
      */
-    boolean canPlace(String player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(String player, String worldName, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param worldName
-     * @param location
+     * @param x
+     * @param y
      * @param oldBlock
      * @param newBlock
+     * @param z
      * @return
      */
-    boolean canPlace(UUID player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(UUID player, String worldName, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param worldName
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(IPlayer player, String worldName, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
     
     
     /**
@@ -389,70 +421,81 @@ public interface IBlocksHubApi {
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      * @return
      */
-    boolean canPlace(String player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(String player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      * @return
      */
-    boolean canPlace(UUID player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(UUID player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
     
-    /**
+     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
      * @param oldBlock
+     * @param z
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(IPlayer player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param worldUuid
-     * @param location
+     * @param x
+     * @param y
      * @param oldBlock
+     * @param z
      * @param newBlock
      * @return
      */
-    boolean canPlace(String player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(String player, UUID worldUuid, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param worldUuid
-     * @param location
+     * @param x
+     * @param y
      * @param oldBlock
+     * @param z
      * @param newBlock
      * @return
      */
-    boolean canPlace(UUID player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(UUID player, UUID worldUuid, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param worldUuid
-     * @param location
+     * @param x
      * @param oldBlock
+     * @param z
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(IPlayer player, UUID worldUuid, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 }

@@ -70,12 +70,12 @@ public class TypeOnlyBlock implements Block {
 
     @Override
     public BlockData getBlockData() {
-        return m_data.getData();
+        return m_data.getData(BlockData.class);
     }
 
     @Override
     public Material getType() {
-        return m_data.getType();
+        return getBlockData().getMaterial();
     }
 
     //--------------------------------------------------------------------------

@@ -49,12 +49,14 @@ package org.primesoft.blockshub.api;
 public interface IBlockLogger extends IBaseEntity {
     /**
      * Log block change
-     * @param location
      * @param player
+     * @param x
+     * @param y
      * @param world
+     * @param z
      * @param oldBlock
      * @param newBlock 
      */
-    public void logBlock(IPlayer player, IWorld world, Vector location, 
+    public void logBlock(IPlayer player, IWorld world, double x, double y, double z, 
                          IBlockData oldBlock, IBlockData newBlock);
 }

@@ -49,25 +49,19 @@ import org.primesoft.blockshub.api.IBlockData;
  *
  * @author SBPrime
  */
-public class BukkitBlockData implements IBlockData<Material, BlockData> {
+public final class BukkitBlockData implements IBlockData {
 
     private final BlockData m_data;
 
     @Override
-    public boolean isAir() {
-        return Material.AIR.equals(getType());
+    public final boolean isAir() {
+        return Material.AIR.equals(m_data.getMaterial());
     }
 
     @Override
-    public Material getType() {
-        return m_data.getMaterial();
+    public final <T> T getData(Class<T> dataType) {
+        return (T)m_data;                
     }
-
-    @Override
-    public BlockData getData() {
-        return m_data;
-    }
-    
     
     public BukkitBlockData(BlockData data){
         m_data = data;

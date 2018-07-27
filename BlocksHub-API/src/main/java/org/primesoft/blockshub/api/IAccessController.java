@@ -52,20 +52,24 @@ public interface IAccessController extends IBaseEntity {
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @return
      */
-    boolean hasAccess(IPlayer player, IWorld world, Vector location);
+    boolean hasAccess(IPlayer player, IWorld world, double x, double y, double z);
     
     /**
      * Check if a player can place a block at a location
      *
      * @param player
      * @param world
-     * @param location
+     * @param x
+     * @param y
+     * @param z
      * @param oldBlock
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
+    boolean canPlace(IPlayer player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock);
 }
