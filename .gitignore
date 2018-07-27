@@ -6,7 +6,7 @@
 *.jar
 *.war
 *.ear
-/*/nbproject/private/
+/*/nbproject/*
 /*/build/
 /*/dist/
 /*/test/
@@ -15,3 +15,7 @@
 /dist/*
 /lib/*
 *~
+/*/target/
+/*/nbproject/*
+/**/nbproject/*
+/test-server/*

@@ -1,0 +1,18 @@
+name: BlocksHubTest
+main: org.primesoft.blockshub.test.TestPlugin
+version: 3.0.0
+website: https://github.com/SBPrime/BlocksHub/
+description: Logger & Block access API.
+authors: [SBPrime]
+depend: [BlocksHub]
+softdepend: []
+commands:
+  bctest:
+    aliases: []
+    description: 'Test blocks hub access.'
+    permission: bctest
+    usage: /<command> to test blocks hub
+permissions:
+  bctest:
+    description: Grants access to BlocksHub test
+    default: op
