@@ -45,7 +45,7 @@ import org.primesoft.blockshub.api.IBlockLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.Vector;
 import org.primesoft.blockshub.api.IPlayer;
@@ -305,56 +305,56 @@ public class Logic implements IBlocksHubApi, IEnableAware {
     }
     
     @Override
-    public void logBlock(Vector location, String player, String worldName, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, String player, String worldName, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, getPlayer(player), getWorld(worldName), oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, UUID playerUuid, String worldName, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, UUID playerUuid, String worldName, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, getPlayer(playerUuid), getWorld(worldName), oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, IPlayer player, String worldName, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, IPlayer player, String worldName, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, player, getWorld(worldName), oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, String player, UUID worldUuid, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, String player, UUID worldUuid, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, getPlayer(player), getWorld(worldUuid), oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, UUID playerUuid, UUID worldUuid, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, UUID playerUuid, UUID worldUuid, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, getPlayer(playerUuid), getWorld(worldUuid), oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, IPlayer player, UUID worldUuid, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, IPlayer player, UUID worldUuid, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, player, getWorld(worldUuid), oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, String player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, String player, IWorld world, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, getPlayer(player), world, oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, UUID playerUuid, IWorld world, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, UUID playerUuid, IWorld world, IBlockData oldBlock, IBlockData newBlock) {
         logBlock(location, getPlayer(playerUuid), world, oldBlock, newBlock);
     }
     
     @Override
-    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData oldBlock, BlockData newBlock) {
+    public void logBlock(Vector location, IPlayer player, IWorld world, IBlockData oldBlock, IBlockData newBlock) {
         if (!validate(world, location, player)) {
             return;
         }
         
         if (oldBlock == null) {
-            oldBlock = BlockData.AIR;
+            oldBlock = IBlockData.AIR;
         }
         if (newBlock == null) {
-            newBlock = BlockData.AIR;
+            newBlock = IBlockData.AIR;
         }
         
         if (!ConfigProvider.isLogging(world.getName())) {
@@ -363,7 +363,7 @@ public class Logic implements IBlocksHubApi, IEnableAware {
         
         for (IBlockLogger bl : m_loggers) {
             try {
-                bl.logBlock(location, player, world, oldBlock, newBlock);
+                bl.logBlock(player, world, location, oldBlock, newBlock);
             } catch (Exception ex) {
                 ExceptionHelper.printException(ex, "Unable to log block change using " + bl.getName());
             }
@@ -434,48 +434,48 @@ public class Logic implements IBlocksHubApi, IEnableAware {
     }
     
     @Override
-    public boolean canPlace(String player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(String player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(getPlayer(player), getWorld(worldName), location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(UUID player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(UUID player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(getPlayer(player), getWorld(worldName), location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(IPlayer player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(IPlayer player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(player, getWorld(worldName), location, oldBlock, newBlock);
     }
     
     
     @Override
-    public boolean canPlace(String player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(String player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(getPlayer(player), getWorld(worldUuid), location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(UUID player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(UUID player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(getPlayer(player), getWorld(worldUuid), location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(IPlayer player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(IPlayer player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(player, getWorld(worldUuid), location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(String player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(String player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(getPlayer(player), world, location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(UUID player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(UUID player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         return canPlace(getPlayer(player), world, location, oldBlock, newBlock);
     }
     
     @Override
-    public boolean canPlace(IPlayer player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock) {
+    public boolean canPlace(IPlayer player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock) {
         if (player == null || player.isConsole()) {
             return true;
         }
