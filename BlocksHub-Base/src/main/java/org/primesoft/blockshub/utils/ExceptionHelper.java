@@ -41,8 +41,6 @@
  */
 package org.primesoft.blockshub.utils;
 
-import org.primesoft.blockshub.api.base.LoggerProvider;
-
 /**
  *
  * @author SBPrime

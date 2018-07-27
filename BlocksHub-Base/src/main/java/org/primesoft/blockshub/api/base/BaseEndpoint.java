@@ -45,6 +45,7 @@ import org.primesoft.blockshub.IBlocksHubApi;
 import org.primesoft.blockshub.api.IBlocksHubEndpoint;
 import org.primesoft.blockshub.api.ILog;
 import org.primesoft.blockshub.api.IPlatform;
+import org.primesoft.blockshub.utils.LoggerProvider;
 
 /**
  *
