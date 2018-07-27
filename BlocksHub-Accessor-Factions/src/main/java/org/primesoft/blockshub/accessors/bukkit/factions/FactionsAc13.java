@@ -41,54 +41,62 @@
  */
 package org.primesoft.blockshub.accessors.bukkit.factions;
 
-import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.engine.EnginePermBuild;
-import com.massivecraft.massivecore.ps.PS;
-import org.bukkit.entity.Player;
-import org.primesoft.blockshub.api.BlockData;
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.Conf;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.P;
+import com.massivecraft.factions.listeners.FactionsBlockListener;
+import com.massivecraft.factions.struct.FPerm;
+import org.bukkit.Location;
 import org.primesoft.blockshub.api.IAccessController;
+import org.primesoft.blockshub.api.IBlockData;
+import org.primesoft.blockshub.api.IPlatform;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
-import org.primesoft.blockshub.api.Vector;
-import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
-import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
 
 /**
  *
  * @author SBPrime
  */
-public class FactionsAc12 extends BukkitBaseEntity implements IAccessController {
-    public FactionsAc12(Factions plugin) {
+public class FactionsAc13 extends BukkitBaseEntity implements IAccessController {
+
+    private final IPlatform m_platform;
+
+    public FactionsAc13(P plugin, IPlatform platform) {
         super(plugin, "Factions");
+
+        m_platform = platform;
     }
 
     @Override
-    public boolean hasAccess(IPlayer player, IWorld world, Vector vector) {
-        if (world == null || vector == null) {
+    public boolean hasAccess(IPlayer player, IWorld world, double x, double y, double z) {
+        if (world == null) {
             return false;
         }
 
-        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
-        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
-        if (bPlayer == null) {
+        String name = player.getName();
+        String uuid = player.getUUID().toString();
+        if (Conf.playersWhoBypassAllProtection.contains(name)
+                || Conf.playersWhoBypassAllProtection.contains(uuid)) {
             return true;
         }
-
-        String worldName = world.getName();
-        Integer blockX = (int) (vector.getX());
-        Integer blockY = (int) (vector.getY());
-        Integer blockZ = (int) (vector.getZ());
-
-        PS ps = PS.valueOf(worldName,
-                blockX, blockY, blockZ,
-                null, null, null, null, null, null, null, null, null, null);
-
-        return EnginePermBuild.canPlayerBuildAt(bPlayer, ps, false);
+        
+        FPlayer me = FPlayers.i.get(uuid);
+        if (me.hasAdminMode()) {
+            return true;
+        }
+        
+        FLocation loc = new FLocation(world.getName(), (int) x, (int) z);
+        return FPerm.BUILD.has(me, loc, false);
     }
 
     @Override
-    public boolean canPlace(IPlayer player, IWorld world, Vector vector, BlockData oldBlock, BlockData newBlock) {
-        return hasAccess(player, world, vector);
+    public boolean canPlace(IPlayer player, IWorld world, double x, double y, double z, IBlockData oldBlock, IBlockData newBlock) {
+        return hasAccess(player, world, x, y, z);
     }
 
 }

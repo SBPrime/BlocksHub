@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2014, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,56 +39,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.primesoft.blockshub.accessors.bukkit.factions;
 
-import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.engine.EngineMain;
-import com.massivecraft.massivecore.ps.PS;
-import org.bukkit.entity.Player;
-import org.primesoft.blockshub.api.BlockData;
+import com.massivecraft.factions.P;
+import org.primesoft.blockshub.IBlocksHubApi;
 import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.api.IPlayer;
-import org.primesoft.blockshub.api.IWorld;
-import org.primesoft.blockshub.api.Vector;
-import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
-import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
+import org.primesoft.blockshub.api.IPlatform;
+import org.primesoft.blockshub.api.base.BaseAccessorEndpoint;
 
 /**
- *
  * @author SBPrime
  */
-public class FactionsAc extends BukkitBaseEntity implements IAccessController {
-    public FactionsAc(Factions plugin) {
-        super(plugin, "Factions");
+public class FactionsPlugin extends BaseAccessorEndpoint {
+    public FactionsPlugin() {
+        super("Factions");
     }
 
     @Override
-    public boolean hasAccess(IPlayer player, IWorld world, Vector vector) {
-        if (world == null || vector == null) {
-            return false;
+    protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
+        if (!(plugin instanceof P)) {
+            log("plugin not found.");
+            return null;
         }
-
-        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
-        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
-        if (bPlayer == null) {
-            return true;
-        }
-
-        String worldName = world.getName();
-        Integer blockX = (int) (vector.getX());
-        Integer blockY = (int) (vector.getY());
-        Integer blockZ = (int) (vector.getZ());
-
-        PS ps = PS.valueOf(worldName,
-                blockX, blockY, blockZ,
-                null, null, null, null, null, null, null, null, null, null);
-
-        return EngineMain.canPlayerBuildAt(bPlayer, ps, false);
+        
+        return new FactionsAc13((P)plugin, platform);
+        
     }
-
-    @Override
-    public boolean canPlace(IPlayer player, IWorld world, Vector vector, BlockData oldBlock, BlockData newBlock) {
-        return hasAccess(player, world, vector);
-    }
-
 }
