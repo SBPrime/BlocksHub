@@ -42,7 +42,7 @@
 package org.primesoft.blockshub;
 
 import java.util.UUID;
-import org.primesoft.blockshub.api.BlockData;
+import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.Vector;
@@ -157,7 +157,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, String player, String worldName,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -169,7 +169,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, UUID playerUuid, String worldName,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -181,7 +181,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, IPlayer player, String worldName,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -193,7 +193,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, String player, UUID worldUuid,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -205,7 +205,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, UUID playerUuid, UUID worldUuid,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -217,7 +217,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, IPlayer player, UUID worldUuid,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -229,7 +229,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, String player, IWorld world,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -241,7 +241,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, UUID playerUuid, IWorld world,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Log block change
@@ -253,7 +253,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      */
     public void logBlock(Vector location, IPlayer player, IWorld world,
-            BlockData oldBlock, BlockData newBlock);
+            IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player has build access at a location
@@ -357,7 +357,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(String player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(String player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
@@ -369,7 +369,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(UUID player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(UUID player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
@@ -381,7 +381,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, String worldName, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(IPlayer player, String worldName, Vector location, IBlockData oldBlock, IBlockData newBlock);
     
     
     /**
@@ -394,7 +394,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(String player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(String player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
@@ -406,7 +406,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(UUID player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(UUID player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
     
     /**
      * Check if a player can place a block at a location
@@ -418,7 +418,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(IPlayer player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Check if a player can place a block at a location
@@ -430,7 +430,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(String player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(String player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Check if a player can place a block at a location
@@ -442,7 +442,7 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(UUID player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(UUID player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock);
 
     /**
      * Check if a player can place a block at a location
@@ -454,5 +454,5 @@ public interface IBlocksHubApi {
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, UUID worldUuid, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(IPlayer player, UUID worldUuid, Vector location, IBlockData oldBlock, IBlockData newBlock);
 }

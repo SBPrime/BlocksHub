@@ -55,6 +55,6 @@ public interface IBlockLogger extends IBaseEntity {
      * @param oldBlock
      * @param newBlock 
      */
-    public void logBlock(Vector location, IPlayer player, IWorld world, 
-                         BlockData oldBlock, BlockData newBlock);
+    public void logBlock(IPlayer player, IWorld world, Vector location, 
+                         IBlockData oldBlock, IBlockData newBlock);
 }

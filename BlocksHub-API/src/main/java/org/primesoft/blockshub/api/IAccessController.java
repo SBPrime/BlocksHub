@@ -67,5 +67,5 @@ public interface IAccessController extends IBaseEntity {
      * @param newBlock
      * @return
      */
-    boolean canPlace(IPlayer player, IWorld world, Vector location, BlockData oldBlock, BlockData newBlock);
+    boolean canPlace(IPlayer player, IWorld world, Vector location, IBlockData oldBlock, IBlockData newBlock);
 }

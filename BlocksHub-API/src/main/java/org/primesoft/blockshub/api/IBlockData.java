@@ -44,27 +44,14 @@ package org.primesoft.blockshub.api;
 /**
  *
  * @author SBPrime
+ * 
+ * @param <TMaterialType> The type of the material type
+ * @param <TDataType> The type of material data
  */
-public class BlockData {
-    public static final BlockData AIR = new BlockData(0, 0);
-    
-    private final int m_type;
-    private final int m_data;
+public interface IBlockData<TMaterialType, TDataType> {
+    public static final IBlockData AIR = null;
 
-    public boolean isAir() {
-        return m_type == 0;
-    }
-    
-    public int getType() {
-        return m_type;
-    }
-    
-    public int getData() {
-        return m_data;
-    }
-    
-    public BlockData(int type, int data) {
-        m_data = data;
-        m_type = type;
-    }
+    boolean isAir();    
+    TMaterialType getType();
+    TDataType getData();
 }
