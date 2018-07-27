@@ -44,7 +44,7 @@ package org.primesoft.blockshub.platform;
 import java.util.UUID;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.Permissions;
-import org.primesoft.blockshub.api.base.LoggerProvider;
+import org.primesoft.blockshub.utils.LoggerProvider;
 
 /**
  *

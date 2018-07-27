@@ -50,7 +50,7 @@ import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.Vector;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
-import static org.primesoft.blockshub.api.base.LoggerProvider.log;
+import static org.primesoft.blockshub.utils.LoggerProvider.log;
 import org.primesoft.blockshub.configuration.ConfigProvider;
 import org.primesoft.blockshub.inner.api.platform.Colors;
 import org.primesoft.blockshub.inner.api.platform.IEnableAware;

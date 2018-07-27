@@ -49,7 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
-import static org.primesoft.blockshub.api.base.LoggerProvider.log;
+import static org.primesoft.blockshub.utils.LoggerProvider.log;
 
 /**
  *
