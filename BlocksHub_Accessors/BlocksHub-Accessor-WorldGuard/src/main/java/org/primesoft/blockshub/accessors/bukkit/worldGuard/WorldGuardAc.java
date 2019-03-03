@@ -1,7 +1,7 @@
 /*
  * BlocksHub a library plugin providing easy access to block loggers 
  * and block access controllers.
- * Copyright (c) 2014, SBPrime <https://github.com/SBPrime/>
+ * Copyright (c) 2013, SBPrime <https://github.com/SBPrime/>
  * Copyright (c) BlocksHub contributors
  *
  * All rights reserved.
@@ -39,27 +39,79 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub.accessors.bukkit.worldGuard;
 
-import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.api.BaseAccessorEndpoint;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.platform.api.IPlatform;
-
-
+import org.primesoft.blockshub.api.IBlockData;
+import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlayer;
+import org.primesoft.blockshub.api.IWorld;
+import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
 
 /**
+ *
  * @author SBPrime
  */
-public class BlocksHubPlugin extends BaseAccessorEndpoint {
+public class WorldGuardAc extends BukkitBaseEntity implements IAccessController {
 
-    public BlocksHubPlugin() {
-        super("WorldGuard");
+    static IAccessController create(ILog logger, Object plugin) {
+        if (!(plugin instanceof WorldGuardPlugin)) {
+            logger.log("plugin not found.");
+            return null;
+        }
+
+        return new WorldGuardAc((WorldGuardPlugin) plugin);
+    }
+
+    private final Map<String, RegionManager> m_cachedWorlds = new ConcurrentSkipListMap<>(
+    );
+
+    private final RegionContainer m_rc;
+
+    private WorldGuardAc(WorldGuardPlugin plugin) {
+        super(plugin);
+
+        m_rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
+    }
+
+    /*
+    @Override
+    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
+        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
+        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
+        if (bPlayer == null) {
+            return true;
+        }
+
+        if (!(world instanceof BukkitWorld)) {
+            return true;
+        }
+
+        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
+        
+        return m_worldGuard.canBuild(bPlayer, l);
+    }
+     */
+
+    @Override
+    public boolean hasAccess(IPlayer player,
+            IWorld world, double x, double y, double z) {
+        return false;
     }
 
     @Override
-    protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
-        return WorldGuardAc.create(this, plugin);
+    public boolean canPlace(IPlayer player,
+            IWorld world, double x, double y, double z,
+            IBlockData oldBlock, IBlockData newBlock) {
+        return hasAccess(player, world, x, y, z);
     }
 }

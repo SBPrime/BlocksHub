@@ -65,6 +65,12 @@
             <version>[3.1.0, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
+        <!-- <dependency>
+            <groupId>org.primesoft.blockshub.accessors</groupId>
+            <artifactId>BlocksHub-Accessor-WorldGuard</artifactId>
+            <version>[3.1.0, 4.0.0)</version>
+            <scope>compile</scope>
+        </dependency> -->
     </dependencies>
     <build>
         <resources>

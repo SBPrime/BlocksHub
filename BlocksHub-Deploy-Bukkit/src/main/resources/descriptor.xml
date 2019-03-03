@@ -24,7 +24,7 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.primesoft.blockshub.accessors:*</include>                
+                <include>org.primesoft.blockshub.accessors:*</include>
             </includes>
         </dependencySet>
         <dependencySet>

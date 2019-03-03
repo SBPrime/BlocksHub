@@ -41,16 +41,12 @@
  */
 package org.primesoft.blockshub.accessors.bukkit.factions;
 
-import com.massivecraft.factions.Board;
 import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
-import com.massivecraft.factions.listeners.FactionsBlockListener;
 import com.massivecraft.factions.struct.FPerm;
-import org.bukkit.Location;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.IPlatform;
