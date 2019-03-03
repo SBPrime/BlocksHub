@@ -18,5 +18,6 @@
     <modules>
         <module>BlocksHub-Accessor-Factions</module>
         <!-- <module>BlocksHub-Accessor-WorldGuard</module> -->
+        <module>BlocksHub-Accessor-GriefPrevention</module>
     </modules>
 </project>

@@ -42,10 +42,11 @@
 
 package org.primesoft.blockshub.accessors.bukkit.griefPrevention;
 
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.api.BaseAccessorEndpoint;
 import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.platform.api.IPlatform;
+import org.primesoft.blockshub.api.IPlatform;
+import org.primesoft.blockshub.api.base.BaseAccessorEndpoint;
 
 /**
  * @author SBPrime
@@ -58,6 +59,11 @@ public class BlocksHubPlugin extends BaseAccessorEndpoint {
 
     @Override
     protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
-        return GriefPreventionAc.create(this, plugin);
+        if (!(plugin instanceof GriefPrevention)) {
+            log("plugin not found.");
+            return null;
+        }
+        
+        return new GriefPreventionAc((GriefPrevention)plugin, platform);
     }
 }

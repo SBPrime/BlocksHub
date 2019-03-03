@@ -60,21 +60,30 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.primesoft.blockshub.api.IBlockData;
 
 /**
  *
  * @author SBPrime
  */
 public class TypeOnlyBlock implements Block {
-    private final BukkitBlockData m_data;
+    private final BlockData m_data;
 
+    public TypeOnlyBlock(IBlockData data) {
+        this(data.getData(BlockData.class));
+    }
+    
     public TypeOnlyBlock(BukkitBlockData data) {
+        this(data.getData(BlockData.class));
+    }
+    
+    public TypeOnlyBlock(BlockData data) {
         m_data = data;
     }
 
     @Override
     public BlockData getBlockData() {
-        return m_data.getData(BlockData.class);
+        return m_data;
     }
 
     @Override

@@ -45,19 +45,16 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
-import org.primesoft.blockshub.api.BlockData;
 import org.primesoft.blockshub.api.IAccessController;
-import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IBlockData;
+import org.primesoft.blockshub.api.IPlatform;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
-import org.primesoft.blockshub.api.Vector;
-import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
-import org.primesoft.blockshub.platform.bukkit.BukkitPlayer;
-import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
-import org.primesoft.blockshub.platform.bukkit.TypeOnlyBlock;
+import org.primesoft.blockshub.api.platform.TypeOnlyBlock;
+import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
 
 /**
  *
@@ -65,108 +62,97 @@ import org.primesoft.blockshub.platform.bukkit.TypeOnlyBlock;
  */
 public class GriefPreventionAc extends BukkitBaseEntity implements IAccessController {
 
-    static IAccessController create(ILog logger, Object plugin) {
-        if (!(plugin instanceof GriefPrevention)) {
-            logger.log("plugin not found.");
-            return null;
-        }
-        
-        return new GriefPreventionAc((GriefPrevention)plugin);
-    }
-    
-    
     private final GriefPrevention m_griefPrevention;
 
-    
-    public GriefPreventionAc(GriefPrevention griefPrevention) {
+    private final IPlatform m_platform;
+
+    GriefPreventionAc(GriefPrevention griefPrevention, IPlatform platform) {
         super(griefPrevention, "GriefPrevention");
-        
+
+        m_platform = platform;
         m_griefPrevention = griefPrevention;
-    }    
-    
+    }
+
     /**
      * Get the player data
+     *
      * @param player
-     * @return 
+     * @return
      */
     private PlayerData getPlayerData(IPlayer player) {
         if (player == null) {
             return null;
         }
-        
+
         return m_griefPrevention.dataStore.getPlayerData(player.getUUID());
     }
 
     @Override
-    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
-        if (location == null || !(world instanceof BukkitWorld)) {
+    public boolean hasAccess(IPlayer player, IWorld world, double x, double y, double z) {
+        if (world == null) {
+            return false;
+        }
+        if (player == null) {
             return true;
         }
-        
-        World bWorld = ((BukkitWorld)world).getWorld();
-        BukkitPlayer bPlayer = BukkitPlayer.getPlayer(player);        
-            
-        if (bWorld == null || bPlayer == null) {
+
+        final World bWorld = m_platform.getPlatformWorld(world, World.class);
+        final Player bukkitPlayer = m_platform.getPlatformPlayer(player, Player.class);
+
+        if (bWorld == null || bukkitPlayer == null) {
             return true;
         }
-        
-        Player bukkitPlayer = bPlayer.getPlayer();
-        if (bukkitPlayer == null) {
-            return true;
-        }
-        
+
         if (!m_griefPrevention.claimsEnabledForWorld(bWorld)) {
             return true;
         }
 
-        PlayerData playerData = getPlayerData(player);
-        if (playerData == null || playerData.ignoreClaims || 
-                m_griefPrevention.config_mods_ignoreClaimsAccounts.contains(player.getName())) {
+        final PlayerData playerData = getPlayerData(player);
+        if (playerData == null || playerData.ignoreClaims) {
             return true;
         }
-        
-        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());
-        Claim claim = m_griefPrevention.dataStore.getClaimAt(l, true, playerData.lastClaim);
-        
-        playerData.lastClaim = claim;        
-                        
+
+        final Location l = m_platform.getPlatformLocation(world, x, y, z, Location.class);
+        final Claim claim = m_griefPrevention.dataStore.getClaimAt(l, true, playerData.lastClaim);
+
+        playerData.lastClaim = claim;
+
         return (claim == null) || (claim.allowAccess(bukkitPlayer) == null);
     }
 
     @Override
-    public boolean canPlace(IPlayer player, IWorld world, Vector location, 
-            BlockData blockOld, BlockData blockNew) {
-        boolean airOld = blockOld.isAir();
-        boolean airNew = blockNew.isAir();
-        
+    public boolean canPlace(IPlayer player, IWorld world,
+            double x, double y, double z,
+            IBlockData blockOld, IBlockData blockNew) {
+        if (world == null) {
+            return false;
+        }
+        if (player == null) {
+            return true;
+        }
+
+        final boolean airOld = blockOld.isAir();
+        final boolean airNew = blockNew.isAir();
+
         if (airOld && airNew) {
             return true;
         }
-        
-        if (location == null || !(world instanceof BukkitWorld)) {
+
+        final World bWorld = m_platform.getPlatformWorld(world, World.class);
+        final Player bukkitPlayer = m_platform.getPlatformPlayer(player, Player.class);
+
+        if (bWorld == null || bukkitPlayer == null) {
             return true;
         }
-        
-        World bWorld = ((BukkitWorld)world).getWorld();
-        BukkitPlayer bPlayer = BukkitPlayer.getPlayer(player);        
-            
-        if (bWorld == null || bPlayer == null) {
-            return true;
-        }
-        
-        Player bukkitPlayer = bPlayer.getPlayer();
-        if (bukkitPlayer == null) {
-            return true;
-        }
-        
-        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());               
-        
+
+        final Location l = m_platform.getPlatformLocation(world, x, y, z, Location.class);
+
         if (!airOld) {
             if (m_griefPrevention.allowBreak(bukkitPlayer, new TypeOnlyBlock(blockOld), l) != null) {
                 return false;
             }
         }
         
-        return m_griefPrevention.allowBuild(bukkitPlayer, l, Material.getMaterial(blockOld.getType())) == null;
+        return m_griefPrevention.allowBuild(bukkitPlayer, l, blockOld.getData(BlockData.class).getMaterial()) == null;
     }
 }
