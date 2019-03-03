@@ -39,7 +39,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.primesoft.blockshub.logger.bukkit.logBlock;
 
 import de.diddiz.LogBlock.Actor;
@@ -47,14 +46,14 @@ import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.primesoft.blockshub.api.BlockData;
+import org.bukkit.block.data.BlockData;
+import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.IBlockLogger;
 import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlatform;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
-import org.primesoft.blockshub.api.Vector;
-import org.primesoft.blockshub.platform.bukkit.BukkitBaseEntity;
-import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
+import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
 
 /**
  *
@@ -62,21 +61,20 @@ import org.primesoft.blockshub.platform.bukkit.BukkitWorld;
  */
 public class LogBlockLogger extends BukkitBaseEntity implements IBlockLogger {
 
-    static IBlockLogger create(ILog logger, Object plugin) {
+    static IBlockLogger create(ILog logger, IPlatform platform, Object plugin) {
         if (!(plugin instanceof LogBlock)) {
             logger.log("plugin not found.");
-            return null;    
+            return null;
         }
-        
-        LogBlock logBlock = (LogBlock)plugin;
+
+        LogBlock logBlock = (LogBlock) plugin;
         Consumer consumer = logBlock.getConsumer();
         if (consumer == null) {
             logger.log("unable to get the Consumer");
             return null;
         }
-        
-        
-        return new LogBlockLogger(logBlock, consumer);
+
+        return new LogBlockLogger(logBlock, consumer, platform);
     }
 
     /**
@@ -84,47 +82,52 @@ public class LogBlockLogger extends BukkitBaseEntity implements IBlockLogger {
      */
     private final Consumer m_consumer;
 
-    
-    private LogBlockLogger(LogBlock plugin, Consumer consumer) {
+    private final IPlatform m_platform;
+
+    private LogBlockLogger(LogBlock plugin, Consumer consumer, IPlatform platform) {
         super(plugin);
         m_consumer = consumer;
+        m_platform = platform;
     }
 
     /**
      * Get actor
+     *
      * @param player
-     * @return 
+     * @return
      */
     private static Actor getActor(IPlayer player) {
         return new Actor(player.getName(), player.getUUID());
     }
-    
+
     @Override
-    public void logBlock(Vector location, IPlayer player, IWorld world, BlockData blockOld, BlockData blockNew) {
+    public void logBlock(IPlayer player, IWorld world, double x, double y, double z, IBlockData blockOld, IBlockData blockNew) {
         boolean airOld = blockOld.isAir();
         boolean airNew = blockNew.isAir();
-        
-        World bWorld = ((BukkitWorld) world).getWorld();
 
+        if (world == null) {
+            return;
+        }
+        World bWorld = m_platform.getPlatformWorld(world, World.class);
         if (bWorld == null) {
             return;
         }
 
-        Location l = new Location(bWorld, location.getX(), location.getY(), location.getZ());
+        Location l = m_platform.getPlatformLocation(world, x, y, z, Location.class);
         Actor actor = getActor(player);
-        
+
         if (airOld && airNew) {
             return;
         }
-        
+
         if (airOld) {
-            m_consumer.queueBlockPlace(actor, l, blockNew.getType(), (byte)blockNew.getData());
-        }
-        else if (airNew) {
-            m_consumer.queueBlockBreak(actor, l, blockOld.getType(), (byte)blockOld.getData());
+            m_consumer.queueBlockPlace(actor, l, blockNew.getData(BlockData.class));
+        } else if (airNew) {
+            m_consumer.queueBlockBreak(actor, l, blockOld.getData(BlockData.class));
         } else {
-            m_consumer.queueBlockReplace(actor, l, blockOld.getType(), (byte)blockOld.getData(),
-                    blockNew.getType(), (byte)blockNew.getData());
+            m_consumer.queueBlockReplace(actor, l, 
+                    blockOld.getData(BlockData.class),
+                    blockNew.getData(BlockData.class));
         }
     }
 }

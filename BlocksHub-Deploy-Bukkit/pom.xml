@@ -58,6 +58,12 @@
             <version>[3.1.0, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.primesoft.blockshub.loggers</groupId>
+            <artifactId>BlocksHub-Logger-LogBlock</artifactId>
+            <version>[3.1.0, 4.0.0)</version>
+            <scope>compile</scope>
+        </dependency>        
         <!-- Accessord -->
         <dependency>
             <groupId>org.primesoft.blockshub.accessors</groupId>

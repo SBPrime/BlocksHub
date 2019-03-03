@@ -17,5 +17,6 @@
     <name>BlocksHub_Loggers</name>
     <modules>
         <module>BlocksHub-Logger-CoreProtect</module>
+        <module>BlocksHub-Logger-LogBlock</module>
     </modules>
 </project>

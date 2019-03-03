@@ -43,9 +43,9 @@
 package org.primesoft.blockshub.logger.bukkit.logBlock;
 
 import org.primesoft.blockshub.IBlocksHubApi;
-import org.primesoft.blockshub.api.BaseLoggerEndpoint;
 import org.primesoft.blockshub.api.IBlockLogger;
-import org.primesoft.blockshub.platform.api.IPlatform;
+import org.primesoft.blockshub.api.IPlatform;
+import org.primesoft.blockshub.api.base.BaseLoggerEndpoint;
 
 /**
  * @author SBPrime
@@ -58,7 +58,7 @@ public class BlocksHubPlugin extends BaseLoggerEndpoint {
 
     @Override
     protected IBlockLogger createLogger(IBlocksHubApi api, IPlatform platform, Object plugin) {
-        return LogBlockLogger.create(this, plugin);
+        return LogBlockLogger.create(this, platform, plugin);
     }
     
     
