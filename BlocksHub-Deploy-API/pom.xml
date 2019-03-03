@@ -5,20 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.primesoft</groupId>
     <artifactId>BlocksHubApi</artifactId>
-    <version>3.0.0</version>
+
+    <parent>
+        <groupId>org.primesoft.blockshub</groupId>
+        <artifactId>BlocksHub_AllInOne</artifactId>
+        <version>${global.bh.version}</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-API</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-Base</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -43,7 +49,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <finalName>${project.artifactId}-${global.bh.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
                                 <descriptor>src/main/resources/descriptor.xml</descriptor>

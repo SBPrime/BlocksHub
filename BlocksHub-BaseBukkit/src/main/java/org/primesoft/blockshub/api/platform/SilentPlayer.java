@@ -51,10 +51,12 @@ import java.util.UUID;
 import org.bukkit.Achievement;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Note;
 import org.bukkit.Particle;
 import org.bukkit.Server;
@@ -68,6 +70,7 @@ import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
@@ -95,6 +98,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 /**
@@ -1742,5 +1747,120 @@ public class SilentPlayer implements Player {
     @Override
     public PistonMoveReaction getPistonMoveReaction() {
         return m_parent.getPistonMoveReaction();
+    }
+
+    @Override
+    public String getPlayerListHeader() {
+        return m_parent.getPlayerListHeader();
+    }
+
+    @Override
+    public String getPlayerListFooter() {
+        return m_parent.getPlayerListFooter();
+    }
+
+    @Override
+    public void setPlayerListHeader(String string) {
+        m_parent.setPlayerListHeader(string);
+    }
+
+    @Override
+    public void setPlayerListFooter(String string) {
+        m_parent.setPlayerListFooter(string);
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(String string, String string1) {
+        m_parent.setPlayerListHeaderFooter(string, string1);
+    }
+
+    @Override
+    public int getClientViewDistance() {
+        return m_parent.getClientViewDistance();
+    }
+
+    @Override
+    public void updateCommands() {
+        m_parent.updateCommands();
+    }
+
+    @Override
+    public boolean sleep(Location lctn, boolean bln) {
+        return m_parent.sleep(lctn, bln);
+    }
+
+    @Override
+    public void wakeup(boolean bln) {
+        m_parent.wakeup(bln);
+    }
+
+    @Override
+    public Location getBedLocation() {
+        return m_parent.getBedLocation();
+    }
+
+    @Override
+    public boolean discoverRecipe(NamespacedKey nk) {
+        return m_parent.discoverRecipe(nk);
+    }
+
+    @Override
+    public int discoverRecipes(Collection<NamespacedKey> clctn) {
+        return m_parent.discoverRecipes(clctn);
+    }
+
+    @Override
+    public boolean undiscoverRecipe(NamespacedKey nk) {
+        return m_parent.undiscoverRecipe(nk);
+    }
+
+    @Override
+    public int undiscoverRecipes(Collection<NamespacedKey> clctn) {
+        return m_parent.undiscoverRecipes(clctn);
+    }
+
+    @Override
+    public Block getTargetBlockExact(int i) {
+        return m_parent.getTargetBlockExact(i);
+    }
+
+    @Override
+    public Block getTargetBlockExact(int i, FluidCollisionMode fcm) {
+        return m_parent.getTargetBlockExact(i, fcm);
+    }
+
+    @Override
+    public RayTraceResult rayTraceBlocks(double d) {
+        return m_parent.rayTraceBlocks(d);
+    }
+
+    @Override
+    public RayTraceResult rayTraceBlocks(double d, FluidCollisionMode fcm) {
+        return m_parent.rayTraceBlocks(d, fcm);
+    }
+
+    @Override
+    public boolean isRiptiding() {
+        return m_parent.isRiptiding();
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return m_parent.getBoundingBox();
+    }
+
+    @Override
+    public boolean isPersistent() {
+        return m_parent.isPersistent();
+    }
+
+    @Override
+    public void setPersistent(boolean bln) {
+        m_parent.setPersistent(bln);
+    }
+
+    @Override
+    public BlockFace getFacing() {
+        return m_parent.getFacing();
     }
 }

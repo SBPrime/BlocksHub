@@ -19,3 +19,9 @@
 /*/nbproject/*
 /**/nbproject/*
 /test-server/*
+/loggers/BlocksHub-Logger-CoreProtect/target/
+/accessors/BlocksHub-Accessor-Factions/target/
+/BlocksHub_Accessors/BlocksHub-Accessor-Factions/target/
+/BlocksHub_Loggers/BlocksHub-Logger-CoreProtect/target/
+/BlocksHub_Accessors/BlocksHub-WorldGuard/build/
+/BlocksHub_Accessors/BlocksHub-WorldGuard/dist/

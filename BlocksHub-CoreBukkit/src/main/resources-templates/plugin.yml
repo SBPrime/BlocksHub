@@ -1,6 +1,6 @@
 name: BlocksHub
 main: org.primesoft.blockshub.BlocksHubBukkit
-version: 3.0.0
+version: ${global.bh.version}
 api-version: 1.13
 website: https://github.com/SBPrime/BlocksHub/
 description: Logger & Block access API.

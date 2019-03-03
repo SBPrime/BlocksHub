@@ -5,7 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.primesoft.blockshub</groupId>
     <artifactId>BlocksHub-CoreBukkit</artifactId>
-    <version>3.0.0</version>
+
+    <parent>
+        <groupId>org.primesoft.blockshub</groupId>
+        <artifactId>BlocksHub_AllInOne</artifactId>
+        <version>${global.bh.version}</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <packaging>jar</packaging>
     <properties>
@@ -14,6 +20,50 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/resources-templates</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-sources/resources-templates</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>target/generated-sources/resources-templates</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -21,35 +71,35 @@
             <version>[1.13, 1.14)</version>
             <type>jar</type>
         </dependency>
-        
+
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-API</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-InnerAPI</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-Core</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-Base</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-BaseBukkit</artifactId>
-            <version>[3.0.0, 4.0.0)</version>
+            <version>[3.1.0, 4.0.0)</version>
             <type>jar</type>
         </dependency>
     </dependencies>

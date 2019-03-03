@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.primesoft.blockshub</groupId>
-    <artifactId>BlocksHub-API</artifactId>
+    <artifactId>BlocksHub_Loggers</artifactId>
 
     <parent>
         <groupId>org.primesoft.blockshub</groupId>
@@ -13,10 +13,9 @@
         <relativePath>..</relativePath>
     </parent>
 
-    <packaging>jar</packaging>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <packaging>pom</packaging>
+    <name>BlocksHub_Loggers</name>
+    <modules>
+        <module>BlocksHub-Logger-CoreProtect</module>
+    </modules>
 </project>

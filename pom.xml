@@ -5,7 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.primesoft.blockshub</groupId>
     <artifactId>BlocksHub_AllInOne</artifactId>
-    <version>3.0.0</version>
+
+    <version>${global.bh.version}</version>
+    
+    <properties>
+        <global.bh.version>3.1.0</global.bh.version>
+    </properties>
+    
     <packaging>pom</packaging>
     <name>BlocksHub_AllInOne</name>
     <modules>
@@ -18,5 +24,7 @@
         <module>BlocksHub-Deploy-API</module>
         <module>BlocksHub-Deploy-Bukkit</module>
         <module>BlocksHub-Deploy-BukkitAPI</module>
+        <module>BlocksHub_Loggers</module>
+        <module>BlocksHub_Accessors</module>
     </modules>
 </project>
