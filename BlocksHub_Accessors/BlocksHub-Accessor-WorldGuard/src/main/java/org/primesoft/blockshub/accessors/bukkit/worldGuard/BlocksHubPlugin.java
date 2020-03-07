@@ -58,6 +58,6 @@ public class BlocksHubPlugin extends BaseAccessorEndpoint {
 
     @Override
     protected IAccessController createAccessor(IBlocksHubApi api, IPlatform platform, Object plugin) {
-        return WorldGuardAc.create(this, plugin);
+        return WorldGuardAc.create(this, plugin, platform);
     }
 }

@@ -7,11 +7,11 @@
     <artifactId>BlocksHub_AllInOne</artifactId>
 
     <version>${global.bh.version}</version>
-    
+
     <properties>
-        <global.bh.version>3.1.0</global.bh.version>
+        <global.bh.version>3.1.1</global.bh.version>
     </properties>
-    
+
     <packaging>pom</packaging>
     <name>BlocksHub_AllInOne</name>
     <modules>

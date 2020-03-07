@@ -41,18 +41,24 @@
  */
 package org.primesoft.blockshub.accessors.bukkit.worldGuard;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListMap;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.primesoft.blockshub.api.IAccessController;
 import org.primesoft.blockshub.api.IBlockData;
 import org.primesoft.blockshub.api.ILog;
+import org.primesoft.blockshub.api.IPlatform;
 import org.primesoft.blockshub.api.IPlayer;
 import org.primesoft.blockshub.api.IWorld;
 import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
@@ -63,55 +69,67 @@ import org.primesoft.blockshub.api.platform.base.BukkitBaseEntity;
  */
 public class WorldGuardAc extends BukkitBaseEntity implements IAccessController {
 
-    static IAccessController create(ILog logger, Object plugin) {
+    static IAccessController create(ILog logger, Object plugin, IPlatform platform) {
         if (!(plugin instanceof WorldGuardPlugin)) {
             logger.log("plugin not found.");
             return null;
         }
 
-        return new WorldGuardAc((WorldGuardPlugin) plugin);
+        return new WorldGuardAc((WorldGuardPlugin) plugin, platform);
     }
 
-    private final Map<String, RegionManager> m_cachedWorlds = new ConcurrentSkipListMap<>(
-    );
+    private final Map<UUID, CacheEntry> m_cachedWorlds = new ConcurrentSkipListMap<>();
 
     private final RegionContainer m_rc;
+    
+    private final IPlatform m_platform;
 
-    private WorldGuardAc(WorldGuardPlugin plugin) {
+    private WorldGuardAc(WorldGuardPlugin plugin, IPlatform platform) {
         super(plugin);
-
+        
+        m_platform = platform;
         m_rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
     }
-
-    /*
-    @Override
-    public boolean hasAccess(IPlayer player, IWorld world, Vector location) {
-        BukkitPlayer bukkitPlayer = BukkitPlayer.getPlayer(player);
-        Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;
-        if (bPlayer == null) {
-            return true;
-        }
-
-        if (!(world instanceof BukkitWorld)) {
-            return true;
-        }
-
-        Location l = new Location(((BukkitWorld) world).getWorld(), location.getX(), location.getY(), location.getZ());
-        
-        return m_worldGuard.canBuild(bPlayer, l);
-    }
-     */
-
+    
     @Override
     public boolean hasAccess(IPlayer player,
             IWorld world, double x, double y, double z) {
-        return false;
+        if (player == null || world == null) {
+            return true;            
+        }
+                
+        final Player bukkitPlayer = m_platform.getPlatformPlayer(player, Player.class);
+        final Player bPlayer = bukkitPlayer != null ? bukkitPlayer.getPlayer() : null;   
+        
+        final LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(bPlayer);
+        final CacheEntry ce = m_cachedWorlds.computeIfAbsent(world.getUuid(), id -> {
+                    com.sk89q.worldedit.world.World w = BukkitAdapter.adapt(m_platform.getPlatformWorld(world, World.class));
+                    return new CacheEntry(w, m_rc.get(w));
+        });
+        
+        if (WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(lp, ce.world)) {
+            return true;
+        }
+        
+        final BlockVector3 bv = BlockVector3.at(x, y, z);
+        return StateFlag.State.ALLOW.equals(ce.rm.getApplicableRegions(bv).queryValue(lp, Flags.BUILD));
     }
 
     @Override
     public boolean canPlace(IPlayer player,
             IWorld world, double x, double y, double z,
             IBlockData oldBlock, IBlockData newBlock) {
+        
         return hasAccess(player, world, x, y, z);
+    }
+    
+    private static class CacheEntry {
+        final com.sk89q.worldedit.world.World world;
+        final RegionManager rm;
+        
+        CacheEntry(com.sk89q.worldedit.world.World world, RegionManager rm) {
+            this.world = world;
+            this.rm = rm;
+        }
     }
 }
