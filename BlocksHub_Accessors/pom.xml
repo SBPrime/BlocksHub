@@ -9,14 +9,13 @@
     <parent>
         <groupId>org.primesoft.blockshub</groupId>
         <artifactId>BlocksHub_AllInOne</artifactId>
-        <version>${global.bh.version}</version>
-        <relativePath>..</relativePath>
+        <version>3.1.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <packaging>pom</packaging>
     <name>BlocksHub_Accessors</name>
     <modules>
-        <module>BlocksHub-Accessor-Factions</module>
         <module>BlocksHub-Accessor-WorldGuard</module>
         <module>BlocksHub-Accessor-GriefPrevention</module>
     </modules>

@@ -9,34 +9,39 @@
     <parent>
         <groupId>org.primesoft.blockshub</groupId>
         <artifactId>BlocksHub_Accessors</artifactId>
-        <version>${global.bh.version}</version>
-        <relativePath>..</relativePath>
+        <version>3.1.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <packaging>jar</packaging>
 
+    <repositories>
+        <repository>
+            <id>enginehub-maven</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>[1.15, 1.16)</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>WorldGuard</artifactId>
-            <version>7.0.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../libs/worldguard-bukkit-7.0.2.jar</systemPath>
+            <artifactId>worldguard-bukkit</artifactId>
+            <version>7.0.4</version>
+            <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>WorldEdit</artifactId>
-            <version>7.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../libs/worldedit-bukkit-7.0.1.jar</systemPath>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

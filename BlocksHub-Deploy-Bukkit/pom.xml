@@ -9,8 +9,8 @@
     <parent>
         <groupId>org.primesoft.blockshub</groupId>
         <artifactId>BlocksHub_AllInOne</artifactId>
-        <version>${global.bh.version}</version>
-        <relativePath>..</relativePath>
+        <version>3.1.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <packaging>jar</packaging>
@@ -58,19 +58,7 @@
             <version>[3.1.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.primesoft.blockshub.loggers</groupId>
-            <artifactId>BlocksHub-Logger-LogBlock</artifactId>
-            <version>[3.1.1, 4.0.0)</version>
-            <scope>compile</scope>
-        </dependency>        
         <!-- Accessord -->
-        <dependency>
-            <groupId>org.primesoft.blockshub.accessors</groupId>
-            <artifactId>BlocksHub-Accessor-Factions</artifactId>
-            <version>[3.1.1, 4.0.0)</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub.accessors</groupId>
             <artifactId>BlocksHub-Accessor-GriefPrevention</artifactId>
