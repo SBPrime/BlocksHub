@@ -54,6 +54,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -262,6 +263,12 @@ public class TypeOnlyBlock implements Block {
     }
 
     @Override
+    public boolean applyBoneMeal(BlockFace blockFace)
+    {
+        return false;
+    }
+
+    @Override
     public Collection<ItemStack> getDrops() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -269,6 +276,18 @@ public class TypeOnlyBlock implements Block {
     @Override
     public Collection<ItemStack> getDrops(ItemStack is) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(ItemStack itemStack, Entity entity)
+    {
+        return null;
+    }
+
+    @Override
+    public boolean isPreferredTool(ItemStack itemStack)
+    {
+        return false;
     }
 
     @Override
