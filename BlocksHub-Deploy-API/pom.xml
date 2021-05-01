@@ -9,8 +9,8 @@
     <parent>
         <groupId>org.primesoft.blockshub</groupId>
         <artifactId>BlocksHub_AllInOne</artifactId>
-        <version>${global.bh.version}</version>
-        <relativePath>..</relativePath>
+        <version>3.1.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <packaging>jar</packaging>

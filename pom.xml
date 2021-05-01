@@ -6,11 +6,7 @@
     <groupId>org.primesoft.blockshub</groupId>
     <artifactId>BlocksHub_AllInOne</artifactId>
 
-    <version>${global.bh.version}</version>
-
-    <properties>
-        <global.bh.version>3.1.1</global.bh.version>
-    </properties>
+    <version>3.1.1</version>
 
     <packaging>pom</packaging>
     <name>BlocksHub_AllInOne</name>
