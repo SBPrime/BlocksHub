@@ -19,22 +19,23 @@
         <repository>
             <name>CoreProtect</name>
             <id>core-protect</id>
-            <url>http://maven.playpro.com/</url>
+            <url>https://maven.playpro.com/</url>
         </repository>  
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>[1.15, 1.16)</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>net.coreprotect</groupId>
             <artifactId>coreprotect</artifactId>
-            <version>[2.15.0, 2.16.0)</version>
+            <version>2.18.2</version>
         </dependency>
         <dependency>
             <groupId>org.primesoft</groupId>

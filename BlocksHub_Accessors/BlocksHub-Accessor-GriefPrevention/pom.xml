@@ -24,16 +24,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>[1.15, 1.16)</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
             <type>jar</type>
         </dependency>
 
         <dependency>
             <groupId>com.github.TechFortress</groupId>
             <artifactId>GriefPrevention</artifactId>
-            <version>[16.11.5, 17.0.0)</version>
+            <version>16.17.1</version>
         </dependency>
 
         <dependency>
