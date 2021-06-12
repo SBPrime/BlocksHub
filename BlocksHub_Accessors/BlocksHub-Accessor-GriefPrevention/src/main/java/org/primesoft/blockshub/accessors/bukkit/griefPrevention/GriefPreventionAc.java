@@ -148,7 +148,7 @@ public class GriefPreventionAc extends BukkitBaseEntity implements IAccessContro
         final Location l = m_platform.getPlatformLocation(world, x, y, z, Location.class);
 
         if (!airOld) {
-            if (m_griefPrevention.allowBreak(bukkitPlayer, new TypeOnlyBlock(blockOld), l) != null) {
+            if (m_griefPrevention.allowBreak(bukkitPlayer, TypeOnlyBlock.create(blockOld), l) != null) {
                 return false;
             }
         }
