@@ -44,8 +44,8 @@ package org.primesoft.blockshub.utils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
 import static org.primesoft.blockshub.utils.LoggerProvider.log;
 
 /**
@@ -54,36 +54,10 @@ import static org.primesoft.blockshub.utils.LoggerProvider.log;
  * @author SBPrime
  */
 public class Reflection {
-
-    public static Class<?> classFromName(String p, String name, String message) {
-        final String pattern = "%s.%s";
-        try {
-            return Class.forName(String.format(pattern, p, name));
-        } catch (ClassNotFoundException ex) {
-            log(String.format("%1$s: unsupported version, class %2$s not found.", message, name));
-        }
-
-        return null;
-    }
-
     public static <T> T create(Class<T> resultClass,
             Constructor<?> ctor, String message, Object... args) {
         try {
-            ctor.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            boolean accessible = modifiersField.isAccessible();
-            if (!accessible) {
-                modifiersField.setAccessible(true);
-            }
-
-            try {
-                return resultClass.cast(ctor.newInstance(args));
-            } finally {
-                if (!accessible) {
-                    modifiersField.setAccessible(false);
-                }
-            }
+            return resultClass.cast(ctor.newInstance(args));
         } catch (InstantiationException ex) {
             log(String.format("%1$s: unsupported version.", message));
         } catch (InvocationTargetException ex) {
@@ -92,8 +66,6 @@ public class Reflection {
             log(String.format("%1$s: unsupported version.", message));
         } catch (IllegalAccessException ex) {
             log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version.", message));
         } catch (SecurityException ex) {
             log(String.format("%1$s: security exception.", message));
         } catch (ClassCastException ex) {
@@ -101,146 +73,6 @@ public class Reflection {
         }
 
         return null;
-    }
-
-    public static <T> T invoke(Object instance, Class<T> resultClass,
-            Method method, String message, Object... args) {
-        try {
-            method.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            boolean accessible = modifiersField.isAccessible();
-            if (!accessible) {
-                modifiersField.setAccessible(true);
-            }
-
-            try {
-                return resultClass.cast(method.invoke(instance, args));
-            } finally {
-                if (!accessible) {
-                    modifiersField.setAccessible(false);
-                }
-            }
-        } catch (InvocationTargetException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalArgumentException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalAccessException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (ClassCastException ex) {
-            log(String.format("%1$s: unsupported version, unable to cast result.", message));
-        }
-
-        return null;
-    }
-
-    public static boolean invoke(Object instance,
-            Method method, String message, Object... args) {
-        try {
-            method.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            boolean accessible = modifiersField.isAccessible();
-            if (!accessible) {
-                modifiersField.setAccessible(true);
-            }
-
-            try {
-                method.invoke(instance, args);
-                return true;
-            } finally {
-                if (!accessible) {
-                    modifiersField.setAccessible(false);
-                }
-            }
-        } catch (InvocationTargetException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalArgumentException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalAccessException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (ClassCastException ex) {
-            log(String.format("%1$s: unsupported version, unable to cast result.", message));
-        }
-
-        return false;
-    }
-
-    public static <T> T get(Object instance, Class<T> fieldClass, Field field, String message) {
-        try {
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            boolean accessible = modifiersField.isAccessible();
-            if (!accessible) {
-                modifiersField.setAccessible(true);
-            }
-
-            try {
-                return fieldClass.cast(field.get(instance));
-            } finally {
-                if (!accessible) {
-                    modifiersField.setAccessible(false);
-                }
-            }
-        } catch (IllegalArgumentException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalAccessException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (ClassCastException ex) {
-            log(String.format("%1$s: unsupported version, unable to cast result.", message));
-        }
-
-        return null;
-    }
-
-    public static Object get(Object instance, Field field, String message) {
-        try {
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            boolean accessible = modifiersField.isAccessible();
-            if (!accessible) {
-                modifiersField.setAccessible(true);
-            }
-
-            try {
-                return field.get(instance);
-            } finally {
-                if (!accessible) {
-                    modifiersField.setAccessible(false);
-                }
-            }
-        } catch (IllegalArgumentException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalAccessException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (ClassCastException ex) {
-            log(String.format("%1$s: unsupported version, unable to cast result.", message));
-        }
-
-        return null;
-    }
-
-    public static <T> T get(Class<?> sourceClass, Class<T> fieldClass,
-            String fieldName, String message) {
-        return get(sourceClass, fieldClass, null, fieldName, message);
     }
 
     public static <T> T get(Object instance, Class<T> fieldClass,
@@ -248,26 +80,19 @@ public class Reflection {
         return get(instance.getClass(), fieldClass, instance, fieldName, message);
     }
 
-    public static <T> T get(Class<?> sourceClass, Class<T> fieldClass,
-            Object instance, String fieldName,
-            String message) {
+    public static <T> T get(final Class<?> sourceClass,
+                            final Class<T> fieldClass,
+                            final Object instance,
+                            final String fieldName,
+                            final String message) {
+
         try {
-            Field field = sourceClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            boolean accessible = modifiersField.isAccessible();
-            if (!accessible) {
-                modifiersField.setAccessible(true);
+            final Field field = sourceClass.getDeclaredField(fieldName);
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
             }
 
-            try {
-                return fieldClass.cast(field.get(instance));
-            } finally {
-                if (!accessible) {
-                    modifiersField.setAccessible(false);
-                }
-            }
+            return fieldClass.cast(field.get(instance));
         } catch (IllegalArgumentException ex) {
             log(String.format("%1$s: unsupported version.", message));
         } catch (IllegalAccessException ex) {
@@ -278,139 +103,6 @@ public class Reflection {
             log(String.format("%1$s: security exception.", message));
         } catch (ClassCastException ex) {
             log(String.format("%1$s: unsupported version, unable to cast result.", message));
-        }
-
-        return null;
-    }
-
-    public static void set(Object instance, String fieldName, Object value,
-            String message) {
-        set(instance.getClass(), instance, fieldName, value, message);
-    }
-
-    public static void set(Class<?> sourceClass, String fieldName, Object value,
-            String message) {
-        set(sourceClass, null, fieldName, value, message);
-    }
-
-    public static void set(Class<?> sourceClass,
-            Object instance, String fieldName, Object value,
-            String message) {
-        try {
-            Field field = sourceClass.getDeclaredField(fieldName);
-            boolean accessible = field.isAccessible();
-
-            //field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            int modifiers = modifiersField.getModifiers();
-            boolean isFinal = (modifiers & Modifier.FINAL) == Modifier.FINAL;
-
-            if (!accessible) {
-                field.setAccessible(true);
-            }
-            if (isFinal) {
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, modifiers & ~Modifier.FINAL);
-            }
-            try {
-                field.set(instance, value);
-            } finally {
-                if (isFinal) {
-                    modifiersField.setInt(field, modifiers | Modifier.FINAL);
-                }
-                if (!accessible) {
-                    field.setAccessible(false);
-                }
-            }
-        } catch (IllegalArgumentException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalAccessException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version, field %2$s not found.", message, fieldName));
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        }
-    }
-
-    public static boolean set(Object instance, Field field, Object value,
-            String message) {
-        try {
-            boolean accessible = field.isAccessible();
-
-            //field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-            int modifiers = modifiersField.getModifiers();
-            boolean isFinal = (modifiers & Modifier.FINAL) == Modifier.FINAL;
-
-            if (!accessible) {
-                field.setAccessible(true);
-            }
-            if (isFinal) {
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, modifiers & ~Modifier.FINAL);
-            }
-            try {
-                field.set(instance, value);
-                return true;
-            } finally {
-                if (isFinal) {
-                    modifiersField.setInt(field, modifiers | Modifier.FINAL);
-                }
-                if (!accessible) {
-                    field.setAccessible(false);
-                }                
-            }
-        } catch (IllegalArgumentException ex) {
-            log(String.format("%1$s: unsupported version.", message));
-        } catch (IllegalAccessException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version, field modifiers not found.", message));
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        }
-        
-        return false;
-    }
-
-    public static Method findMethod(Class<?> c, String methodName, String message, Class<?>... paramTypes) {
-        try {
-            return c.getDeclaredMethod(methodName, paramTypes);
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchMethodException ex) {
-            log(String.format("%1$s: unsupported version, method %2$s not found.", message, methodName));
-        }
-
-        return null;
-    }
-
-    public static Field findField(Class<?> c, String fieldName, String message) {
-        try {
-            return c.getDeclaredField(fieldName);
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version, field %2$s not found.", message, fieldName));
-        }
-
-        return null;
-    }
-
-    public static Field findTypedField(Class<?> c, Class<?> fieldType, String fieldName, String message) {
-        try {
-            Field f = c.getDeclaredField(fieldName);
-            if (f == null || !f.getType().equals(fieldType)) {
-                return null;
-            }
-            return f;
-        } catch (SecurityException ex) {
-            log(String.format("%1$s: security exception.", message));
-        } catch (NoSuchFieldException ex) {
-            log(String.format("%1$s: unsupported version, field %2$s not found.", message, fieldName));
         }
 
         return null;

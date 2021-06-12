@@ -266,9 +266,12 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider,
             log(String.format("Resource %1$s entry point %2$s has no default constructor.", resource, entryPoint.getCanonicalName()));
             return;
         }
+        if (!ctor.isAccessible()) {
+            log(String.format("Resource %1$s entry point %2$s has a private default constructor.", resource, entryPoint.getCanonicalName()));
+            return;
+        }
         
-        IBlocksHubEndpoint endPoint = Reflection.create(clsIBlocksHubEndpoint, ctor, "Unable to reate entry point.");
-        
+        IBlocksHubEndpoint endPoint = Reflection.create(clsIBlocksHubEndpoint, ctor, "Unable to create entry point.");
         if (endPoint == null) {
             log(String.format("Unable to create entry point %2$s for resource %1$s.", resource, entryPoint.getCanonicalName()));
             return;

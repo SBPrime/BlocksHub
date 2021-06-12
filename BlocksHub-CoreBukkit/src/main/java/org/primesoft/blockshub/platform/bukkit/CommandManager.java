@@ -78,9 +78,8 @@ public class CommandManager implements ICommandManager {
         m_commandMap = Reflection.get(server, SimpleCommandMap.class, "commandMap", "Unable to get the command map");
         m_executor = executor;
     }
-    
 
-    
+
     
     @Override
     public void registerCommand(String name, String[] alias, String description, String usage, String permission) {

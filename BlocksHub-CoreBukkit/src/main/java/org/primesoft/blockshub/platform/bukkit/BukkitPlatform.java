@@ -68,7 +68,6 @@ import org.primesoft.blockshub.inner.api.platform.ICommandManager;
 import org.primesoft.blockshub.inner.api.platform.IConfiguration;
 import org.primesoft.blockshub.inner.api.platform.IPlatform;
 import org.primesoft.blockshub.platform.LazyPlayer;
-import org.primesoft.blockshub.platform.bukkit.mcstats.MetricsLite;
 
 /**
  *
@@ -102,8 +101,6 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
      * The command manager
      */
     private final CommandManager m_commandManager;
-
-    private MetricsLite m_metrics;
 
     private static final ChatColor[] s_colors = new ChatColor[]{
         ChatColor.BLACK, ChatColor.DARK_BLUE, ChatColor.DARK_GREEN, ChatColor.DARK_AQUA, //0-3
@@ -148,14 +145,6 @@ public class BukkitPlatform implements IPlatform, CommandExecutor {
     @Override
     public void onEnable() {
         m_logger.onEnable();
-
-        try {
-            m_metrics = new MetricsLite(m_plugin);
-            m_metrics.start();
-        } catch (IOException e) {
-            log("Error initializing MCStats: " + e.getMessage());
-        }
-
     }
 
     @Override
