@@ -48,4 +48,45 @@
             <version>1.9.5</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.mockito:*</include>
+                                    <include>org.hamcrest:hamcrest-core</include>
+                                    <include>org.objenesis:objenesis</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.mockito</pattern>
+                                    <shadedPattern>org.primesoft.blockshub.api.platform.shaded.org.mockito</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.hamcrest</pattern>
+                                    <shadedPattern>org.primesoft.blockshub.api.platform.shaded.org.hamcrest</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.objenesis</pattern>
+                                    <shadedPattern>org.primesoft.blockshub.api.platform.shaded.org.objenesis</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
