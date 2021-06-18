@@ -18,6 +18,8 @@
 /*/target/
 /*/nbproject/*
 /**/nbproject/*
+/**/target/*
+/**/*.iml
 /test-server/*
 /loggers/BlocksHub-Logger-CoreProtect/target/
 /accessors/BlocksHub-Accessor-Factions/target/

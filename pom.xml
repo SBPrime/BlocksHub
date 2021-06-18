@@ -6,7 +6,20 @@
     <groupId>org.primesoft.blockshub</groupId>
     <artifactId>BlocksHub_AllInOne</artifactId>
 
-    <version>3.1.1</version>
+    <version>${global.bh.version}</version>
+
+    <repositories>
+        <!-- This adds the Spigot Maven repository to the build -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <global.bh.version>3.1.1</global.bh.version>
+        <spigot.version>1.17-R0.1-SNAPSHOT</spigot.version>
+    </properties>
 
     <packaging>pom</packaging>
     <name>BlocksHub_AllInOne</name>

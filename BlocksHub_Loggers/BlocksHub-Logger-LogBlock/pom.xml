@@ -3,22 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.primesoft.blockshub.accessors</groupId>
-    <artifactId>BlocksHub-Accessor-GriefPrevention</artifactId>
-
-    <parent>
-        <groupId>org.primesoft.blockshub</groupId>
-        <artifactId>BlocksHub_Accessors</artifactId>
-        <version>3.1.1</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+    <groupId>org.primesoft.blockshub.loggers</groupId>
+    <artifactId>BlocksHub-Logger-LogBlock</artifactId>
 
     <packaging>jar</packaging>
 
+    <parent>
+        <groupId>org.primesoft.blockshub</groupId>
+        <artifactId>BlocksHub_Loggers</artifactId>
+        <version>${global.bh.version}</version>
+        <relativePath>..</relativePath>
+    </parent>
+
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <name>LogBlock</name>
+            <id>log-block</id>
+            <url>https://repo.md-5.net/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -30,10 +31,11 @@
             <scope>provided</scope>
             <type>jar</type>
         </dependency>
+
         <dependency>
-            <groupId>com.github.TechFortress</groupId>
-            <artifactId>GriefPrevention</artifactId>
-            <version>16.17.1</version>
+            <groupId>de.diddiz</groupId>
+            <artifactId>logblock</artifactId>
+            <version>[1.13.2-SNAPSHOT, 1.13.3-SNAPSHOT)</version>
         </dependency>
         <dependency>
             <groupId>org.primesoft</groupId>
