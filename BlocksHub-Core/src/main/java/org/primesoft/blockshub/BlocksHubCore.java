@@ -42,6 +42,7 @@
 package org.primesoft.blockshub;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import org.primesoft.blockshub.api.IBlocksHubEndpoint;
@@ -266,8 +267,8 @@ public final class BlocksHubCore implements IEnableAware, IBlocksHubApiProvider,
             log(String.format("Resource %1$s entry point %2$s has no default constructor.", resource, entryPoint.getCanonicalName()));
             return;
         }
-        if (!ctor.isAccessible()) {
-            log(String.format("Resource %1$s entry point %2$s has a private default constructor.", resource, entryPoint.getCanonicalName()));
+        if (!Modifier.isPublic(ctor.getModifiers())) {
+            log(String.format("Resource %1$s entry point %2$s has no private constructor.", resource, entryPoint.getCanonicalName()));
             return;
         }
         

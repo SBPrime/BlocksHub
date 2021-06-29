@@ -17,7 +17,7 @@
     </repositories>
 
     <properties>
-        <global.bh.version>3.1.1</global.bh.version>
+        <global.bh.version>3.2.0</global.bh.version>
         <spigot.version>1.17-R0.1-SNAPSHOT</spigot.version>
     </properties>
 
