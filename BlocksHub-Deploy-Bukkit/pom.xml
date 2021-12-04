@@ -18,69 +18,69 @@
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-API</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-Base</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-BaseBukkit</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-InnerAPI</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-Core</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub</groupId>
             <artifactId>BlocksHub-CoreBukkit</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <!-- Loggers -->
         <dependency>
             <groupId>org.primesoft.blockshub.loggers</groupId>
             <artifactId>BlocksHub-Logger-CoreProtect</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub.loggers</groupId>
             <artifactId>BlocksHub-Logger-LogBlock</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>        
         <!-- Accessord -->
         <dependency>
             <groupId>org.primesoft.blockshub.accessors</groupId>
             <artifactId>BlocksHub-Accessor-Factions</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub.accessors</groupId>
             <artifactId>BlocksHub-Accessor-GriefPrevention</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.primesoft.blockshub.accessors</groupId>
             <artifactId>BlocksHub-Accessor-WorldGuard</artifactId>
-            <version>[3.2.0, 4.0.0)</version>
+            <version>[3.2.1, 4.0.0)</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
